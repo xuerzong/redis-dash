@@ -1,0 +1,50 @@
+.InputRoot {
+  --size: 2.5rem;
+  --font-size: 0.875rem;
+}
+
+.InputWithPrefixRoot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .Input {
+    flex: 1;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+}
+
+.InputPrefix {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size);
+  height: var(--size);
+  background-color: var(--muted-color);
+  padding: 0 1rem;
+  color: var(--foreground-color);
+  flex-shrink: 0;
+  border: 1px solid var(--muted-color);
+  box-sizing: content-box;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.Input {
+  --size: 2.5rem;
+  --font-size: 0.875rem;
+  font-size: var(--font-size);
+  height: var(--size);
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  outline: none;
+  padding: 0 0.75rem;
+  transition: all 0.1s ease-in;
+  width: 100%;
+
+  &:focus-visible {
+    box-shadow:
+      0 0 0 3px rgba(var(--color-primary) / 0.3),
+      0 0 0 1px var(--primary-color);
+  }
+}

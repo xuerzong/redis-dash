@@ -1,0 +1,58 @@
+.Button {
+  --size: 2.5rem;
+  --font-size: 0.875rem;
+  --color: var(--primary-foreground-color);
+  --bg-color: var(--primary-color);
+  --border-color: var(--bg-color);
+  --hover-bg-color: var(--accent-color);
+  --svg-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: var(--size);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--color);
+  font-size: var(--font-size);
+  background-color: var(--bg-color);
+  padding: 0 1rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.1s ease-in;
+
+  &[data-type='icon'] {
+    align-items: center;
+    justify-content: center;
+    height: var(--size);
+    width: var(--size);
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  &[data-variant='outline'] {
+    --border-color: rgba(var(--color-border) / 1);
+    --bg-color: var(--background-color);
+    --color: var(--foreground-color);
+    --hover-bg-color: var(--muted-color);
+  }
+
+  &[data-variant='ghost'] {
+    --bg-color: var(--background-color);
+    --color: var(--foreground-color);
+    --hover-bg-color: var(--muted-color);
+  }
+
+  &:hover:not(:disabled) {
+    --bg-color: var(--hover-bg-color);
+  }
+
+  &:disabled {
+    --bg-color: var(--muted-color);
+    cursor: not-allowed;
+  }
+
+  > svg {
+    width: var(--svg-size);
+    height: var(--svg-size);
+  }
+}

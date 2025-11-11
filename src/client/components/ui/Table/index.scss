@@ -1,0 +1,62 @@
+.Table {
+  overflow-x: auto;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+
+  table {
+    width: 100%;
+  }
+
+  table,
+  th,
+  td {
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+  td {
+    word-break: break-all;
+  }
+
+  thead {
+    tr {
+      th {
+        &:last-child {
+          border-right: none !important;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        &:last-child {
+          border-right: none !important;
+        }
+      }
+    }
+    tr {
+      &:last-child {
+        td {
+          border-bottom: none !important;
+        }
+      }
+    }
+  }
+
+  th {
+    font-weight: bold;
+  }
+}
+
+.TableWrapper {
+  width: 100%;
+}

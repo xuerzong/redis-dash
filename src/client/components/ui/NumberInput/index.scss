@@ -1,0 +1,98 @@
+.InputWithPrefixRoot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .NumberInput {
+    flex: 1;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+}
+
+.NumberInput {
+  --color: var(--foreground-color);
+  --bg-color: var(--background-color);
+  --size: 2.5rem;
+  --font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: var(--size);
+  outline: none;
+  border: 0;
+  box-shadow: 0 0 0 1px var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size);
+  color: var(--color);
+  background-color: var(--bg-color);
+  transition: all var(--animation-duration) ease-in;
+  user-select: none;
+
+  &:hover {
+    --border-color: var(--primary-color);
+  }
+
+  &[data-focused] {
+    box-shadow:
+      0 0 0 3px rgba(var(--color-primary) / 0.3),
+      0 0 0 1px var(--primary-color);
+  }
+
+  &[data-disabled] {
+    --border-color: var(--disabled-color);
+    --bg-color: var(--disabled-color);
+    cursor: not-allowed;
+  }
+}
+
+.NumberInputControlWrapper {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid rgba(var(--color-border) / 1);
+  height: 100%;
+  width: 1.25rem;
+}
+
+.NumberInputControlIcon {
+  width: 100%;
+  flex: 1;
+  background-color: var(--background-color);
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+  transition: all var(--animation-duration) ease-in;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--color);
+  &:hover {
+    background-color: var(--muted-color);
+  }
+
+  &:first-child {
+    border-bottom: 1px solid rgba(var(--color-border) / 1);
+  }
+
+  &[data-disabled] {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+}
+
+.NumberInputInput {
+  height: 100%;
+  width: 100%;
+  padding: 0 0.875rem;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  color: var(--color);
+  font-size: var(--font-size);
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

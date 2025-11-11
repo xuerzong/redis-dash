@@ -1,0 +1,27 @@
+.DropdownMenuContent {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  min-width: 12rem;
+  z-index: 999;
+}
+
+.DropdownMenuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+  padding: var(--spacing-md);
+  font-size: 0.875rem;
+  &:hover {
+    background-color: var(--muted-color);
+  }
+}
+
+.DropdownMenuItemIcon {
+  width: 1rem;
+  height: 1rem;
+}

@@ -1,0 +1,15 @@
+.Layout {
+  --header-height: 4rem;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  height: var(--header-height);
+  padding: 0 1rem;
+}
+
+.Content {
+  height: calc(100vh - var(--header-height));
+}

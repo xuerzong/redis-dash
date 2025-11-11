@@ -1,0 +1,49 @@
+.Layout {
+  --sider-width: 15rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  height: var(--header-height);
+  padding: 0 1rem;
+}
+
+.Sider {
+  flex-shrink: 0;
+  width: var(--sider-width);
+  border-right: 1px solid var(--border-color);
+}
+
+.Content {
+  width: calc(100vw - var(--sider-width));
+  flex: 1;
+}
+
+.Instance {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in;
+  color: var(--foreground-color);
+  &:hover {
+    background-color: var(--muted-color);
+  }
+
+  &[data-active='true'] {
+    background-color: var(--muted-color);
+  }
+  .InstanceIcon {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

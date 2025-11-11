@@ -1,0 +1,32 @@
+.ContextMenuContent,
+.ContextMenuSubContent {
+  min-width: 12rem;
+  background-color: var(--background-color);
+  padding: 0.25rem;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.ContextMenuItem {
+  font-size: 0.875rem;
+  color: var(--foreground-color);
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+  position: relative;
+  padding: 0 1rem;
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+  gap: 0.5rem;
+  transition: all 0.1s ease-in;
+
+  &:hover {
+    background-color: var(--muted-color);
+  }
+}
+
+.ContextMenuItemIcon {
+  width: 1rem;
+  height: 1rem;
+}

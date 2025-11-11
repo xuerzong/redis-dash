@@ -1,0 +1,36 @@
+.Select {
+  --size: 2.5rem;
+  --font-size: 0.875rem;
+  --svg-size: 0.875rem;
+  position: relative;
+}
+
+.SelectIcon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(-50%, -50%);
+  width: var(--svg-size);
+  height: var(--svg-size);
+}
+
+.SelectRoot {
+  font-size: var(--font-size);
+  height: var(--size);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  outline: none;
+  appearance: none;
+  padding: 0 0.75rem;
+  padding-right: 1.75rem;
+  transition: all 0.1s ease-in;
+  width: 100%;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+
+  &:focus-visible {
+    box-shadow:
+      0 0 0 3px rgba(var(--color-primary) / 0.3),
+      0 0 0 1px var(--primary-color);
+  }
+}

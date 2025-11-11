@@ -1,0 +1,82 @@
+.DrawerHeader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--muted-color);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.DrawerCloseIcon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}
+
+.DrawerTitle {
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+.DrawerDescription {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.DrawerWrapper {
+  padding: 1rem;
+}
+
+.DrawerBackdrop {
+  background-color: rgba(0 0 0 / 0.75);
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  transition: all 0.1s ease-in;
+  opacity: 1;
+  backdrop-filter: blur(4px);
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+  }
+}
+
+.DrawerContent {
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  position: fixed;
+  top: 0;
+  right: 0;
+  min-width: 32rem;
+  z-index: 9999;
+  height: 100vh;
+  border-left: 1px solid var(--border-color);
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  transform: translateX(0);
+  transition: all 0.1s ease-in;
+  &[data-starting-style],
+  &[data-ending-style] {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes drawerContentShow {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,12 @@
+.form {
+  &_field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &_label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}

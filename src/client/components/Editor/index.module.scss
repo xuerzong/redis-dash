@@ -1,0 +1,29 @@
+.Editor {
+  display: flex;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  min-height: 20rem;
+  height: 20rem;
+  overflow: hidden;
+
+  * {
+    font-family: var(--font-mono);
+  }
+
+  :global {
+    .monaco-editor .scroll-decoration {
+      display: none !important;
+    }
+
+    .monaco-editor,
+    .monaco-diff-editor,
+    .monaco-component {
+      --vscode-editor-background: var(--background-color);
+      --vscode-editorGutter-background: var(--background-color);
+      --vscode-editorStickyScroll-background: var(--background-color);
+      --vscode-editorStickyScrollGutter-background: var(--background-color);
+    }
+  }
+}

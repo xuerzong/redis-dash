@@ -1,0 +1,14 @@
+.Tooltip {
+}
+
+.TooltipWrapper {
+  font-size: 0.75rem;
+  background-color: var(--foreground-color);
+  color: var(--background-color);
+  padding: 0.25rem;
+  border-radius: var(--border-radius);
+}
+
+.TooltipArrow {
+  fill: var(--foreground-color);
+}
