@@ -1,12 +1,13 @@
-import { useState } from 'react'
-import { Select } from '@/client/components/ui/Select'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FilesIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import copy from 'copy-to-clipboard'
+import { basicSetup, EditorView } from 'codemirror'
+import { json } from '@codemirror/lang-json'
+import { EditorState, Compartment, Prec } from '@codemirror/state'
 import { Box } from '@/client/components/ui/Box'
 import { IconButton } from '@/client/components/ui/Button'
-import { Editor as MonacoEditor } from '@monaco-editor/react'
-import { useDarkMode } from '@/client/hooks/useDarkMode'
+import { Select } from '@/client/components/ui/Select'
 import s from './index.module.scss'
 
 interface EditorProps {
@@ -14,9 +15,13 @@ interface EditorProps {
   onChange?: (value: string) => void
 }
 
+const languageExtension = new Compartment()
+
 export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
+  const editorViewerRef = useRef<EditorView>(null)
+  const editorRef = useRef<HTMLDivElement>(null)
   const [language, setLanguage] = useState('plaintext')
-  const darkMode = useDarkMode()
+  const [hasFocused, setHasFocused] = useState(false)
   const options = [
     {
       label: 'PlainText',
@@ -27,6 +32,66 @@ export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
       value: 'json',
     },
   ]
+
+  const editorState = useMemo(() => {
+    const updateListener = Prec.highest(
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged && onChange) {
+          const newValue = update.state.doc.toString()
+          onChange(newValue)
+        }
+      })
+    )
+    return EditorState.create({
+      extensions: [
+        basicSetup,
+        languageExtension.of([]),
+        EditorView.domEventHandlers({
+          focus: () => setHasFocused(true),
+          blur: () => setHasFocused(false),
+        }),
+        updateListener,
+      ],
+    })
+  }, [])
+
+  useEffect(() => {
+    const view = new EditorView({
+      doc: '',
+      state: editorState,
+      parent: editorRef.current!,
+    })
+    editorViewerRef.current = view
+
+    return () => {
+      view.destroy()
+    }
+  }, [editorState])
+
+  useEffect(() => {
+    const editorViewer = editorViewerRef.current
+    if (editorViewer) {
+      const currentDoc = editorViewer.state.doc.toString()
+
+      if (value !== currentDoc) {
+        editorViewer.dispatch({
+          changes: {
+            from: 0,
+            to: editorViewer.state.doc.length,
+            insert: value,
+          },
+        })
+      }
+    }
+  }, [value])
+
+  useEffect(() => {
+    editorViewerRef.current?.dispatch({
+      effects: languageExtension.reconfigure([
+        ...(language === 'json' ? [json()] : []),
+      ]),
+    })
+  }, [language])
 
   const onChangeLanguage = (lang: string) => {
     setLanguage(lang)
@@ -54,29 +119,7 @@ export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
           <FilesIcon />
         </IconButton>
       </Box>
-      <Box className={s.Editor}>
-        <MonacoEditor
-          value={value}
-          onChange={(e) => {
-            onChange?.(e || '')
-          }}
-          theme={darkMode ? 'vs-dark' : 'vs'}
-          language={language}
-          options={{
-            lineNumbers: 'off',
-            minimap: { enabled: false },
-            renderLineHighlight: 'none',
-            lineDecorationsWidth: 0,
-            contextmenu: false,
-            padding: {
-              top: 8,
-              bottom: 8,
-            },
-            fontSize: 16,
-          }}
-          loading={null}
-        />
-      </Box>
+      <Box className={s.Editor} ref={editorRef} data-focused={hasFocused} />
     </Box>
   )
 }
