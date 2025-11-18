@@ -4,6 +4,7 @@ import { Box } from '@/client/components/ui/Box'
 import { Button } from '@/client/components/ui/Button'
 import { Modal } from '@/client/components/ui/Modal'
 import { sendRequest } from '@/client/utils/invoke'
+import { queryConnections } from '@/client/stores/appStore'
 
 interface RedisDeleteModalProps {
   open?: boolean
@@ -44,6 +45,8 @@ export const RedisDeleteModal: React.FC<RedisDeleteModalProps> = ({
                   loading: 'Loading...',
                   success: () => {
                     navigate('/')
+                    queryConnections()
+                    onOpenChange?.(false)
                     return 'Delete Connection Successfully'
                   },
                   error: (e) => e.message || 'Delete Connection Failed',

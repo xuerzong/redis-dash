@@ -7,7 +7,7 @@ const rootDir = process.cwd()
 
 const dbDir = path.resolve(rootDir, '.db')
 
-export class Database<Data = any> {
+export class Database<Data extends Record<string, any> = {}> {
   static init() {
     ensureDir(dbDir)
   }
@@ -56,7 +56,7 @@ export class Database<Data = any> {
   }
 
   async write(data: Data) {
-    const id = nanoid(8)
+    const id = data.id || nanoid(8)
     try {
       await fs.writeFile(
         path.resolve(dbDir, this.dbName, `${id}.json`),
@@ -70,7 +70,7 @@ export class Database<Data = any> {
 
   async update(id: string, data: any) {
     const current = await this.find(id)
-    await this.write({ ...current, ...data })
+    await this.write({ ...current, ...data, id })
   }
 
   async del(id: string) {

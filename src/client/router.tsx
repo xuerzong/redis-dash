@@ -6,6 +6,7 @@ import InstancePage from './views/Instance'
 import SettingsPage from './views/Settings'
 import LoadingPage from './views/Loading'
 import HomePage from './views/Home'
+import RedisSettingsPage from './views/RedisSettings'
 
 export const router = createHashRouter([
   {
@@ -27,6 +28,10 @@ export const router = createHashRouter([
           {
             path: ':instanceId',
             element: <InstancePage />,
+          },
+          {
+            path: ':instanceId/settings',
+            element: <RedisSettingsPage />,
           },
         ],
       },

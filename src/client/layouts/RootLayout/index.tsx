@@ -9,7 +9,14 @@ export const RootLayout = () => {
   return (
     <Box className={s.Layout}>
       <Box as="header" className={s.Header}>
-        <Box fontSize="1rem" fontWeight="bold">
+        <Box
+          fontSize="1rem"
+          fontWeight="bold"
+          cursor="pointer"
+          onClick={() => {
+            navigate('/')
+          }}
+        >
           Redis Studio
         </Box>
         <Box display="flex" alignItems="center" gap="0.25rem" marginLeft="auto">

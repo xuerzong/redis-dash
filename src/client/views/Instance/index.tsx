@@ -2,6 +2,7 @@ import {
   MoreHorizontalIcon,
   PlusIcon,
   RefreshCcwIcon,
+  SettingsIcon,
   TrashIcon,
 } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -29,9 +30,11 @@ import { useRedisId } from '@/client/hooks/useRedisId'
 import { sendCommand, sendRequest } from '@/client/utils/invoke'
 import { Select } from '@/client/components/ui/Select'
 import s from './index.module.scss'
+import { useNavigate } from 'react-router'
 
 const Page = () => {
   const redisId = useRedisId()
+  const navigate = useNavigate()
   const [delOpen, setDelOpen] = useState(false)
   const keysState = useRedisStore((state) => state.keysState)
   const viewerState = useRedisStore((state) => state.viewerState)
@@ -126,6 +129,14 @@ const Page = () => {
 
           <DropdownMenu
             menu={[
+              {
+                label: 'Settings',
+                key: 'Settings',
+                icon: <SettingsIcon />,
+                onClick() {
+                  navigate(`/${redisId}/settings`)
+                },
+              },
               {
                 label: 'Delete',
                 key: 'Delete',

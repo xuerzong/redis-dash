@@ -11,6 +11,7 @@ import { queryConnections } from '@/client/stores/appStore'
 import s from './index.module.scss'
 
 interface RedisFormData {
+  id?: string
   host: string
   port: string
   username: string
@@ -58,13 +59,13 @@ export const RedisForm: React.FC<RedisFormProps> = ({
   }
 
   const onCreateConnection = async () => {
-    setSubmitLoading(true)
-    const { success, data } = await validateValues()
+    const { success, data, error } = await validateValues()
     if (!success) {
+      console.error(error)
       toast.error('Form Data Error')
       return
     }
-
+    setSubmitLoading(true)
     toast.promise(
       sendRequest({
         method: 'POST',
@@ -82,17 +83,43 @@ export const RedisForm: React.FC<RedisFormProps> = ({
           console.error(error)
           return error.message || 'Create Connection Failed'
         },
+        finally() {
+          setSubmitLoading(false)
+        },
       }
     )
   }
 
   const onSaveConnection = async () => {
-    setSubmitLoading(true)
-    const { success, data } = await validateValues()
+    const { success, data, error } = await validateValues()
+    console.log(data, values)
     if (!success) {
+      console.error(error)
+      toast.error('Form Data Error')
+      return
     }
-    console.log(data)
-    setSubmitLoading(false)
+    setSubmitLoading(true)
+    toast.promise(
+      sendRequest({
+        method: 'PUT',
+        url: '/api/connection',
+        body: { ...data, id: defaultValues?.id },
+      }),
+      {
+        loading: 'Loading...',
+        success() {
+          queryConnections()
+          return 'Update Connection Successfully'
+        },
+        error(error) {
+          console.error(error)
+          return error.message || 'Update Connection Failed'
+        },
+        finally() {
+          setSubmitLoading(false)
+        },
+      }
+    )
   }
 
   return (
