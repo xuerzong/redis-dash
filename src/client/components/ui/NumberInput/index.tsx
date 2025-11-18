@@ -3,8 +3,14 @@ import { ChevronUpIcon, ChevronDownIcon } from 'lucide-react'
 import { useSyncState } from '@/client/hooks/useSyncState'
 import { Box } from '../Box'
 import './index.scss'
+import { cn } from '@/client/utils/cn'
+import { Slot } from '@radix-ui/react-slot'
 
-interface NumberInputProps {
+interface NumberInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'value' | 'onChange'
+  > {
   min?: number
   disabled?: boolean
   value?: string
@@ -24,6 +30,8 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   min = 0,
   value: propsValue,
   onChange,
+  className,
+  ...restProps
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [hasFocused, setHasFocused] = useState(false)
@@ -111,28 +119,30 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           }}
         />
       </div>
-      <input
-        className="NumberInputInput"
-        ref={inputRef}
-        onFocus={() => {
-          setHasFocused(!disabled && true)
-        }}
-        onBlur={() => {
-          blurTimer.current = setTimeout(() => {
-            setHasFocused(false)
-          }, 50)
-        }}
-        value={value}
-        onChange={(e) => {
-          onValueChange(e.target.value)
-        }}
-        onKeyDown={(e) => {
-          if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-            e.preventDefault()
-          }
-        }}
-        disabled={disabled}
-      />
+      <Slot {...restProps}>
+        <input
+          className={cn('NumberInputInput', className)}
+          ref={inputRef}
+          onFocus={() => {
+            setHasFocused(!disabled && true)
+          }}
+          onBlur={() => {
+            blurTimer.current = setTimeout(() => {
+              setHasFocused(false)
+            }, 50)
+          }}
+          value={value}
+          onChange={(e) => {
+            onValueChange(e.target.value)
+          }}
+          onKeyDown={(e) => {
+            if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+              e.preventDefault()
+            }
+          }}
+          disabled={disabled}
+        />
+      </Slot>
     </div>
   )
 }

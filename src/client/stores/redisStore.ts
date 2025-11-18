@@ -109,10 +109,15 @@ export const queryRedisViewerState = async (id: string, key: string) => {
 
 export const queryRedisKeys = async (
   id: string,
-  params: { match?: string; count?: number } = {}
+  params?: { match?: string; count?: number }
 ) => {
+  let getKeyParams = params
+  if (!getKeyParams) {
+    const { searchValue, keysCountLimit } = redisStore.getState()
+    getKeyParams = { match: searchValue, count: keysCountLimit }
+  }
   changeKeysState({ loading: true })
-  getKeys(id, params).then((keysWithType) => {
+  return getKeys(id, getKeyParams).then((keysWithType) => {
     changeKeysState({ loading: false, data: keysWithType })
   })
 }

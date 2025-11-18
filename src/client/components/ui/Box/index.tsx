@@ -61,7 +61,8 @@ const stylePropertyKeys = [
   'overscrollBehavior',
   'zIndex',
 
-  // overflow
+  'textTransform',
+
   'overflow',
   'overflowX',
   'overflowY',
