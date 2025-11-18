@@ -1,13 +1,8 @@
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
-import { RedisTableViewer } from '../RedisBaseTable'
 import { delSTREAMData, setSTREAMData } from '@/client/commands/redis/STREAM'
+import { RedisTableViewer } from '../RedisBaseTable'
 
-interface RedisSTREAMTableProps {
-  dataSource: any[]
-  length: number
-}
-
-export const RedisSTREAMTable: React.FC<RedisSTREAMTableProps> = (props) => {
+export const RedisSTREAMTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
@@ -37,7 +32,8 @@ export const RedisSTREAMTable: React.FC<RedisSTREAMTableProps> = (props) => {
           type: 'editor',
         },
       ]}
-      {...props}
+      dataSource={redisKeyState.value.data}
+      length={redisKeyState.value.length}
       defaultFormValues={{ id: '*' }}
       onRowAdd={async (value) => {
         await setSTREAMData(redisId, redisKeyState.keyName, value)

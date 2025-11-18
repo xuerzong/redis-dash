@@ -1,11 +1,8 @@
 import { delZSETData, setZSETData } from '@/client/commands/redis'
-import { RedisTableViewer, type RedisBaseTableProps } from '../RedisBaseTable'
+import { RedisTableViewer } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
-interface RedisHASHTableProps
-  extends Pick<RedisBaseTableProps, 'dataSource' | 'length'> {}
-
-export const RedisZSETTable: React.FC<RedisHASHTableProps> = (props) => {
+export const RedisZSETTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
@@ -35,7 +32,8 @@ export const RedisZSETTable: React.FC<RedisHASHTableProps> = (props) => {
           type: 'editor',
         },
       ]}
-      {...props}
+      dataSource={redisKeyState.value.data}
+      length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setZSETData(redisId, redisKeyState.keyName, [values])
         refreshRedisKeyState()
