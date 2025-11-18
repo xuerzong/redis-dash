@@ -63,13 +63,13 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
       setFormValues(defaultFormValues)
       setFormMode(0)
     }
-  }, [addOpen, defaultFormValues])
+  }, [addOpen])
 
   useEffect(() => {
     if (!delOpen) {
       setFormValues(defaultFormValues)
     }
-  }, [delOpen, defaultFormValues])
+  }, [delOpen])
 
   const operationColumn: TableColumn<any> = useMemo(
     () => ({
