@@ -1,9 +1,7 @@
 import { Editor } from '@/client/components/Editor'
 import { Box } from '@/client/components/ui/Box'
-import { InputWithPrefix } from '@/client/components/ui/Input'
 import { Button } from '@/client/components/ui/Button'
 import { SaveIcon, TrashIcon } from 'lucide-react'
-import { NumberInput } from '@/client/components/ui/NumberInput'
 import {
   changeSelectedKey,
   queryRedisKeys,
@@ -24,6 +22,8 @@ import {
   RedisKeyViewerProvider,
   useRedisKeyViewerContext,
 } from '@/client/providers/RedisKeyViewer'
+import { RedisKeyTTLInput } from '../RedisKeyTTLInput'
+import { RedisKeyNameInput } from '../RedisKeyNameInput'
 
 export const RedisKeyViewerComponent: React.FC = () => {
   const { redisId, redisKeyState } = useRedisKeyViewerContext()
@@ -65,31 +65,9 @@ export const RedisKeyViewerComponent: React.FC = () => {
         padding="var(--spacing-md)"
         borderBottom="1px solid var(--border-color)"
       >
-        <InputWithPrefix
-          style={{
-            flex: 1,
-          }}
-          value={redisKeyState.keyName}
-          onChange={(e) => {
-            console.log(e.target.value)
-          }}
-          prefixNode={
-            <div style={{ textTransform: 'capitalize' }}>
-              {redisKeyState.type}
-            </div>
-          }
-        />
+        <RedisKeyNameInput />
 
-        <Box className="InputRoot InputWithPrefixRoot">
-          <Box className="InputPrefix">TTL</Box>
-          <NumberInput
-            min={-1}
-            value={redisKeyState.ttl.toString()}
-            onChange={(e) => {
-              console.log(e)
-            }}
-          />
-        </Box>
+        <RedisKeyTTLInput />
       </Box>
       <Box padding="var(--spacing-md)">
         {redisKeyState.type === 'HASH' && (
