@@ -1,8 +1,8 @@
-import { Events, type EventKey } from '@/constants/event'
+import { type EventKey } from '@/constants/event'
 import { create } from 'zustand'
 
 interface AppStoreState {
-  [Events.init]: boolean
+  init: boolean
   connections: any[]
 }
 
