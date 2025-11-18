@@ -16,6 +16,7 @@ import { Loader } from '@/client/components/Loader'
 import { RedisKeyCreateForm } from '@/client/components/RedisKeyForm'
 import { RedisKeySearchInput } from '@/client/components/Redis/RedisKeySearchInput'
 import {
+  changeKeysCountLimit,
   changeRedisId,
   changeSelectedKey,
   queryRedisKeys,
@@ -40,6 +41,7 @@ const Page = () => {
   const viewerState = useRedisStore((state) => state.viewerState)
   const selectedKey = useRedisStore((state) => state.selectedKey)
   const filterType = useRedisStore((state) => state.filterType)
+  const keysCountLimit = useRedisStore((state) => state.keysCountLimit)
   const keysTree = useMemo(
     () =>
       keysToTree(
@@ -73,6 +75,31 @@ const Page = () => {
         boxSizing="content-box"
       >
         <RedisKeySearchInput />
+
+        <Box
+          display="flex"
+          alignItems="center"
+          marginLeft="auto"
+          borderLeft="1px solid var(--border-color)"
+          paddingLeft="var(--spacing-md)"
+          flexShrink={0}
+        >
+          <Box fontSize="0.875rem" userSelect="none">
+            COUNT
+          </Box>
+          <Select
+            className={s.PageSizeSelector}
+            options={[
+              { label: '100', value: '100' },
+              { label: '200', value: '200' },
+              { label: '500', value: '500' },
+            ]}
+            value={keysCountLimit.toString()}
+            onChange={(e) => {
+              changeKeysCountLimit(Number(e))
+            }}
+          />
+        </Box>
         <Box
           style={
             {
@@ -82,6 +109,7 @@ const Page = () => {
           display="flex"
           alignItems="center"
           marginLeft="auto"
+          flexShrink={0}
         >
           {/* <Tooltip content="Terminal">
             <IconButton variant="ghost">
@@ -139,22 +167,6 @@ const Page = () => {
                 } as any
               }
             >
-              <Box display="flex" alignItems="center" marginLeft="auto">
-                {/* <IconButton variant="ghost">
-                  <PlusIcon />
-                </IconButton>
-
-                <IconButton variant="ghost">
-                  <MinusIcon />
-                </IconButton> */}
-                <Select
-                  options={[
-                    { label: '100', value: '100' },
-                    { label: '200', value: '200' },
-                    { label: '500', value: '500' },
-                  ]}
-                />
-              </Box>
               <Box display="flex" alignItems="center">
                 <IconButton
                   variant="ghost"

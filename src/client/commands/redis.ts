@@ -331,7 +331,7 @@ export const getKeys = async (
   const [_cursor, keys] = await sendCommand<[string, string[]]>({
     id,
     command: 'SCAN',
-    args: ['0', 'MATCH', opts.match || '*', 'COUNT', opts.count || 200],
+    args: ['0', 'MATCH', opts.match || '*', 'COUNT', opts.count || 100],
   })
 
   const keysWithType: {

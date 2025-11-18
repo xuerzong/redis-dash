@@ -7,6 +7,7 @@ interface RedisStoreState {
   id: string
   searchValue: string
   filterType: string
+  keysCountLimit: number
   selectedKey: string
   viewerState: {
     data: {
@@ -43,6 +44,7 @@ const initState: RedisStoreState = {
     loading: false,
   },
   keyTypes: {},
+  keysCountLimit: 100,
 }
 
 const redisStore = create<RedisStoreState>()(
@@ -63,6 +65,10 @@ export const changeFilterType = (filterType: string) => {
 
 export const changeSelectedKey = (selectedKey: string) => {
   redisStore.setState({ selectedKey })
+}
+
+export const changeKeysCountLimit = (keysCountLimit: number) => {
+  redisStore.setState({ keysCountLimit })
 }
 
 export const changeViewerState = (
@@ -101,21 +107,36 @@ export const queryRedisViewerState = async (id: string, key: string) => {
   changeViewerState({ data: redisState, loading: false })
 }
 
-export const queryRedisKeys = async (id: string, match?: string) => {
+export const queryRedisKeys = async (
+  id: string,
+  params: { match?: string; count?: number } = {}
+) => {
   changeKeysState({ loading: true })
-  getKeys(id, { match }).then((keysWithType) => {
+  getKeys(id, params).then((keysWithType) => {
     changeKeysState({ loading: false, data: keysWithType })
   })
 }
 
 redisStore.subscribe(
-  (state) => ({ id: state.id, searchValue: state.searchValue }),
+  (state) => ({
+    id: state.id,
+    searchValue: state.searchValue,
+    keysCountLimit: state.keysCountLimit,
+  }),
   (newState) => {
     if (newState.id) {
-      queryRedisKeys(newState.id, newState.searchValue)
+      queryRedisKeys(newState.id, {
+        match: newState.searchValue,
+        count: newState.keysCountLimit,
+      })
     }
   },
-  { equalityFn: (a, b) => a.id === b.id && a.searchValue === b.searchValue }
+  {
+    equalityFn: (a, b) =>
+      a.id === b.id &&
+      a.searchValue === b.searchValue &&
+      a.keysCountLimit === b.keysCountLimit,
+  }
 )
 
 export { redisStore as useRedisStore }
