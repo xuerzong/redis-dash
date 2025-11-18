@@ -1,9 +1,16 @@
-import { ChevronRightIcon, FolderIcon, FolderOpenIcon } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import {
+  ChevronRightIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  TrashIcon,
+} from 'lucide-react'
+import { Fragment, useMemo, useState } from 'react'
 import { Box } from '@/client/components/ui/Box'
+import { IconButton } from '@/client/components/ui/Button'
 import { TreeNode } from '@/client/utils/tree'
 import { useRedisStore } from '@/client/stores/redisStore'
 import { RedisTypeTag } from '../RedisTypeTag'
+import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
 
 interface RedisKeysTreeProps {
@@ -16,9 +23,13 @@ export const RedisKeysTree: React.FC<RedisKeysTreeProps> = ({
   nodes,
   ...restProps
 }) => {
-  return nodes.map((node) => {
-    return <RedisKeysTreeNode key={node.key} node={node} {...restProps} />
-  })
+  return (
+    <>
+      {nodes.map((node) => (
+        <RedisKeysTreeNode key={node.key} node={node} {...restProps} />
+      ))}
+    </>
+  )
 }
 
 interface KeysTreeNodeProps {
@@ -34,6 +45,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
 }) => {
   const keysState = useRedisStore((state) => state.keysState)
   const [open, setOpen] = useState(false)
+  const [delOpen, setDelOpen] = useState(false)
   const hasChildren = Boolean(node.children && node.children.length)
   const isLeaf = !hasChildren
 
@@ -48,19 +60,39 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
   return (
     <>
       {isLeaf ? (
-        <Box
-          key={node.key}
-          className={s.KeysTreeNode}
-          onClick={() => onSelect?.(node.key, node)}
-          data-deep={deep}
-          data-open={open}
-          paddingLeft={`${deep * 1}rem`}
-        >
-          <Box width="5rem">
-            <RedisTypeTag type={type} />
+        <Fragment key={node.key}>
+          <Box
+            key={node.key}
+            className={s.KeysTreeNode}
+            onClick={() => onSelect?.(node.key, node)}
+            data-deep={deep}
+            data-open={open}
+            paddingLeft={`${deep * 1}rem`}
+          >
+            <Box width="5rem">
+              <RedisTypeTag type={type} />
+            </Box>
+            {node.key}
+
+            <Box className={s.KeysTreeNodeActions}>
+              <IconButton
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setDelOpen(true)
+                }}
+              >
+                <TrashIcon />
+              </IconButton>
+            </Box>
           </Box>
-          {node.key}
-        </Box>
+
+          <RedisKeyDeleteModal
+            open={delOpen}
+            onOpenChange={setDelOpen}
+            keyName={node.key}
+          />
+        </Fragment>
       ) : (
         <Box
           key={node.key}

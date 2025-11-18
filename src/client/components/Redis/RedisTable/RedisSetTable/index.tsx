@@ -1,11 +1,8 @@
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
-import { RedisTableViewer, type RedisBaseTableProps } from '../RedisBaseTable'
+import { RedisTableViewer } from '../RedisBaseTable'
 import { delSETData, setSETData } from '@/client/commands/redis'
 
-interface RedisSETTableProps
-  extends Pick<RedisBaseTableProps, 'dataSource' | 'length'> {}
-
-export const RedisSETTable: React.FC<RedisSETTableProps> = (props) => {
+export const RedisSETTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
@@ -24,7 +21,8 @@ export const RedisSETTable: React.FC<RedisSETTableProps> = (props) => {
           type: 'editor',
         },
       ]}
-      {...props}
+      dataSource={redisKeyState.value.data}
+      length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setSETData(redisId, redisKeyState.keyName, [values])
         refreshRedisKeyState()

@@ -2,13 +2,7 @@ import { delHASHData, setHASHData } from '@/client/commands/redis'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 import { RedisTableViewer } from '../RedisBaseTable'
 
-interface RedisHASHTableProps {
-  dataSource?: any[]
-  length?: number
-  onDataChange?: (data: any[]) => void
-}
-
-export const RedisHASHTable: React.FC<RedisHASHTableProps> = (props) => {
+export const RedisHASHTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
@@ -38,7 +32,8 @@ export const RedisHASHTable: React.FC<RedisHASHTableProps> = (props) => {
           type: 'editor',
         },
       ]}
-      {...props}
+      dataSource={redisKeyState.value.data}
+      length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setHASHData(redisId, redisKeyState.keyName, [values])
         refreshRedisKeyState()

@@ -3,13 +3,10 @@ import {
   setLISTData,
   updateLISTData,
 } from '@/client/commands/redis'
-import { RedisTableViewer, type RedisBaseTableProps } from '../RedisBaseTable'
+import { RedisTableViewer } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
-interface RedisLISTTableProps
-  extends Pick<RedisBaseTableProps, 'dataSource' | 'length'> {}
-
-export const RedisLISTTable: React.FC<RedisLISTTableProps> = (props) => {
+export const RedisLISTTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
@@ -33,7 +30,8 @@ export const RedisLISTTable: React.FC<RedisLISTTableProps> = (props) => {
           type: 'editor',
         },
       ]}
-      {...props}
+      dataSource={redisKeyState.value.data}
+      length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setLISTData(redisId, redisKeyState.keyName, [values])
         refreshRedisKeyState()
