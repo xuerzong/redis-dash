@@ -6,17 +6,18 @@ import treeKill from 'tree-kill'
 import picocolors from 'picocolors'
 import { dirname } from '../utils/dirname'
 import { logger } from '../utils/logger'
+import packageJson from '../../package.json' with { type: 'json' }
 
 const { green } = picocolors
 
 const program = new Command()
 
-const PID_FILE = path.resolve(dirname, 'hs-server.pid')
+const PID_FILE = path.resolve(dirname, 'rs-server.pid')
 
 program
-  .name('hs')
-  .description('CLI to some JavaScript string utilities')
-  .version('0.0.0')
+  .name('redis-studio')
+  .description(packageJson.description)
+  .version(packageJson.version)
 
 function startServer(options: { port: number }) {
   if (fs.existsSync(PID_FILE)) {
@@ -57,14 +58,14 @@ function startServer(options: { port: number }) {
 function stopServer() {
   return new Promise((resolve) => {
     if (!fs.existsSync(PID_FILE)) {
-      logger.log('hs server is not running or PID file is missing.')
+      logger.log('redis-studio server is not running or PID file is missing.')
       return resolve(true)
     }
 
     const pid = fs.readFileSync(PID_FILE, 'utf8').trim()
     const pidNum = parseInt(pid, 10)
 
-    console.log(`Attempting to stop hs server (PID: ${pidNum})...`)
+    console.log(`Attempting to stop redis-studio server (PID: ${pidNum})...`)
 
     treeKill(pidNum, 'SIGTERM', (err) => {
       let success = true
@@ -80,7 +81,7 @@ function stopServer() {
         }
       } else {
         logger.log(
-          `hs server (PID: ${pidNum}) and its children have been terminated.`
+          `redis-studio server (PID: ${pidNum}) and its children have been terminated.`
         )
       }
 
@@ -99,7 +100,7 @@ function stopServer() {
 
 program
   .command('start')
-  .description('start hs in background')
+  .description('start redis-studio in background')
   .option('-p, --port <number>', 'Server Port', '5090')
   .action((options) => {
     startServer(options)
@@ -108,7 +109,7 @@ program
 
 program
   .command('stop')
-  .description('stop hs background server and its children')
+  .description('stop redis-studio background server and its children')
   .action(async () => {
     const success = await stopServer()
     process.exit(success ? 0 : 1)
@@ -116,7 +117,7 @@ program
 
 program
   .command('restart')
-  .description('stop then start hs background server')
+  .description('stop then start redis-studio background server')
   .option('-p, --port <number>', 'Server Port', '5090')
   .action(async (options) => {
     console.log('--- Restarting Server ---')

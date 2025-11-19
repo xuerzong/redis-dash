@@ -1,7 +1,7 @@
 {
   "name": "@xuerzong/redis-studio",
   "version": "0.0.1",
-  "description": "",
+  "description": "This is a lightweight Redis Manager.",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev tsx ./src/dev.ts",
