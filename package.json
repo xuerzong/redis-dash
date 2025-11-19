@@ -1,20 +1,32 @@
 {
-  "name": "redis-studio",
-  "version": "0.0.0",
+  "name": "@xuerzong/redis-studio",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev tsx ./src/dev.ts",
     "build:client": " vite build",
     "build:server": "node ./scripts/build-server.mjs",
-    "build:bin": "node ./scripts/build-bin.mjs",
+    "build:cli": "node ./scripts/build-cli.mjs",
     "build": "npm-run-all build:*",
     "format": "prettier --write ."
   },
-  "private": true,
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "bin": {
+    "redis-studio": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "redis",
+    "redis-studio",
+    "cli"
+  ],
+  "author": "xuerzong@gmail.com",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "commander": "^14.0.2",

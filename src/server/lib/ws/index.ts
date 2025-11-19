@@ -4,7 +4,7 @@ import { Server as HTTPSServer } from 'https'
 import picocolors from 'picocolors'
 import connectionDb from '@/server/lib/db/connections'
 import { Events } from '@/constants/event'
-import { logger } from '@/server/log'
+import { logger } from '@/utils/logger'
 import { redisMap } from '../redis'
 
 const { bgGreen, white } = picocolors

@@ -23,7 +23,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/client", "src/constants"]
+  "include": ["src"],
+  "exclude": ["src/server"]
 }

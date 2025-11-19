@@ -3,12 +3,11 @@ import fs from 'node:fs/promises'
 import http from 'node:http'
 import { useWebsocketServer } from './server/lib/ws'
 import { ok, serverError } from './server/lib/response'
+import { dirname } from './utils/dirname'
+import { initDatabase } from './server/lib/db'
 
-const rootPath = process.cwd()
-
-const clientDistDir = path.resolve(rootPath, 'dist', 'client')
+const clientDistDir = path.resolve(dirname, 'client')
 const assetsDir = path.resolve(clientDistDir, 'assets')
-
 type HandlerFunc = (
   req: http.IncomingMessage,
   res: http.ServerResponse<http.IncomingMessage> & {
@@ -76,6 +75,7 @@ const withHtmlHanlder: WithHandlerFunc = () => async (_req, res, _next) => {
 }
 
 const bootstrap = async () => {
+  initDatabase()
   const server = http.createServer(withStaticHandler(withHtmlHanlder()))
   useWebsocketServer(server)
   const port = parseInt(process.env.PORT || '5090')

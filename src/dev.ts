@@ -5,8 +5,10 @@ const rootPath = process.cwd()
 import http from 'node:http'
 import { useWebsocketServer } from './server/lib/ws'
 import { ok, serverError } from './server/lib/response'
+import { initDatabase } from './server/lib/db'
 
 const bootstrap = async () => {
+  initDatabase()
   const port = parseInt(process.env.PORT || '5090')
 
   const vite = await createServer({

@@ -4,28 +4,14 @@ import { spawn } from 'child_process'
 import fs from 'node:fs'
 import treeKill from 'tree-kill'
 import picocolors from 'picocolors'
+import { dirname } from '../utils/dirname'
+import { logger } from '../utils/logger'
 
-const { green, red, yellow, bold } = picocolors
-
-export const log = {
-  normal(...args: any[]) {
-    console.log(...args)
-  },
-  success(...args: any[]) {
-    console.log(green('✔'), ...args)
-  },
-  error(...args: any[]) {
-    console.log(red('✖'), ...args)
-  },
-  warning(...args: any[]) {
-    console.log(bold(yellow('!')), ...args)
-  },
-}
+const { green } = picocolors
 
 const program = new Command()
 
-const rootDir = process.cwd()
-const PID_FILE = path.resolve(rootDir, 'hs-server.pid')
+const PID_FILE = path.resolve(dirname, 'hs-server.pid')
 
 program
   .name('hs')
@@ -35,11 +21,11 @@ program
 function startServer(options: { port: number }) {
   if (fs.existsSync(PID_FILE)) {
     const pid = fs.readFileSync(PID_FILE, 'utf8').trim()
-    log.error(`Server already seems to be running (PID: ${pid}).`)
+    logger.error(`Server already seems to be running (PID: ${pid}).`)
     return false
   }
 
-  const serverJsPath = path.resolve(rootDir, 'dist', 'server.mjs')
+  const serverJsPath = path.resolve(dirname, 'server.mjs')
   const env = {
     ...process.env,
     PORT: options.port.toString(),
@@ -59,11 +45,11 @@ function startServer(options: { port: number }) {
 
   child.unref()
 
-  log.success(
+  logger.log(
     `Redis Studio started in background (PID: ${child.pid}) on port ${options.port}`
   )
-  log.normal(`You can open it in your broswer:`)
-  log.normal('>', green(`http://127.0.0.1:${options.port}`))
+  logger.log(`You can open it in your broswer:`)
+  logger.log('>', green(`http://127.0.0.1:${options.port}`))
 
   return true
 }
@@ -71,7 +57,7 @@ function startServer(options: { port: number }) {
 function stopServer() {
   return new Promise((resolve) => {
     if (!fs.existsSync(PID_FILE)) {
-      log.normal('hs server is not running or PID file is missing.')
+      logger.log('hs server is not running or PID file is missing.')
       return resolve(true)
     }
 
@@ -85,15 +71,15 @@ function stopServer() {
 
       if (err) {
         if (err.message.includes('No such process')) {
-          log.warning(
+          logger.warn(
             `Process (PID: ${pidNum}) not found. Cleaning up PID file.`
           )
         } else {
-          log.error('Failed to stop server:', err.message)
+          logger.error('Failed to stop server:', err.message)
           success = false
         }
       } else {
-        log.success(
+        logger.log(
           `hs server (PID: ${pidNum}) and its children have been terminated.`
         )
       }
@@ -102,7 +88,7 @@ function stopServer() {
         fs.unlinkSync(PID_FILE)
       } catch (cleanupErr: any) {
         if (!cleanupErr.message.includes('ENOENT')) {
-          log.error('Failed to remove PID file:', cleanupErr.message)
+          logger.error('Failed to remove PID file:', cleanupErr.message)
         }
       }
 
@@ -140,7 +126,7 @@ program
       console.log('\n--- Starting New Server ---')
       startServer(options)
     } else {
-      log.error('Stop failed. Aborting new server start.')
+      logger.error('Stop failed. Aborting new server start.')
     }
 
     process.exit(0)

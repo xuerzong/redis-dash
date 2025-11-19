@@ -10,5 +10,11 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["vite.config.ts", "./src/server/**/*.ts", "./src/constants"]
+  "include": [
+    "vite.config.ts",
+    "./src/server",
+    "./src/constants",
+    "./src/utils",
+    "./src/cli"
+  ]
 }

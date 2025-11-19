@@ -2,8 +2,9 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { nanoid } from 'nanoid'
 import { ensureDir } from '@/server/lib/fs'
+import { dirname } from '@/utils/dirname'
 
-const rootDir = process.cwd()
+const rootDir = process.env.NODE_ENV === 'dev' ? process.cwd() : dirname
 
 const dbDir = path.resolve(rootDir, '.db')
 
