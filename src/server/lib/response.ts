@@ -6,14 +6,19 @@ type Resp = http.ServerResponse<http.IncomingMessage> & {
 
 export const ok = (
   res: Resp,
-  content: any,
+  content?: any,
   headers: http.OutgoingHttpHeaders = {}
 ) => {
   res.writeHead(200, headers)
-  res.end(content)
+  res.end(typeof content === 'object' ? JSON.stringify(content) : content)
 }
 
 export const serverError = (res: Resp, content = 'Internal Server Error') => {
   res.writeHead(500, { 'content-type': 'text/plain' })
+  res.end(content)
+}
+
+export const notFound = (res: Resp, content = 'Not Found') => {
+  res.writeHead(404, { 'content-type': 'text/plain' })
   res.end(content)
 }

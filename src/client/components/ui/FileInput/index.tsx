@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Box } from '../Box'
 import { Button, IconButton } from '../Button'
 import { Input } from '../Input'
 import './index.scss'
 import { XIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface FileInputPorps {
   value?: string
@@ -16,8 +17,33 @@ export const FileInput: React.FC<FileInputPorps> = ({
   onChange,
   placeholder = 'Please Upload File',
 }) => {
-  const [file, setFile] = useState<File | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const displayName = value ? value.split('/').pop() : ''
+
+  const onUpload = async (file: File) => {
+    if (file.size >= 2 * 1024 * 1024 /** 2M */) {
+      toast.error('The File Size Exceeds 2MB.')
+      return
+    }
+
+    const formData = new FormData()
+    formData.set('file', file)
+
+    toast.promise(
+      fetch('/upload', {
+        method: 'POST',
+        body: formData,
+      }).then((res) => res.json()),
+      {
+        loading: 'Loading...',
+        success: ({ url }: { url: string }) => {
+          onChange?.(url)
+          return 'Upload File Successfully'
+        },
+        error: (e: any) => e.message || 'Upload File Failed',
+      }
+    )
+  }
 
   return (
     <Box className="FileInput">
@@ -28,25 +54,23 @@ export const FileInput: React.FC<FileInputPorps> = ({
         onChange={(e) => {
           const [file] = e.target.files || []
           if (file) {
-            setFile(file)
-            onChange?.(file.name)
+            onUpload(file)
           }
         }}
       />
       <Button
-        data-placeholder={Boolean(placeholder && !file)}
+        data-placeholder={Boolean(placeholder && !displayName)}
         variant="outline"
         className="FileInputButton"
         onClick={() => inputRef.current?.click()}
       >
-        {file?.name || placeholder}
+        {displayName || placeholder}
       </Button>
-      {file && (
+      {value && (
         <IconButton
           className="FileInputCloseIcon"
           variant="ghost"
           onClick={() => {
-            setFile(null)
             onChange?.('')
             if (inputRef.current) {
               inputRef.current.value = ''

@@ -6,6 +6,7 @@ import http from 'node:http'
 import { useWebsocketServer } from './wsServer'
 import { ok, serverError } from './server/lib/response'
 import { initDatabase } from './server/lib/db'
+import { httpUploadFileHandler } from './server/handler'
 
 const bootstrap = async () => {
   initDatabase()
@@ -16,31 +17,33 @@ const bootstrap = async () => {
     appType: 'custom',
   })
 
-  const server = http.createServer(async (req, res) => {
-    vite.middlewares(req, res, async (err: any) => {
-      if (err) {
-        vite.config.logger.error(err)
-        return serverError(res)
-      }
-
-      if (!res.writableEnded) {
-        try {
-          const originalUrl = req.url || ''
-          const url = originalUrl === '' ? '/' : originalUrl
-          const templatePath = path.resolve(rootPath, 'index.html')
-          const template = await fs.readFile(templatePath, 'utf-8')
-          const transformedTemplate = await vite.transformIndexHtml(
-            url,
-            template
-          )
-          return ok(res, transformedTemplate, { 'content-type': 'text/html' })
-        } catch (e: any) {
-          vite.config.logger.error(e)
+  const server = http.createServer(
+    httpUploadFileHandler(async (req, res) => {
+      vite.middlewares(req, res, async (err: any) => {
+        if (err) {
+          vite.config.logger.error(err)
           return serverError(res)
         }
-      }
+
+        if (!res.writableEnded) {
+          try {
+            const originalUrl = req.url || ''
+            const url = originalUrl === '' ? '/' : originalUrl
+            const templatePath = path.resolve(rootPath, 'index.html')
+            const template = await fs.readFile(templatePath, 'utf-8')
+            const transformedTemplate = await vite.transformIndexHtml(
+              url,
+              template
+            )
+            return ok(res, transformedTemplate, { 'content-type': 'text/html' })
+          } catch (e: any) {
+            vite.config.logger.error(e)
+            return serverError(res)
+          }
+        }
+      })
     })
-  })
+  )
 
   useWebsocketServer(server)
 

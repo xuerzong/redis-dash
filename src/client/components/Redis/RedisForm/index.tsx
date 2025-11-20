@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import z from 'zod'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
@@ -20,6 +20,9 @@ interface RedisFormData {
   port: string
   username: string
   password: string
+  ca?: string
+  cert?: string
+  key?: string
 }
 
 const RedisFormSchema = z.object({
@@ -54,6 +57,10 @@ export const RedisForm: React.FC<RedisFormProps> = ({
     ...defaultValues,
   })
 
+  useEffect(() => {
+    setValues({ ...DEFAULT_DATA, ...defaultValues })
+  }, [defaultValues])
+
   const onChange = (newValues: Partial<typeof values>) => {
     setValues((pre) => ({ ...pre, ...newValues }))
   }
@@ -63,14 +70,14 @@ export const RedisForm: React.FC<RedisFormProps> = ({
   }
 
   const onCreateConnection = async () => {
-    const { success, data, error } = await validateValues()
+    const { success, error } = await validateValues()
     if (!success) {
       console.error(error)
       toast.error('Form Data Error')
       return
     }
     setSubmitLoading(true)
-    toast.promise(createConnection(data), {
+    toast.promise(createConnection(values), {
       loading: 'Loading...',
       success(newConnectionId) {
         navigate(`/${newConnectionId}`)
@@ -97,7 +104,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
     }
     setSubmitLoading(true)
     if (defaultValues?.id) {
-      toast.promise(updateConnection(defaultValues.id, data), {
+      toast.promise(updateConnection(defaultValues.id, values), {
         loading: 'Loading...',
         success() {
           queryConnections()
@@ -158,7 +165,12 @@ export const RedisForm: React.FC<RedisFormProps> = ({
         </FormField>
 
         <FormField name="ssl" label="SSL">
-          <RedisSSLSwitch />
+          <RedisSSLSwitch
+            value={{ ca: values.ca, cert: values.cert, key: values.key }}
+            onChange={(newValues) => {
+              onChange({ ...newValues })
+            }}
+          />
         </FormField>
       </Box>
       <Box

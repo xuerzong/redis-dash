@@ -19,7 +19,7 @@ router.get('/api/connections/status', async (req) => {
 
 router.post('/api/connections', async (req) => {
   const data = req.body as any
-  await connectionDb.insert(data)
+  return connectionDb.insert(data)
 })
 
 router.put('/api/connections/:id', async (req) => {

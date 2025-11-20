@@ -8,20 +8,41 @@ import { Settings2Icon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import s from './index.module.scss'
 
-export const RedisSSLSwitch = () => {
+type RedisSSLSwitchValue = {
+  ca?: string
+  cert?: string
+  key?: string
+}
+
+interface RedisSSLSwitchProps {
+  value?: RedisSSLSwitchValue
+  onChange?: (value: RedisSSLSwitchValue) => void
+}
+
+const defaultValue: RedisSSLSwitchValue = {
+  ca: '',
+  cert: '',
+  key: '',
+}
+export const RedisSSLSwitch: React.FC<RedisSSLSwitchProps> = ({
+  value,
+  onChange,
+}) => {
+  const initChecked = Boolean(
+    value &&
+      Object.entries(value).filter(([_key, value]) => Boolean(value)).length !==
+        0
+  )
   const [open, setOpen] = useState(false)
-  const [checked, setChecked] = useState(false)
-  const [SSLConfig, setSSLConfig] = useState({
-    ca: '',
-    cert: '',
-    key: '',
-  })
+  const [checked, setChecked] = useState(initChecked)
+  const [SSLConfig, setSSLConfig] = useState(
+    value ? { ...defaultValue, ...value } : { ...defaultValue }
+  )
+
   useEffect(() => {
-    console.log({
-      tls: checked,
-      SSLConfig,
-    })
-  }, [checked, SSLConfig])
+    onChange?.(SSLConfig)
+  }, [SSLConfig])
+
   return (
     <Box>
       <Box
@@ -56,7 +77,7 @@ export const RedisSSLSwitch = () => {
           >
             <Button
               onClick={() => {
-                console.log(SSLConfig)
+                setOpen(false)
               }}
             >
               Confirm
