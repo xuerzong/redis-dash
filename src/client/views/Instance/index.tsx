@@ -29,9 +29,10 @@ import {
 } from '@/client/stores/redisStore'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { useRedisId } from '@/client/hooks/useRedisId'
-import { sendCommand, sendRequest } from '@/client/utils/invoke'
+import { sendCommand } from '@/client/utils/invoke'
 import { Select } from '@/client/components/ui/Select'
 import s from './index.module.scss'
+import { getConnectionStatus } from '@/client/commands/api/connections'
 
 const Page = () => {
   const redisId = useRedisId()
@@ -256,11 +257,7 @@ const ConnectRedisLoader: React.FC<React.PropsWithChildren> = ({
 
   const queryConnectionStatus = async (id: string) => {
     retryTimeRef.current = retryTimeRef.current - 1
-    return sendRequest({
-      method: 'GET',
-      url: '/api/connection/status',
-      query: { id },
-    }).then((res) => {
+    return getConnectionStatus(id).then((res) => {
       if (res !== 1) {
         if (retryTimeRef.current > 0) {
           retryTimerRef.current = setTimeout(() => {

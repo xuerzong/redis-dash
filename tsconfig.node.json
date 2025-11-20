@@ -15,6 +15,7 @@
     "./src/server",
     "./src/constants",
     "./src/utils",
-    "./src/cli"
+    "./src/cli",
+    "src/wsServer.ts"
   ]
 }

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { sendRequest } from '../utils/invoke'
+import { getConnections } from '../commands/api/connections'
 
 interface AppStoreState {
   init: boolean
@@ -12,10 +12,7 @@ const appStore = create<AppStoreState>(() => ({
 }))
 
 export const queryConnections = async () => {
-  return sendRequest({
-    url: '/api/connections',
-    method: 'GET',
-  }).then((res) => {
+  return getConnections().then((res) => {
     changeConnections(res)
   })
 }

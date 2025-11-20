@@ -6,10 +6,13 @@ import { Box } from '@/client/components/ui/Box'
 import { Button } from '@/client/components/ui/Button'
 import { Input } from '@/client/components/ui/Input'
 import { FormField } from '@/client/components/ui/Form'
-import { sendRequest } from '@/client/utils/invoke'
 import { queryConnections } from '@/client/stores/appStore'
 import s from './index.module.scss'
 import { RedisSSLSwitch } from './RedisSSLSwitch'
+import {
+  createConnection,
+  updateConnection,
+} from '@/client/commands/api/connections'
 
 interface RedisFormData {
   id?: string
@@ -67,28 +70,21 @@ export const RedisForm: React.FC<RedisFormProps> = ({
       return
     }
     setSubmitLoading(true)
-    toast.promise(
-      sendRequest({
-        method: 'POST',
-        url: '/api/connection',
-        body: data,
-      }),
-      {
-        loading: 'Loading...',
-        success(newConnectionId) {
-          navigate(`/${newConnectionId}`)
-          queryConnections()
-          return 'Create Connection Successfully'
-        },
-        error(error) {
-          console.error(error)
-          return error.message || 'Create Connection Failed'
-        },
-        finally() {
-          setSubmitLoading(false)
-        },
-      }
-    )
+    toast.promise(createConnection(data), {
+      loading: 'Loading...',
+      success(newConnectionId) {
+        navigate(`/${newConnectionId}`)
+        queryConnections()
+        return 'Create Connection Successfully'
+      },
+      error(error) {
+        console.error(error)
+        return error.message || 'Create Connection Failed'
+      },
+      finally() {
+        setSubmitLoading(false)
+      },
+    })
   }
 
   const onSaveConnection = async () => {
@@ -100,13 +96,8 @@ export const RedisForm: React.FC<RedisFormProps> = ({
       return
     }
     setSubmitLoading(true)
-    toast.promise(
-      sendRequest({
-        method: 'PUT',
-        url: '/api/connection',
-        body: { ...data, id: defaultValues?.id },
-      }),
-      {
+    if (defaultValues?.id) {
+      toast.promise(updateConnection(defaultValues.id, data), {
         loading: 'Loading...',
         success() {
           queryConnections()
@@ -119,8 +110,8 @@ export const RedisForm: React.FC<RedisFormProps> = ({
         finally() {
           setSubmitLoading(false)
         },
-      }
-    )
+      })
+    }
   }
 
   return (

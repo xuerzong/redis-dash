@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { nanoid } from 'nanoid'
-import { ensureDir } from '@/server/lib/fs'
+import { ensureDir } from '@/utils/fs'
 import { dirname } from '@/utils/dirname'
 
 const rootDir = process.env.NODE_ENV === 'dev' ? process.cwd() : dirname

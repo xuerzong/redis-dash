@@ -3,7 +3,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 const rootPath = process.cwd()
 import http from 'node:http'
-import { useWebsocketServer } from './server/lib/ws'
+import { useWebsocketServer } from './wsServer'
 import { ok, serverError } from './server/lib/response'
 import { initDatabase } from './server/lib/db'
 

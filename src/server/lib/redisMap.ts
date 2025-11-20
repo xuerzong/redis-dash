@@ -1,11 +1,7 @@
 import Redis from 'ioredis'
+import type { ConnectionData } from './db/connections'
 
-interface RedisConfig {
-  host: string
-  port: number
-  password: string
-  username: string
-}
+type RedisConfig = ConnectionData
 
 export class RedisMap {
   instances: Map<string, Redis>
@@ -13,31 +9,6 @@ export class RedisMap {
 
   static getKey(config: RedisConfig) {
     return `${config.host}_${config.port}_${config.username}_${config.password}`
-  }
-
-  static parseRedisInfo(infoString: string) {
-    const result = {}
-    let currentSection = null
-
-    const lines = infoString.split('\n').filter((line) => line.trim() !== '')
-
-    for (const line of lines) {
-      if (line.startsWith('#')) {
-        currentSection = line.replace('# ', '').trim().toLowerCase()
-        result[currentSection] = {}
-      } else if (currentSection) {
-        const colonIndex = line.indexOf(':')
-        if (colonIndex !== -1) {
-          const key = line.substring(0, colonIndex).trim()
-          const value = line.substring(colonIndex + 1).trim()
-          result[currentSection][key] = isNaN(Number(value))
-            ? value
-            : Number(value)
-        }
-      }
-    }
-
-    return result
   }
 
   constructor() {
@@ -53,6 +24,7 @@ export class RedisMap {
 
     const redis = new Redis({
       ...config,
+      port: Number(config.port),
     })
 
     redis.on('error', () => {

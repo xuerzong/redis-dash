@@ -1,7 +1,7 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import http from 'node:http'
-import { useWebsocketServer } from './server/lib/ws'
+import { useWebsocketServer } from './wsServer'
 import { ok, serverError } from './server/lib/response'
 import { dirname } from './utils/dirname'
 import { initDatabase } from './server/lib/db'
