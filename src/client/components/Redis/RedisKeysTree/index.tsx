@@ -90,7 +90,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
             data-deep={deep}
             data-open={open}
             data-selected={hasSelected}
-            paddingLeft={`${deep * 1}rem`}
+            paddingLeft={`${deep * 1 + 1}rem`}
           >
             <Box width="5rem">
               <RedisTypeTag type={type} />
@@ -113,7 +113,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
           }}
           data-deep={deep}
           data-open={open}
-          paddingLeft={`${deep * 1}rem`}
+          paddingLeft={`${deep * 1 + 1}rem`}
         >
           <ChevronRightIcon data-type="arrow" className={s.KeysTreeNodeIcon} />
           {open ? (
