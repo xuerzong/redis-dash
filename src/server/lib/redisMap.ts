@@ -1,4 +1,5 @@
-import Redis from 'ioredis'
+import Redis, { type RedisOptions } from 'ioredis'
+import { safeReadFile } from '@/utils/fs'
 import type { ConnectionData } from './db/connections'
 
 type RedisConfig = ConnectionData
@@ -16,15 +17,34 @@ export class RedisMap {
     this.instancesStatus = new Map()
   }
 
-  getInstance(config: RedisConfig) {
+  async getInstance(config: RedisConfig) {
     const key = RedisMap.getKey(config)
     if (this.instances.has(key)) {
       return this.instances.get(key)!
     }
 
+    const tlsParams: RedisOptions['tls'] = {}
+
+    const tlsCa = await safeReadFile(config.ca)
+    const tlsKey = await safeReadFile(config.key)
+    const tlsCert = await safeReadFile(config.cert)
+
+    if (tlsCa) {
+      tlsParams.ca = tlsCa
+    }
+    if (tlsKey) {
+      tlsParams.key = tlsKey
+    }
+    if (tlsCert) {
+      tlsParams.cert = tlsCert
+    }
+
+    const enableTls = Object.keys(tlsParams).length > 0
+
     const redis = new Redis({
       ...config,
       port: Number(config.port),
+      ...(enableTls ? { tls: tlsParams } : {}),
     })
 
     redis.on('error', () => {

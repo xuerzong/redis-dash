@@ -13,7 +13,7 @@ router.get('/api/connections/status', async (req) => {
   const connection = await connectionDb.find(id)
   if (!connection) return -1
   // To init the redis instance
-  redisMap.getInstance(connection)
+  await redisMap.getInstance(connection)
   return redisMap.getInstanceStatus(connection)
 })
 

@@ -7,3 +7,15 @@ export const ensureDir = async (path: string) => {
     console.error(err)
   }
 }
+
+export const safeReadFile = async (path?: string) => {
+  if (!path) {
+    return null
+  }
+  try {
+    return fs.readFile(path, 'utf8')
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

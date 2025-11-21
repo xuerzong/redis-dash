@@ -34,7 +34,7 @@ const onWebsockerEvent = async ({
       if (!connection) {
         return
       }
-      const redisInstance = redisMap.getInstance(connection)
+      const redisInstance = await redisMap.getInstance(connection)
       const redisInstanceStatus = redisMap.getInstanceStatus(connection)
 
       // No Ready Yet
