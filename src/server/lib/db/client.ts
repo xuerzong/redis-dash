@@ -2,15 +2,11 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { nanoid } from 'nanoid'
 import { ensureDir } from '@/utils/fs'
-import { dirname } from '@/utils/dirname'
-
-const rootDir = process.env.NODE_ENV === 'dev' ? process.cwd() : dirname
-
-const dbDir = path.resolve(rootDir, '.db')
+import { DATABASE_PATH } from '@/server/constants/path'
 
 export class Database<Data extends Record<string, any> = {}> {
-  static init() {
-    ensureDir(dbDir)
+  static async init() {
+    await ensureDir(DATABASE_PATH)
   }
 
   private readonly dbName: string
@@ -19,12 +15,12 @@ export class Database<Data extends Record<string, any> = {}> {
   }
 
   async init() {
-    ensureDir(path.resolve(dbDir, this.dbName))
+    ensureDir(path.resolve(DATABASE_PATH, this.dbName))
   }
 
   async find(id: string): Promise<Data | null> {
     const row = await fs.readFile(
-      path.resolve(dbDir, this.dbName, `${id}.json`),
+      path.resolve(DATABASE_PATH, this.dbName, `${id}.json`),
       'utf-8'
     )
     try {
@@ -36,7 +32,10 @@ export class Database<Data extends Record<string, any> = {}> {
   }
 
   async findMany(): Promise<Data[]> {
-    const rows = await fs.readdir(path.resolve(dbDir, this.dbName), 'utf-8')
+    const rows = await fs.readdir(
+      path.resolve(DATABASE_PATH, this.dbName),
+      'utf-8'
+    )
     try {
       return Promise.all(
         rows
@@ -60,7 +59,7 @@ export class Database<Data extends Record<string, any> = {}> {
     const id = data.id || nanoid(8)
     try {
       await fs.writeFile(
-        path.resolve(dbDir, this.dbName, `${id}.json`),
+        path.resolve(DATABASE_PATH, this.dbName, `${id}.json`),
         JSON.stringify(data)
       )
       return id
@@ -76,7 +75,7 @@ export class Database<Data extends Record<string, any> = {}> {
 
   async del(id: string) {
     try {
-      await fs.unlink(path.resolve(dbDir, this.dbName, `${id}.json`))
+      await fs.unlink(path.resolve(DATABASE_PATH, this.dbName, `${id}.json`))
     } catch {
       // pass?
     }

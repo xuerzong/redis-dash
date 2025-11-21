@@ -8,7 +8,7 @@ import {
 } from './server/handler'
 
 const bootstrap = async () => {
-  initDatabase()
+  await initDatabase()
   const server = http.createServer(
     httpUploadFileHandler(httpStaticHandler(httpHtmlHanlder()))
   )

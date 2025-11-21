@@ -9,7 +9,7 @@ import { initDatabase } from './server/lib/db'
 import { httpUploadFileHandler } from './server/handler'
 
 const bootstrap = async () => {
-  initDatabase()
+  await initDatabase()
   const port = parseInt(process.env.PORT || '5090')
 
   const vite = await createServer({
