@@ -18,7 +18,7 @@ import { RedisKeyViewer } from '@/client/components/Redis/RedisKeyViewer'
 import { Loader } from '@/client/components/Loader'
 import { RedisKeyCreateForm } from '@/client/components/RedisKeyForm'
 import { RedisKeySearchInput } from '@/client/components/Redis/RedisKeySearchInput'
-import { RedisDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
+import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
 import {
   changeKeysCountLimit,
   changeRedisId,
@@ -29,10 +29,9 @@ import {
 } from '@/client/stores/redisStore'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { useRedisId } from '@/client/hooks/useRedisId'
-import { sendCommand } from '@/client/utils/invoke'
 import { Select } from '@/client/components/ui/Select'
-import s from './index.module.scss'
 import { getConnectionStatus } from '@/client/commands/api/connections'
+import s from './index.module.scss'
 
 const Page = () => {
   const redisId = useRedisId()
@@ -57,15 +56,6 @@ const Page = () => {
     changeRedisId(redisId)
   }, [redisId])
 
-  useEffect(() => {
-    sendCommand({
-      id: redisId,
-      command: 'INFO',
-      args: ['SERVER'],
-    }).then((data) => {
-      console.log('INFO', data)
-    })
-  }, [redisId])
   return (
     <Box height="100%" display="flex" flexDirection="column">
       <Box
@@ -165,11 +155,15 @@ const Page = () => {
             borderRight: '1px solid var(--border-color)',
           }}
         >
-          <Box overflowY="auto" height="100%">
+          <Box position="relative" overflowY="auto" height="100%">
             <Box
+              position="sticky"
+              top={0}
               display="flex"
               alignItems="center"
+              backgroundColor="var(--background-color)"
               borderBottom="1px solid var(--border-color)"
+              zIndex={1}
               style={
                 {
                   '--border-radius': 0,
@@ -237,7 +231,7 @@ const Page = () => {
         </Panel>
       </PanelGroup>
 
-      <RedisDeleteModal
+      <RedisConnectionDeleteModal
         redisId={redisId}
         open={delOpen}
         onOpenChange={setDelOpen}

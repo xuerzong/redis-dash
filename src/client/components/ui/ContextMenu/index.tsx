@@ -2,16 +2,18 @@ import { ContextMenu as BaseContextMenu } from '@base-ui-components/react/contex
 import { Slot } from '@radix-ui/react-slot'
 import './index.scss'
 
+export type ContextMenuItemProps = {
+  key: string
+  label: string
+  icon: React.ReactNode
+  onClick?: () => void
+  colorPalette?: 'success' | 'warning' | 'danger'
+}
+
 interface ContextMenuProps {
   open?: boolean
-  onOpenChange?: (open?: boolean) => void
-  menu: {
-    key: string
-    label: string
-    icon: React.ReactNode
-    onClick?: () => void
-    colorPalette?: 'success' | 'warning' | 'danger'
-  }[]
+  onOpenChange?: (open: boolean) => void
+  menu: ContextMenuItemProps[]
 }
 
 export const ContextMenu: React.FC<

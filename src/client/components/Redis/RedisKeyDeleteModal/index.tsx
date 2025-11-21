@@ -41,6 +41,7 @@ export const RedisKeyDeleteModal: React.FC<RedisKeyDeleteModalProps> = ({
   return (
     <Modal
       open={open}
+      onOpenChange={onOpenChange}
       title="Delete Key"
       description="Confirm to delete this key?"
       trigger={trigger}

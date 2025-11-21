@@ -1,4 +1,5 @@
 .KeysTreeNode {
+  --border-color: transparent;
   position: relative;
   display: flex;
   align-items: center;
@@ -6,6 +7,7 @@
   padding: 0.5rem 0.5rem;
   cursor: pointer;
   user-select: none;
+  border: 1px dashed var(--border-color);
   color: var(--foreground-color);
   background-color: var(--background-color);
   transition: all 0.1s ease-in;
@@ -16,11 +18,6 @@
   text-overflow: ellipsis;
   &:hover {
     background-color: var(--muted-color);
-
-    .KeysTreeNodeActions {
-      opacity: 1;
-      pointer-events: unset;
-    }
   }
 
   &[data-open='true'] {
@@ -30,6 +27,10 @@
       }
     }
   }
+
+  &[data-selected='true'] {
+    --border-color: var(--primary-color);
+  }
 }
 
 .KeysTreeNodeIcon {
@@ -37,22 +38,4 @@
   height: 1rem;
   transition: all 0.1s ease-in;
   flex-shrink: 0;
-}
-
-.KeysTreeNodeActions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-  position: absolute;
-  top: 50%;
-  right: var(--spacing-md);
-  transform: translateY(-50%);
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.1s ease-in;
-  :global(Button) {
-    --size: 1.5rem;
-  }
 }
