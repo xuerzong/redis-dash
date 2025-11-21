@@ -42,6 +42,12 @@
     --hover-bg-color: var(--muted-color);
   }
 
+  &[data-variant='subtle'] {
+    --bg-color: var(--muted-color);
+    --color: var(--foreground-color);
+    --hover-bg-color: var(--muted-color);
+  }
+
   &:hover:not(:disabled) {
     --bg-color: var(--hover-bg-color);
   }
