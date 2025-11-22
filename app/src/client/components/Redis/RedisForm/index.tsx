@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import z from 'zod'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { Box } from '@/client/components/ui/Box'
@@ -24,13 +23,6 @@ interface RedisFormData {
   cert?: string
   key?: string
 }
-
-const RedisFormSchema = z.object({
-  host: z.string().min(1),
-  port: z.string().min(1),
-  username: z.string(),
-  password: z.string(),
-})
 
 export type RedisFormMode = 0 | 1
 
@@ -66,7 +58,15 @@ export const RedisForm: React.FC<RedisFormProps> = ({
   }
 
   const validateValues = async () => {
-    return RedisFormSchema.safeParseAsync(values)
+    if (!values.host) {
+      return { success: false, error: 'Host Is Required' }
+    }
+
+    if (!values.port) {
+      return { success: false, error: 'Port Is Required' }
+    }
+
+    return { success: true, data: values }
   }
 
   const onCreateConnection = async () => {
