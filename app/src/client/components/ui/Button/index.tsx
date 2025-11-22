@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@/client/utils/cn'
+import { cn } from '@client/utils/cn'
 import './index.scss'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

@@ -18,7 +18,9 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@client/*": ["src/client/*"],
+      "@server/*": ["src/server/*"]
     },
 
     /* Linting */
@@ -28,5 +30,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": ["src/server"]
+  "exclude": ["src/server/**/*.ts"]
 }

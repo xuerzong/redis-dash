@@ -1,11 +1,7 @@
 import { useMemo } from 'react'
-import {
-  delZSETData,
-  setZSETData,
-  type ZSETData,
-} from '@/client/commands/redis'
+import { delZSETData, setZSETData, type ZSETData } from '@client/commands/redis'
 import { RedisBaseTable } from '../RedisBaseTable'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 
 export const RedisZSETTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState, filterValue } =

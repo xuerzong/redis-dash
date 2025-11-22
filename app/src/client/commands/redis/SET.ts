@@ -1,4 +1,4 @@
-import { sendCommand } from '@/client/utils/invoke'
+import { sendCommand } from '@client/utils/invoke'
 
 export interface SETData {
   member: string

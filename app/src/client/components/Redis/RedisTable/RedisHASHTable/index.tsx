@@ -1,10 +1,6 @@
 import { useMemo } from 'react'
-import {
-  delHASHData,
-  setHASHData,
-  type HASHData,
-} from '@/client/commands/redis'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
+import { delHASHData, setHASHData, type HASHData } from '@client/commands/redis'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisHASHTable: React.FC = () => {

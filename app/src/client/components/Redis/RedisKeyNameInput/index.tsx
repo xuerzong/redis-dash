@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { CheckIcon } from 'lucide-react'
-import { useSyncState } from '@/client/hooks/useSyncState'
-import { InputWithPrefix } from '@/client/components/ui/Input'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
-import { Box } from '@/client/components/ui/Box'
-import { renameKey } from '@/client/commands/redis/key'
-import { IconButton } from '@/client/components/ui/Button'
-import { changeRedisKeys, useRedisStore } from '@/client/stores/redisStore'
-import { useRedisContext } from '@/client/providers/RedisContext'
+import { useSyncState } from '@client/hooks/useSyncState'
+import { InputWithPrefix } from '@client/components/ui/Input'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
+import { Box } from '@client/components/ui/Box'
+import { renameKey } from '@client/commands/redis/key'
+import { IconButton } from '@client/components/ui/Button'
+import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
+import { useRedisContext } from '@client/providers/RedisContext'
 
 export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()

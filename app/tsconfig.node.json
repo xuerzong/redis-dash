@@ -7,7 +7,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@server/*": ["src/server/*"]
     }
   },
   "include": ["vite.config.ts", "src"],

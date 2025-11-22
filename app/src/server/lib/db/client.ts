@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { nanoid } from 'nanoid'
 import { ensureDir } from '@/utils/fs'
-import { DATABASE_PATH } from '@/server/constants/path'
+import { DATABASE_PATH } from '@server/constants/path'
 
 export class Database<Data extends Record<string, any> = {}> {
   static async init() {

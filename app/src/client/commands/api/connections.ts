@@ -1,4 +1,4 @@
-import { sendRequest } from '@/client/utils/invoke'
+import { sendRequest } from '@client/utils/invoke'
 
 export const getConnections = async () => {
   return sendRequest<any[]>({

@@ -1,6 +1,6 @@
-import { WSRouter } from '@/server/lib/router'
-import { connectionDb } from '@/server/lib/db'
-import { redisMap } from '@/server/lib/redisMap'
+import { WSRouter } from '@server/lib/router'
+import { connectionDb } from '@server/lib/db'
+import { redisMap } from '@server/lib/redisMap'
 
 const router = new WSRouter()
 

@@ -1,6 +1,6 @@
 import type { BaseHandlerFunc, HandlerFunc } from './types'
 import formidable from 'formidable'
-import { json, notFound, serverError } from '@/server/lib/response'
+import { json, notFound, serverError } from '@server/lib/response'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import { dirname } from '@/utils/dirname'

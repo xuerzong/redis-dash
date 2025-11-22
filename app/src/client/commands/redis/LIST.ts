@@ -1,4 +1,4 @@
-import { sendCommand } from '@/client/utils/invoke'
+import { sendCommand } from '@client/utils/invoke'
 import type { GetRedisStateParams } from '../redis'
 
 export interface LISTData {

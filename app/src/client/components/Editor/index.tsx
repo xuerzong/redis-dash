@@ -5,9 +5,9 @@ import copy from 'copy-to-clipboard'
 import { basicSetup, EditorView } from 'codemirror'
 import { json } from '@codemirror/lang-json'
 import { EditorState, Compartment, Prec } from '@codemirror/state'
-import { Box } from '@/client/components/ui/Box'
-import { IconButton } from '@/client/components/ui/Button'
-import { Select } from '@/client/components/ui/Select'
+import { Box } from '@client/components/ui/Box'
+import { IconButton } from '@client/components/ui/Button'
+import { Select } from '@client/components/ui/Select'
 import s from './index.module.scss'
 
 interface EditorProps {

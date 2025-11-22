@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
-import { Box } from '@/client/components/ui/Box'
-import { Button } from '@/client/components/ui/Button'
-import { Input } from '@/client/components/ui/Input'
-import { FormField } from '@/client/components/ui/Form'
-import { queryConnections } from '@/client/stores/appStore'
+import { Box } from '@client/components/ui/Box'
+import { Button } from '@client/components/ui/Button'
+import { Input } from '@client/components/ui/Input'
+import { FormField } from '@client/components/ui/Form'
+import { queryConnections } from '@client/stores/appStore'
 import s from './index.module.scss'
 import { RedisSSLSwitch } from './RedisSSLSwitch'
 import {
   createConnection,
   updateConnection,
-} from '@/client/commands/api/connections'
+} from '@client/commands/api/connections'
 
 interface RedisFormData {
   id?: string

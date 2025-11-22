@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Editor } from '@/client/components/Editor'
-import { Box } from '@/client/components/ui/Box'
-import { Button } from '@/client/components/ui/Button'
-import { Input } from '@/client/components/ui/Input'
-import { Select } from '@/client/components/ui/Select'
-import { NumberInputWithPrefix } from '@/client/components/ui/NumberInput'
-import { useRedisId } from '@/client/hooks/useRedisId'
+import { Editor } from '@client/components/Editor'
+import { Box } from '@client/components/ui/Box'
+import { Button } from '@client/components/ui/Button'
+import { Input } from '@client/components/ui/Input'
+import { Select } from '@client/components/ui/Select'
+import { NumberInputWithPrefix } from '@client/components/ui/NumberInput'
+import { useRedisId } from '@client/hooks/useRedisId'
 import { redisKeyTypes, type RedisKeyType } from '@/constants/redisKeyTypes'
 import {
   setHASHData,
@@ -14,10 +14,10 @@ import {
   setSETData,
   setSTRINGData,
   setZSETData,
-} from '@/client/commands/redis'
-import { setSTREAMData } from '@/client/commands/redis/STREAM'
-import { changeRedisKeys, useRedisStore } from '@/client/stores/redisStore'
-import { useRedisContext } from '@/client/providers/RedisContext'
+} from '@client/commands/redis'
+import { setSTREAMData } from '@client/commands/redis/STREAM'
+import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
+import { useRedisContext } from '@client/providers/RedisContext'
 
 const defaultValues = {
   type: 'STRING',

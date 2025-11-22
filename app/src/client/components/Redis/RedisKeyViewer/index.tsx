@@ -1,9 +1,9 @@
-import { Box } from '@/client/components/ui/Box'
+import { Box } from '@client/components/ui/Box'
 import {
   RedisKeyStateProvider,
   useRedisKeyStateContext,
-} from '@/client/providers/RedisKeyStateContext'
-import { LoaderMask } from '@/client/components/LoaderMask'
+} from '@client/providers/RedisKeyStateContext'
+import { LoaderMask } from '@client/components/LoaderMask'
 import { RedisKeyTTLInput } from '../RedisKeyTTLInput'
 import { RedisKeyNameInput } from '../RedisKeyNameInput'
 import { RedisSTRINGEditor } from '../RedisSTRINGEditor'
