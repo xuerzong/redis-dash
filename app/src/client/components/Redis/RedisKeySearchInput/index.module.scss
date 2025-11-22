@@ -6,7 +6,8 @@
 }
 
 .RedisKeySearchTypeSelect {
-  width: 8rem;
+  width: 6rem;
+  flex-shrink: 0;
   :global {
     .SelectRoot {
       border-width: 0px;

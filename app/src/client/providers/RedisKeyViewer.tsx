@@ -1,5 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import type { RedisKeyType } from '@/constants/redisKeyTypes'
+import { useDebouncedCallback } from 'use-debounce'
+import { getRedisState } from '../commands/redis'
+import { useRedisId } from '../hooks/useRedisId'
+import { useRedisContext } from './RedisContext'
 
 interface RedisKeyViewerContextState {
   redisId: string
@@ -9,13 +13,19 @@ interface RedisKeyViewerContextState {
     type: RedisKeyType | 'UNSET'
     value: any
   }
-  refreshRedisKeyState: () => void
+  refreshRedisKeyState: (keyName?: string) => void
+  tableProps: {
+    pageNo: number
+    pageSize: number
+  }
+  setTableProps: (tableProps: RedisKeyViewerContextState['tableProps']) => void
+  loading: boolean
 }
 
 export const RedisKeyViewerContext =
   React.createContext<RedisKeyViewerContextState | null>(null)
 
-interface RedisKeyViewerProviderProps extends RedisKeyViewerContextState {}
+interface RedisKeyViewerProviderProps {}
 
 export const useRedisKeyViewerContext = () => {
   const context = React.useContext(RedisKeyViewerContext)
@@ -29,14 +39,63 @@ export const useRedisKeyViewerContext = () => {
 
 export const RedisKeyViewerProvider: React.FC<
   React.PropsWithChildren<RedisKeyViewerProviderProps>
-> = ({ children, redisId, redisKeyState, refreshRedisKeyState }) => {
+> = ({ children }) => {
+  const [tableProps, setTableProps] = useState({
+    pageNo: 1,
+    pageSize: 100,
+  })
+
+  const redisId = useRedisId()
+  const { selectedKey } = useRedisContext()
+  const [loading, setLoading] = useState(true)
+
+  const [state, setState] = useState<{
+    keyName: string
+    ttl: number
+    type: 'STRING' | 'HASH' | 'ZSET' | 'SET' | 'STREAM' | 'LIST' | 'UNSET'
+    value: any
+  }>({
+    keyName: '',
+    ttl: 0,
+    type: 'UNSET',
+    value: {},
+  })
+
+  const queryRedisKeyState = useDebouncedCallback(
+    async (redisId: string, selectedKey: string, params: typeof tableProps) => {
+      setLoading(true)
+      if (import.meta.env.MODE === 'development') {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+      await getRedisState(redisId, selectedKey, params)
+        .then((nextState) => {
+          setState(nextState)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    },
+    100
+  )
+
+  useEffect(() => {
+    if (redisId && selectedKey) {
+      queryRedisKeyState(redisId, selectedKey, tableProps)
+    }
+  }, [redisId, selectedKey, tableProps])
+
   const value: RedisKeyViewerContextState = useMemo(() => {
     return {
       redisId,
-      redisKeyState,
-      refreshRedisKeyState,
+      redisKeyState: state,
+      refreshRedisKeyState: () => {
+        queryRedisKeyState(redisId, selectedKey, tableProps)
+      },
+      tableProps,
+      setTableProps,
+      loading,
     }
-  }, [redisId, redisKeyState, refreshRedisKeyState])
+  }, [redisId, state, selectedKey, queryRedisKeyState, tableProps, loading])
 
   return <RedisKeyViewerContext value={value}>{children}</RedisKeyViewerContext>
 }

@@ -1,4 +1,4 @@
-.LoaderWrapper {
+.LoaderMask {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -13,17 +13,4 @@
   cursor: progress;
   transition: all 0.3s ease-in;
   z-index: 10;
-}
-
-.PageSizeSelector {
-  flex-shrink: 0;
-  :global {
-    .SelectRoot {
-      border-width: 0px;
-      border-right-width: 1px;
-      &:focus-visible {
-        box-shadow: none;
-      }
-    }
-  }
 }

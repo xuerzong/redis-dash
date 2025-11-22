@@ -7,7 +7,6 @@ import {
 import { useMemo, useState } from 'react'
 import { Box } from '@/client/components/ui/Box'
 import { TreeNode } from '@/client/utils/tree'
-import { useRedisStore } from '@/client/stores/redisStore'
 import {
   ContextMenu,
   type ContextMenuItemProps,
@@ -15,6 +14,7 @@ import {
 import { RedisTypeTag } from '../RedisTypeTag'
 import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
+import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
 
 interface RedisKeysTreeProps {
   nodes: TreeNode[]
@@ -46,7 +46,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
   deep = 0,
   onSelect,
 }) => {
-  const keysState = useRedisStore((state) => state.keysState)
+  const { keys } = useRedisKeysMenuContext()
   const [open, setOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [hasSelected, setHasSelected] = useState(false)
@@ -55,10 +55,8 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
 
   const type = useMemo(
     () =>
-      isLeaf
-        ? keysState.data.find((d) => d.key === node.key)?.type || 'UNSET'
-        : 'UNSET',
-    [isLeaf, node, keysState]
+      isLeaf ? keys.find((d) => d.key === node.key)?.type || 'UNSET' : 'UNSET',
+    [isLeaf, node, keys]
   )
 
   const contextMenu = useMemo<ContextMenuItemProps[]>(() => {

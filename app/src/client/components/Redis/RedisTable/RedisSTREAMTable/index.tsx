@@ -1,12 +1,12 @@
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 import { delSTREAMData, setSTREAMData } from '@/client/commands/redis/STREAM'
-import { RedisTableViewer } from '../RedisBaseTable'
+import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisSTREAMTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
-    <RedisTableViewer
+    <RedisBaseTable
       rowKey={(row) => row['id']}
       columns={[
         {

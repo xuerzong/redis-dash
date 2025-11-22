@@ -7,7 +7,7 @@ import { Input } from '@/client/components/ui/Input'
 import { Select } from '@/client/components/ui/Select'
 import { NumberInputWithPrefix } from '@/client/components/ui/NumberInput'
 import { useRedisId } from '@/client/hooks/useRedisId'
-import { redisKeyTypes } from '@/constants/redisKeyTypes'
+import { redisKeyTypes, type RedisKeyType } from '@/constants/redisKeyTypes'
 import {
   setHASHData,
   setLISTData,
@@ -16,7 +16,8 @@ import {
   setZSETData,
 } from '@/client/commands/redis'
 import { setSTREAMData } from '@/client/commands/redis/STREAM'
-import { queryRedisKeys } from '@/client/stores/redisStore'
+import { changeRedisKeys, useRedisStore } from '@/client/stores/redisStore'
+import { useRedisContext } from '@/client/providers/RedisContext'
 
 const defaultValues = {
   type: 'STRING',
@@ -28,6 +29,10 @@ const defaultValues = {
 export const RedisKeyCreateForm = () => {
   const redisId = useRedisId()
   const [values, setValues] = useState({ ...defaultValues })
+  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const { setSelectedKey } = useRedisContext()
+  const [submitLoading, setSubmitLoading] = useState(false)
+
   const onChange = (newValue: Partial<typeof values>) => {
     setValues((pre) => ({
       ...pre,
@@ -37,6 +42,8 @@ export const RedisKeyCreateForm = () => {
 
   const onSubmit = () => {
     if (!values.key) return toast.error('Invalid Key')
+
+    setSubmitLoading(true)
 
     toast.promise(
       async () => {
@@ -81,11 +88,16 @@ export const RedisKeyCreateForm = () => {
       {
         loading: 'Loading...',
         success: () => {
-          queryRedisKeys(redisId)
+          changeRedisKeys([
+            ...redisKeys,
+            { type: values.type as RedisKeyType, key: values.key },
+          ])
+          setSelectedKey(values.key)
           return 'Create Key Successfully'
         },
         error: (e) => e?.message || 'Create Key Failed',
         finally() {
+          setSubmitLoading(false)
           setValues({ ...defaultValues })
         },
       }
@@ -172,7 +184,7 @@ export const RedisKeyCreateForm = () => {
         borderTop="1px solid var(--border-color)"
         backgroundColor="var(--background-color)"
       >
-        <Button type="button" onClick={onSubmit}>
+        <Button type="button" onClick={onSubmit} loading={submitLoading}>
           Create
         </Button>
       </Box>

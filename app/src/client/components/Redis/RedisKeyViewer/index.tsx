@@ -1,13 +1,9 @@
 import { Box } from '@/client/components/ui/Box'
 import {
-  queryRedisViewerState,
-  useRedisStore,
-} from '@/client/stores/redisStore'
-import { useRedisId } from '@/client/hooks/useRedisId'
-import {
   RedisKeyViewerProvider,
   useRedisKeyViewerContext,
 } from '@/client/providers/RedisKeyViewer'
+import { LoaderMask } from '@/client/components/LoaderMask'
 import { RedisKeyTTLInput } from '../RedisKeyTTLInput'
 import { RedisKeyNameInput } from '../RedisKeyNameInput'
 import { RedisSTRINGEditor } from '../RedisSTRINGEditor'
@@ -18,7 +14,7 @@ import { RedisSTREAMTable } from '../RedisTable/RedisSTREAMTable'
 import { RedisHASHTable } from '../RedisTable/RedisHASHTable'
 
 export const RedisKeyViewerComponent: React.FC = () => {
-  const { redisKeyState } = useRedisKeyViewerContext()
+  const { redisKeyState, loading } = useRedisKeyViewerContext()
 
   return (
     <Box
@@ -43,29 +39,34 @@ export const RedisKeyViewerComponent: React.FC = () => {
         <RedisKeyTTLInput />
       </Box>
       <Box padding="var(--spacing-md)">
-        {redisKeyState.type === 'HASH' && <RedisHASHTable />}
-        {redisKeyState.type === 'ZSET' && <RedisZSETTable />}
-        {redisKeyState.type === 'SET' && <RedisSETTable />}
-        {redisKeyState.type === 'LIST' && <RedisLISTTable />}
-        {redisKeyState.type === 'STREAM' && <RedisSTREAMTable />}
-        {redisKeyState.type === 'STRING' && <RedisSTRINGEditor />}
+        {redisKeyState.type === 'HASH' && (
+          <RedisHASHTable key={redisKeyState.keyName} />
+        )}
+        {redisKeyState.type === 'ZSET' && (
+          <RedisZSETTable key={redisKeyState.keyName} />
+        )}
+        {redisKeyState.type === 'SET' && (
+          <RedisSETTable key={redisKeyState.keyName} />
+        )}
+        {redisKeyState.type === 'LIST' && (
+          <RedisLISTTable key={redisKeyState.keyName} />
+        )}
+        {redisKeyState.type === 'STREAM' && (
+          <RedisSTREAMTable key={redisKeyState.keyName} />
+        )}
+        {redisKeyState.type === 'STRING' && (
+          <RedisSTRINGEditor key={redisKeyState.keyName} />
+        )}
       </Box>
+
+      <LoaderMask loading={loading} />
     </Box>
   )
 }
 
 export const RedisKeyViewer = () => {
-  const redisId = useRedisId()
-  const redisKeyState = useRedisStore((state) => state.viewerState.data)
   return (
-    <RedisKeyViewerProvider
-      redisId={redisId}
-      redisKeyState={redisKeyState}
-      refreshRedisKeyState={() => {
-        return queryRedisViewerState(redisId, redisKeyState.keyName)
-      }}
-      key={`${redisId}_${redisKeyState.keyName}`}
-    >
+    <RedisKeyViewerProvider>
       <RedisKeyViewerComponent />
     </RedisKeyViewerProvider>
   )

@@ -1,12 +1,12 @@
 import { delHASHData, setHASHData } from '@/client/commands/redis'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
-import { RedisTableViewer } from '../RedisBaseTable'
+import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisHASHTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState } =
+  const { redisId, redisKeyState, refreshRedisKeyState, setTableProps } =
     useRedisKeyViewerContext()
   return (
-    <RedisTableViewer
+    <RedisBaseTable
       rowKey={(row) => row.field}
       columns={[
         {
@@ -51,6 +51,7 @@ export const RedisHASHTable: React.FC = () => {
         await delHASHData(redisId, redisKeyState.keyName, values)
         refreshRedisKeyState()
       }}
+      onPageChange={setTableProps}
     />
   )
 }

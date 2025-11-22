@@ -1,14 +1,13 @@
 import { FolderTreeIcon, LayoutListIcon, RefreshCcwIcon } from 'lucide-react'
-import { queryRedisKeys } from '@/client/stores/redisStore'
 import { Box } from '@/client/components/ui/Box'
 import { IconButton } from '@/client/components/ui/Button'
-import { useRedisId } from '@/client/hooks/useRedisId'
 import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
 import { Tooltip } from '@/client/components/ui/Tooltip'
+import { RedisKeySearchInput } from '../RedisKeySearchInput'
 
 export const RedisKeysTreeToolbar = () => {
-  const redisId = useRedisId()
   const { viewMode, setViewMode } = useRedisKeysMenuContext()
+  const { refreshKeys } = useRedisKeysMenuContext()
   return (
     <Box
       width="100%"
@@ -20,14 +19,8 @@ export const RedisKeysTreeToolbar = () => {
         } as any
       }
     >
-      <IconButton
-        variant="ghost"
-        onClick={() => {
-          queryRedisKeys(redisId)
-        }}
-      >
-        <RefreshCcwIcon />
-      </IconButton>
+      <RedisKeySearchInput />
+      <Box flex={1}></Box>
       <Box
         display="flex"
         alignItems="center"
@@ -55,6 +48,19 @@ export const RedisKeysTreeToolbar = () => {
             <FolderTreeIcon />
           </IconButton>
         </Tooltip>
+
+        <Box borderLeft="1px solid var(--border-color)">
+          <Tooltip content="Refresh">
+            <IconButton
+              variant="ghost"
+              onClick={() => {
+                refreshKeys()
+              }}
+            >
+              <RefreshCcwIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
     </Box>
   )

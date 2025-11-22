@@ -4,8 +4,9 @@ import { Button } from '@/client/components/ui/Button'
 import { Modal } from '@/client/components/ui/Modal'
 import { toast } from 'sonner'
 import { delKey } from '@/client/commands/redis'
-import { changeSelectedKey, queryRedisKeys } from '@/client/stores/redisStore'
 import { useRedisId } from '@/client/hooks/useRedisId'
+import { useRedisContext } from '@/client/providers/RedisContext'
+import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
 
 interface RedisKeyDeleteModalProps {
   keyName: string
@@ -21,6 +22,8 @@ export const RedisKeyDeleteModal: React.FC<RedisKeyDeleteModalProps> = ({
   trigger,
 }) => {
   const redisId = useRedisId()
+  const { refreshKeys: refreshRedisKeys } = useRedisKeysMenuContext()
+  const { setSelectedKey } = useRedisContext()
   const [loading, setLoading] = useState(false)
   const onDelKey = async () => {
     setLoading(true)
@@ -28,8 +31,8 @@ export const RedisKeyDeleteModal: React.FC<RedisKeyDeleteModalProps> = ({
       loading: 'Loading...',
       success: () => {
         onOpenChange?.(false)
-        queryRedisKeys(redisId)
-        changeSelectedKey('')
+        refreshRedisKeys()
+        setSelectedKey('')
         return 'Delete Key Successfully'
       },
       error: (e) => e.message || 'Delete Key Failed',

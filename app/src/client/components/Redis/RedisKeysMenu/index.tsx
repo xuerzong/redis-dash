@@ -1,35 +1,16 @@
-import { useMemo } from 'react'
 import {
   RedisKeysMenuProvider,
   useRedisKeysMenuContext,
 } from '@/client/providers/RedisKeysMenu'
 import { Box } from '@/client/components/ui/Box'
-import { keysToTree, TreeNode } from '@/client/utils/tree'
-import {
-  changeSelectedKey,
-  queryRedisViewerState,
-  useRedisStore,
-} from '@/client/stores/redisStore'
-import { useRedisId } from '@/client/hooks/useRedisId'
 import { RedisKeysTree } from '../RedisKeysTree'
 import { RedisKeysTreeToolbar } from '../RedisKeysTreeToolbar'
+import { useRedisContext } from '@/client/providers/RedisContext'
+import { LoaderMask } from '../../LoaderMask'
 
 export const RedisKeysMenuRoot = () => {
-  const redisId = useRedisId()
-  const { viewMode } = useRedisKeysMenuContext()
-  const filterType = useRedisStore((state) => state.filterType)
-  const keysState = useRedisStore((state) => state.keysState)
-  const keysTree = useMemo(() => {
-    const filteredKeys = (keysState.data || [])
-      .filter((key) => filterType === 'all' || key.type === filterType)
-      .map((key) => key.key)
-
-    if (viewMode === 'tree') {
-      return keysToTree(filteredKeys)
-    }
-
-    return filteredKeys.map((key) => new TreeNode(key))
-  }, [keysState, filterType, viewMode])
+  const { setSelectedKey } = useRedisContext()
+  const { keyTreeNodes, loading: redisKeysLoading } = useRedisKeysMenuContext()
   return (
     <Box
       position="relative"
@@ -47,12 +28,13 @@ export const RedisKeysMenuRoot = () => {
         <RedisKeysTreeToolbar />
       </Box>
       <RedisKeysTree
-        nodes={keysTree}
+        nodes={keyTreeNodes}
         onSelect={(key) => {
-          changeSelectedKey(key)
-          queryRedisViewerState(redisId, key)
+          setSelectedKey(key)
         }}
       />
+
+      <LoaderMask loading={redisKeysLoading} />
     </Box>
   )
 }

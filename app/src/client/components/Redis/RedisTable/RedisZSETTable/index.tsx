@@ -1,12 +1,12 @@
 import { delZSETData, setZSETData } from '@/client/commands/redis'
-import { RedisTableViewer } from '../RedisBaseTable'
+import { RedisBaseTable } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
 export const RedisZSETTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyViewerContext()
   return (
-    <RedisTableViewer
+    <RedisBaseTable
       rowKey={(row) => row['member']}
       columns={[
         {

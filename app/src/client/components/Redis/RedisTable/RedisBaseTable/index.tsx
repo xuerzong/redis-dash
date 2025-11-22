@@ -1,3 +1,4 @@
+import { toast } from 'sonner'
 import { Box } from '@/client/components/ui/Box'
 import { Table, type TableColumn } from '@/client/components/ui/Table'
 import { Button, IconButton } from '@/client/components/ui/Button'
@@ -16,7 +17,6 @@ import { FormField } from '@/client/components/ui/Form'
 import { Editor } from '@/client/components/Editor'
 import { Modal } from '@/client/components/ui/Modal'
 import s from './index.module.scss'
-import { toast } from 'sonner'
 
 interface RedisTableField {
   type: 'input' | 'editor'
@@ -34,9 +34,10 @@ export interface RedisBaseTableProps {
   onRowEdit?: (values: any, lastValues: any) => Promise<void>
   onRowDel?: (values: any) => Promise<void>
   defaultFormValues?: Record<string, any>
+  onPageChange?: (page: { pageNo: number; pageSize: number }) => void
 }
 
-export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
+export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   columns,
   dataSource = [],
   length = 0,
@@ -46,8 +47,10 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
   onRowEdit,
   onRowDel,
   defaultFormValues = {},
+  onPageChange,
 }) => {
   const [pageNo, setPageNo] = useState(1)
+  const [pageSize] = useState(100)
   const totalPage = Math.max(Math.ceil(length / 100), 1)
   const [formMode, setFormMode] = useState(0)
   const [formDefaultValues, setFormDefaultValues] =
@@ -69,6 +72,13 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
       setFormValues(defaultFormValues)
     }
   }, [delOpen])
+
+  const onChangeTableProps = (newTableProps: Partial<{ pageNo: number }>) => {
+    if ('pageNo' in newTableProps && newTableProps.pageNo !== pageNo) {
+      setPageNo(newTableProps.pageNo!)
+      onPageChange?.({ pageNo: newTableProps.pageNo!, pageSize })
+    }
+  }
 
   const operationColumn: TableColumn<any> = useMemo(
     () => ({
@@ -139,7 +149,7 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
           <IconButton
             variant="outline"
             onClick={() => {
-              setPageNo((pre) => Math.max(1, pre - 1))
+              onChangeTableProps({ pageNo: Math.max(1, pageNo - 1) })
             }}
             disabled={pageNo === 1}
           >
@@ -155,7 +165,13 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
           >
             {pageNo} / {totalPage}
           </Box>
-          <IconButton variant="outline" disabled={pageNo === totalPage}>
+          <IconButton
+            variant="outline"
+            onClick={() => {
+              onChangeTableProps({ pageNo: Math.min(totalPage, pageNo + 1) })
+            }}
+            disabled={pageNo === totalPage}
+          >
             <ChevronRightIcon />
           </IconButton>
         </Box>
@@ -205,7 +221,6 @@ export const RedisTableViewer: React.FC<RedisBaseTableProps> = ({
                 <Editor
                   value={formValues[field.name] || ''}
                   onChange={(e) => {
-                    console.log(field.name, e)
                     onFieldChange(field.name, e)
                   }}
                 />

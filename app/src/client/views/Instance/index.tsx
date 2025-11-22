@@ -14,33 +14,18 @@ import { Tooltip } from '@/client/components/ui/Tooltip'
 import { RedisKeyViewer } from '@/client/components/Redis/RedisKeyViewer'
 import { Loader } from '@/client/components/Loader'
 import { RedisKeyCreateForm } from '@/client/components/RedisKeyForm'
-import { RedisKeySearchInput } from '@/client/components/Redis/RedisKeySearchInput'
 import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
-import {
-  changeKeysCountLimit,
-  changeRedisId,
-  changeSelectedKey,
-  useRedisStore,
-} from '@/client/stores/redisStore'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { useRedisId } from '@/client/hooks/useRedisId'
-import { Select } from '@/client/components/ui/Select'
 import { getConnectionStatus } from '@/client/commands/api/connections'
 import { RedisKeysMenu } from '@/client/components/Redis/RedisKeysMenu'
-import s from './index.module.scss'
+import { RedisProvider, useRedisContext } from '@/client/providers/RedisContext'
 
 const Page = () => {
   const redisId = useRedisId()
   const navigate = useNavigate()
   const [delOpen, setDelOpen] = useState(false)
-  const keysState = useRedisStore((state) => state.keysState)
-  const viewerState = useRedisStore((state) => state.viewerState)
-  const selectedKey = useRedisStore((state) => state.selectedKey)
-  const keysCountLimit = useRedisStore((state) => state.keysCountLimit)
-
-  useEffect(() => {
-    changeRedisId(redisId)
-  }, [redisId])
+  const { selectedKey, setSelectedKey } = useRedisContext()
 
   return (
     <Box height="100%" display="flex" flexDirection="column">
@@ -51,9 +36,7 @@ const Page = () => {
         height="2.5rem"
         boxSizing="content-box"
       >
-        <RedisKeySearchInput />
-
-        <Box
+        {/* <Box
           display="flex"
           alignItems="center"
           marginLeft="auto"
@@ -76,7 +59,7 @@ const Page = () => {
               changeKeysCountLimit(Number(e))
             }}
           />
-        </Box>
+        </Box> */}
         <Box
           style={
             {
@@ -98,7 +81,7 @@ const Page = () => {
             <IconButton
               variant="ghost"
               onClick={() => {
-                changeSelectedKey('')
+                setSelectedKey('')
               }}
             >
               <PlusIcon />
@@ -142,16 +125,6 @@ const Page = () => {
           }}
         >
           <RedisKeysMenu />
-
-          <Box
-            {...(!keysState.loading && {
-              opacity: 0,
-              pointerEvents: 'none',
-            })}
-            className={s.LoaderWrapper}
-          >
-            <Loader />
-          </Box>
         </Panel>
         <PanelResizeHandle />
         <Panel style={{ position: 'relative' }} defaultSize={50} minSize={30}>
@@ -170,16 +143,6 @@ const Page = () => {
             <Box display={selectedKey ? 'none' : 'block'} flex={1}>
               <RedisKeyCreateForm />
             </Box>
-          </Box>
-
-          <Box
-            {...(!viewerState.loading && {
-              opacity: 0,
-              pointerEvents: 'none',
-            })}
-            className={s.LoaderWrapper}
-          >
-            <Loader />
           </Box>
         </Panel>
       </PanelGroup>
@@ -272,7 +235,9 @@ const ConnectRedisLoader: React.FC<React.PropsWithChildren> = ({
 export default () => {
   return (
     <ConnectRedisLoader>
-      <Page />
+      <RedisProvider>
+        <Page />
+      </RedisProvider>
     </ConnectRedisLoader>
   )
 }

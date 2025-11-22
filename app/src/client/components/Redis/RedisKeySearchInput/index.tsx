@@ -1,31 +1,19 @@
 import { SearchIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 import { redisKeyTypes } from '@/constants/redisKeyTypes'
 import { Select } from '@/client/components/ui/Select'
-import {
-  changeFilterType,
-  changeSearchValue,
-  useRedisStore,
-} from '@/client/stores/redisStore'
+import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
 import s from './index.module.scss'
-import { useDebouncedCallback } from 'use-debounce'
 
 export const RedisKeySearchInput = () => {
-  const [searchValue, setSearchValue] = useState('')
+  const { searchValue, setSearchValue, filterType, setFilterType } =
+    useRedisKeysMenuContext()
   const options = [
     { label: 'ALL', value: 'all' },
     ...redisKeyTypes.map((type) => ({ label: type, value: type })),
   ]
 
-  const debouncedChangeSearchValue = useDebouncedCallback((value: string) => {
-    changeSearchValue(value)
-  }, 500)
-
-  useEffect(() => {
-    debouncedChangeSearchValue(searchValue)
-  }, [searchValue])
-
-  const filterType = useRedisStore((state) => state.filterType)
+  const debouncedSetSearchValue = useDebouncedCallback(setSearchValue, 500)
 
   return (
     <div className={s.RedisKeySearch}>
@@ -34,7 +22,7 @@ export const RedisKeySearchInput = () => {
         className={s.RedisKeySearchTypeSelect}
         options={options}
         onChange={(e) => {
-          changeFilterType(e)
+          setFilterType(e)
         }}
       />
       <div className={s.RedisKeySearchInputRoot}>
@@ -44,8 +32,7 @@ export const RedisKeySearchInput = () => {
         <input
           value={searchValue}
           onChange={(e) => {
-            setSearchValue(e.target.value)
-            debouncedChangeSearchValue(e.target.value)
+            debouncedSetSearchValue(e.target.value)
           }}
           className={s.RedisKeySearchInput}
           placeholder="Filter by Key Name and Pattern "

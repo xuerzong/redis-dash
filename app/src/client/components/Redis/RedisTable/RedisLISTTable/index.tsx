@@ -3,14 +3,14 @@ import {
   setLISTData,
   updateLISTData,
 } from '@/client/commands/redis'
-import { RedisTableViewer } from '../RedisBaseTable'
+import { RedisBaseTable } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
 export const RedisLISTTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState } =
+  const { redisId, redisKeyState, refreshRedisKeyState, setTableProps } =
     useRedisKeyViewerContext()
   return (
-    <RedisTableViewer
+    <RedisBaseTable
       columns={[
         {
           key: 'index',
@@ -44,6 +44,7 @@ export const RedisLISTTable: React.FC = () => {
         await delLISTData(redisId, redisKeyState.keyName, values)
         refreshRedisKeyState()
       }}
+      onPageChange={setTableProps}
     />
   )
 }

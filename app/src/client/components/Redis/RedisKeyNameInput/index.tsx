@@ -6,23 +6,30 @@ import { InputWithPrefix } from '@/client/components/ui/Input'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 import { Box } from '@/client/components/ui/Box'
 import { renameKey } from '@/client/commands/redis/key'
-import {
-  queryRedisKeys,
-  queryRedisViewerState,
-} from '@/client/stores/redisStore'
 import { IconButton } from '@/client/components/ui/Button'
+import { changeRedisKeys, useRedisStore } from '@/client/stores/redisStore'
+import { useRedisContext } from '@/client/providers/RedisContext'
 
 export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyViewerContext()
   const [keyName, setKeyName] = useSyncState(redisKeyState.keyName)
   const [checkLoading, setCheckLoaing] = useState(false)
+  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const { setSelectedKey } = useRedisContext()
   const onCheck = () => {
     setCheckLoaing(true)
     toast.promise(renameKey(redisId, redisKeyState.keyName, keyName), {
       loading: 'Loading...',
       success() {
-        queryRedisKeys(redisId)
-        queryRedisViewerState(redisId, keyName)
+        changeRedisKeys(
+          redisKeys.map((redisKey) => {
+            if (redisKey.key === redisKeyState.keyName) {
+              return { ...redisKey, key: keyName }
+            }
+            return redisKey
+          })
+        )
+        setSelectedKey(keyName)
         return 'Rename Key Successfully'
       },
       error(error) {
