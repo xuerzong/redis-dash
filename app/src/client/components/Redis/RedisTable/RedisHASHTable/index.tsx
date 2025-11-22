@@ -1,10 +1,26 @@
-import { delHASHData, setHASHData } from '@/client/commands/redis'
+import { useMemo } from 'react'
+import {
+  delHASHData,
+  setHASHData,
+  type HASHData,
+} from '@/client/commands/redis'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisHASHTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState, setTableProps } =
-    useRedisKeyViewerContext()
+  const {
+    redisId,
+    redisKeyState,
+    refreshRedisKeyState,
+    setTableProps,
+    filterValue,
+  } = useRedisKeyViewerContext()
+
+  const dataSource = useMemo(() => {
+    const data = redisKeyState.value.data
+    return data.filter((d: HASHData) => String(d.value).includes(filterValue))
+  }, [redisKeyState, filterValue])
+
   return (
     <RedisBaseTable
       rowKey={(row) => row.field}
@@ -32,7 +48,7 @@ export const RedisHASHTable: React.FC = () => {
           type: 'editor',
         },
       ]}
-      dataSource={redisKeyState.value.data}
+      dataSource={dataSource}
       length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setHASHData(redisId, redisKeyState.keyName, [values])

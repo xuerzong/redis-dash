@@ -20,6 +20,9 @@ interface RedisKeyViewerContextState {
   }
   setTableProps: (tableProps: RedisKeyViewerContextState['tableProps']) => void
   loading: boolean
+
+  filterValue: string
+  setFilterValue: (value: string) => void
 }
 
 export const RedisKeyViewerContext =
@@ -48,6 +51,7 @@ export const RedisKeyViewerProvider: React.FC<
   const redisId = useRedisId()
   const { selectedKey } = useRedisContext()
   const [loading, setLoading] = useState(true)
+  const [filterValue, setFilterValue] = useState('')
 
   const [state, setState] = useState<{
     keyName: string
@@ -84,6 +88,10 @@ export const RedisKeyViewerProvider: React.FC<
     }
   }, [redisId, selectedKey, tableProps])
 
+  useEffect(() => {
+    setFilterValue('')
+  }, [redisId, selectedKey])
+
   const value: RedisKeyViewerContextState = useMemo(() => {
     return {
       redisId,
@@ -94,8 +102,19 @@ export const RedisKeyViewerProvider: React.FC<
       tableProps,
       setTableProps,
       loading,
+
+      filterValue,
+      setFilterValue,
     }
-  }, [redisId, state, selectedKey, queryRedisKeyState, tableProps, loading])
+  }, [
+    redisId,
+    state,
+    selectedKey,
+    queryRedisKeyState,
+    tableProps,
+    loading,
+    filterValue,
+  ])
 
   return <RedisKeyViewerContext value={value}>{children}</RedisKeyViewerContext>
 }

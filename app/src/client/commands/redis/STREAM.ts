@@ -1,5 +1,10 @@
 import { sendCommand } from '@/client/utils/invoke'
 
+export interface STREAMData {
+  id: string
+  value: string
+}
+
 export const getSTREAMData = async (id: string, key: string) => {
   const [[_, data]] = await sendCommand<[[string, [string, string[]][]]]>({
     id,
@@ -7,17 +12,14 @@ export const getSTREAMData = async (id: string, key: string) => {
     args: ['COUNT', 100, 'STREAMS', key, 0],
   })
 
-  return data.reduce(
-    (pre, cur) => {
-      const [id, value] = cur
-      let encodedValue = {}
-      for (let i = 0; i < value.length; i += 2) {
-        encodedValue = { ...encodedValue, [value[i]]: value[i + 1] }
-      }
-      return [...pre, { id, value: JSON.stringify(encodedValue) }]
-    },
-    [] as { id: string; value: string }[]
-  )
+  return data.reduce((pre, cur) => {
+    const [id, value] = cur
+    let encodedValue = {}
+    for (let i = 0; i < value.length; i += 2) {
+      encodedValue = { ...encodedValue, [value[i]]: value[i + 1] }
+    }
+    return [...pre, { id, value: JSON.stringify(encodedValue) }]
+  }, [] as STREAMData[])
 }
 
 export const getSTREAMLen = (id: string, key: string) => {

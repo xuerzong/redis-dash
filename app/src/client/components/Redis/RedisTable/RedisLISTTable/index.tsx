@@ -1,14 +1,27 @@
+import { useMemo } from 'react'
 import {
   delLISTData,
   setLISTData,
   updateLISTData,
+  type LISTData,
 } from '@/client/commands/redis'
-import { RedisBaseTable } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisLISTTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState, setTableProps } =
-    useRedisKeyViewerContext()
+  const {
+    redisId,
+    redisKeyState,
+    refreshRedisKeyState,
+    setTableProps,
+    filterValue,
+  } = useRedisKeyViewerContext()
+
+  const dataSource = useMemo(() => {
+    const data = redisKeyState.value.data
+    return data.filter((d: LISTData) => String(d.element).includes(filterValue))
+  }, [redisKeyState, filterValue])
+
   return (
     <RedisBaseTable
       columns={[
@@ -30,7 +43,7 @@ export const RedisLISTTable: React.FC = () => {
           type: 'editor',
         },
       ]}
-      dataSource={redisKeyState.value.data}
+      dataSource={dataSource}
       length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setLISTData(redisId, redisKeyState.keyName, [values])
@@ -45,6 +58,7 @@ export const RedisLISTTable: React.FC = () => {
         refreshRedisKeyState()
       }}
       onPageChange={setTableProps}
+      enablePageChanger
     />
   )
 }

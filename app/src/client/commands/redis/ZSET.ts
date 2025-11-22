@@ -1,6 +1,6 @@
 import { sendCommand } from '@/client/utils/invoke'
 
-interface ZSETData {
+export interface ZSETData {
   score: number | string
   member: string
 }

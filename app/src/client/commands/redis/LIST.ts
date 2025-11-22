@@ -1,7 +1,7 @@
 import { sendCommand } from '@/client/utils/invoke'
 import type { GetRedisStateParams } from '../redis'
 
-interface LISTData {
+export interface LISTData {
   index: number
   element: string
 }
