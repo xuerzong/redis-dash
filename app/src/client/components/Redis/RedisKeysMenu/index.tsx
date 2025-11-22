@@ -1,11 +1,11 @@
 import {
   RedisKeysProvider,
   useRedisKeysContext,
-} from '@/client/providers/RedisKeysContext'
-import { Box } from '@/client/components/ui/Box'
+} from '@client/providers/RedisKeysContext'
+import { Box } from '@client/components/ui/Box'
 import { RedisKeysTree } from '../RedisKeysTree'
 import { RedisKeysTreeToolbar } from '../RedisKeysTreeToolbar'
-import { useRedisContext } from '@/client/providers/RedisContext'
+import { useRedisContext } from '@client/providers/RedisContext'
 import { LoaderMask } from '../../LoaderMask'
 
 export const RedisKeysMenuRoot = () => {

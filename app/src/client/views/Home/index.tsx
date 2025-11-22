@@ -1,5 +1,5 @@
 import { PlusIcon } from 'lucide-react'
-import { Button } from '@/client/components/ui/Button'
+import { Button } from '@client/components/ui/Button'
 import s from './index.module.scss'
 import { useNavigate } from 'react-router'
 

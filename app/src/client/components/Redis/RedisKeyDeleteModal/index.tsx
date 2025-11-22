@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Box } from '@/client/components/ui/Box'
-import { Button } from '@/client/components/ui/Button'
-import { Modal } from '@/client/components/ui/Modal'
+import { Box } from '@client/components/ui/Box'
+import { Button } from '@client/components/ui/Button'
+import { Modal } from '@client/components/ui/Modal'
 import { toast } from 'sonner'
-import { delKey } from '@/client/commands/redis'
-import { useRedisId } from '@/client/hooks/useRedisId'
-import { useRedisContext } from '@/client/providers/RedisContext'
-import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
+import { delKey } from '@client/commands/redis'
+import { useRedisId } from '@client/hooks/useRedisId'
+import { useRedisContext } from '@client/providers/RedisContext'
+import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
 
 interface RedisKeyDeleteModalProps {
   keyName: string

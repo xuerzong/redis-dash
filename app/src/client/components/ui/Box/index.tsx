@@ -1,5 +1,5 @@
-import { omit, pick } from '@/client/utils/object'
-import { mergeProps } from '@/client/utils/props'
+import { omit, pick } from '@client/utils/object'
+import { mergeProps } from '@client/utils/props'
 import React from 'react'
 
 const stylePropertyKeys = [

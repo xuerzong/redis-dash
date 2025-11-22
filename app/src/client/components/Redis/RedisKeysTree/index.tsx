@@ -5,16 +5,16 @@ import {
   TrashIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Box } from '@/client/components/ui/Box'
-import { TreeNode } from '@/client/utils/tree'
+import { Box } from '@client/components/ui/Box'
+import { TreeNode } from '@client/utils/tree'
 import {
   ContextMenu,
   type ContextMenuItemProps,
-} from '@/client/components/ui/ContextMenu'
+} from '@client/components/ui/ContextMenu'
 import { RedisTypeTag } from '../RedisTypeTag'
 import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
-import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
+import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
 
 interface RedisKeysTreeProps {
   nodes: TreeNode[]

@@ -4,8 +4,8 @@ import {
   setLISTData,
   updateLISTData,
   type LISTData,
-} from '@/client/commands/redis'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
+} from '@client/commands/redis'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisLISTTable: React.FC = () => {

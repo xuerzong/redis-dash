@@ -1,8 +1,8 @@
 import { toast } from 'sonner'
 import { useDebouncedCallback } from 'use-debounce'
-import { Box } from '@/client/components/ui/Box'
-import { Table, type TableColumn } from '@/client/components/ui/Table'
-import { Button, IconButton } from '@/client/components/ui/Button'
+import { Box } from '@client/components/ui/Box'
+import { Table, type TableColumn } from '@client/components/ui/Table'
+import { Button, IconButton } from '@client/components/ui/Button'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -12,13 +12,13 @@ import {
   TrashIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { Input } from '@/client/components/ui/Input'
-import { Drawer } from '@/client/components/ui/Drawer'
-import { FormField } from '@/client/components/ui/Form'
-import { Editor } from '@/client/components/Editor'
-import { Modal } from '@/client/components/ui/Modal'
+import { Input } from '@client/components/ui/Input'
+import { Drawer } from '@client/components/ui/Drawer'
+import { FormField } from '@client/components/ui/Form'
+import { Editor } from '@client/components/Editor'
+import { Modal } from '@client/components/ui/Modal'
 import s from './index.module.scss'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 
 interface RedisTableField {
   type: 'input' | 'editor'

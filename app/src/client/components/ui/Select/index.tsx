@@ -1,4 +1,4 @@
-import { cn } from '@/client/utils/cn'
+import { cn } from '@client/utils/cn'
 import './index.scss'
 import { ChevronDownIcon } from 'lucide-react'
 

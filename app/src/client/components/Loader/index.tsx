@@ -1,5 +1,5 @@
 import { LoaderCircle } from 'lucide-react'
-import { cn } from '@/client/utils/cn'
+import { cn } from '@client/utils/cn'
 import s from './index.module.scss'
 
 interface LoaderProps {

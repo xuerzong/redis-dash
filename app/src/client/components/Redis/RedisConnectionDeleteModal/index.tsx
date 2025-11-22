@@ -1,10 +1,10 @@
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
-import { Box } from '@/client/components/ui/Box'
-import { Button } from '@/client/components/ui/Button'
-import { Modal } from '@/client/components/ui/Modal'
-import { queryConnections } from '@/client/stores/appStore'
-import { delConnection } from '@/client/commands/api/connections'
+import { Box } from '@client/components/ui/Box'
+import { Button } from '@client/components/ui/Button'
+import { Modal } from '@client/components/ui/Modal'
+import { queryConnections } from '@client/stores/appStore'
+import { delConnection } from '@client/commands/api/connections'
 
 interface RedisConnectionDeleteModalProps {
   open?: boolean

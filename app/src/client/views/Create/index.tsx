@@ -1,6 +1,6 @@
-import { RedisForm } from '@/client/components/Redis/RedisForm'
-import { Card } from '@/client/components/ui/Card'
-import { Box } from '@/client/components/ui/Box'
+import { RedisForm } from '@client/components/Redis/RedisForm'
+import { Card } from '@client/components/ui/Card'
+import { Box } from '@client/components/ui/Box'
 import s from './index.module.scss'
 
 const Page = () => {

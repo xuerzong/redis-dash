@@ -1,8 +1,8 @@
 import { SearchIcon } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 import { redisKeyTypes } from '@/constants/redisKeyTypes'
-import { Select } from '@/client/components/ui/Select'
-import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
+import { Select } from '@client/components/ui/Select'
+import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
 import s from './index.module.scss'
 
 export const RedisKeySearchInput = () => {

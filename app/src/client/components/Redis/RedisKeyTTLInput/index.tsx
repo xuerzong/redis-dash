@@ -1,13 +1,13 @@
 import { toast } from 'sonner'
 import { CheckIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { getTTL } from '@/client/commands/redis'
-import { NumberInputWithPrefix } from '@/client/components/ui/NumberInput'
-import { useSyncState } from '@/client/hooks/useSyncState'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
-import { Box } from '@/client/components/ui/Box'
-import { IconButton } from '@/client/components/ui/Button'
-import { expireKey } from '@/client/commands/redis/key'
+import { getTTL } from '@client/commands/redis'
+import { NumberInputWithPrefix } from '@client/components/ui/NumberInput'
+import { useSyncState } from '@client/hooks/useSyncState'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
+import { Box } from '@client/components/ui/Box'
+import { IconButton } from '@client/components/ui/Button'
+import { expireKey } from '@client/commands/redis/key'
 
 export const RedisKeyTTLInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
+import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 import {
   delSTREAMData,
   setSTREAMData,
   type STREAMData,
-} from '@/client/commands/redis/STREAM'
+} from '@client/commands/redis/STREAM'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisSTREAMTable: React.FC = () => {

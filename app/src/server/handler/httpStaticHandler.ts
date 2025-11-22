@@ -1,7 +1,7 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import type { BaseHandlerFunc, HandlerFunc, HttpResponse } from './types'
-import { ok } from '@/server/lib/response'
+import { ok } from '@server/lib/response'
 import { ASSETS_PATH, CLIENT_PATH } from '../constants/path'
 
 const responseFile = async (res: HttpResponse, filePath: string) => {

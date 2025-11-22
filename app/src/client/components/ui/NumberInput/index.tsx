@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronUpIcon, ChevronDownIcon } from 'lucide-react'
-import { useSyncState } from '@/client/hooks/useSyncState'
+import { useSyncState } from '@client/hooks/useSyncState'
 import { Box } from '../Box'
 import './index.scss'
-import { cn } from '@/client/utils/cn'
+import { cn } from '@client/utils/cn'
 import { Slot } from '@radix-ui/react-slot'
 
 interface NumberInputProps

@@ -1,4 +1,4 @@
-import { Box } from '@/client/components/ui/Box'
+import { Box } from '@client/components/ui/Box'
 import ConstructionImage from '../../assets/images/construction.png'
 import s from './index.module.scss'
 
