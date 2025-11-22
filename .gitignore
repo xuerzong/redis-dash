@@ -2,8 +2,11 @@ node_modules
 dist
 build
 uploads
+.DS_Store
 
 *.log
 *.pid
 *.zip
 .db
+
+cli/README.md

@@ -1,6 +1,5 @@
 import { build } from 'esbuild'
 import path from 'node:path'
-import packageJson from '../package.json' with { type: 'json' }
 
 const rootDir = process.cwd()
 
@@ -9,10 +8,9 @@ const main = () => {
     entryPoints: [path.resolve(rootDir, 'src', 'index.ts')],
     bundle: true,
     minify: false,
-    outfile: path.resolve(rootDir, 'dist', 'server.mjs'),
-    format: 'esm',
+    outfile: path.resolve(rootDir, 'dist', 'server.js'),
+    format: 'cjs',
     platform: 'node',
-    external: [...Object.keys(packageJson.dependencies)],
   })
 }
 

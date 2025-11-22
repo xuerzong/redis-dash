@@ -10,12 +10,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "vite.config.ts",
-    "./src/server",
-    "./src/constants",
-    "./src/utils",
-    "./src/cli",
-    "src/wsServer.ts"
-  ]
+  "include": ["vite.config.ts", "src"],
+  "exclude": ["src/client"]
 }

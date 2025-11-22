@@ -1,0 +1,41 @@
+{
+  "name": "@xuerzong/redis-studio",
+  "version": "0.0.2",
+  "description": "This is a lightweight Redis Manager.",
+  "main": "./dist/cli.js",
+  "scripts": {
+    "build": "node ../scripts/build-cli.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xuerzong/redis-studio"
+  },
+  "bugs": {
+    "url": "https://github.com/xuerzong/redis-studio/issues"
+  },
+  "bin": {
+    "redis-studio": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "redis",
+    "redis-studio",
+    "cli"
+  ],
+  "author": "xuerzong@gmail.com",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/commander": "^2.12.0",
+    "@types/node": "^24.10.1",
+    "commander": "^14.0.2",
+    "picocolors": "^1.1.1",
+    "tree-kill": "^1.2.2",
+    "typescript": "^5.9.2"
+  }
+}

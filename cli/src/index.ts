@@ -1,18 +1,20 @@
 import { Command } from 'commander'
 import path from 'node:path'
-import { spawn } from 'child_process'
+import { spawn } from 'node:child_process'
 import fs from 'node:fs'
 import treeKill from 'tree-kill'
 import picocolors from 'picocolors'
-import { dirname } from '../utils/dirname'
-import { logger } from '../utils/logger'
-import packageJson from '../../package.json' with { type: 'json' }
+import { logger } from './logger'
+import packageJson from '../package.json' with { type: 'json' }
 
 const { green } = picocolors
 
 const program = new Command()
 
-const PID_FILE = path.resolve(dirname, 'rs-server.pid')
+// common js
+let DIRNAME = __dirname
+
+const PID_FILE = path.resolve(DIRNAME, 'rs-server.pid')
 
 program
   .name('redis-studio')
@@ -26,7 +28,7 @@ function startServer(options: { port: number }) {
     return false
   }
 
-  const serverJsPath = path.resolve(dirname, 'server.mjs')
+  const serverJsPath = path.resolve(DIRNAME, 'app', 'server.js')
   const env = {
     ...process.env,
     PORT: options.port.toString(),
