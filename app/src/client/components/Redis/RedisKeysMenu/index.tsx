@@ -1,7 +1,7 @@
 import {
-  RedisKeysMenuProvider,
-  useRedisKeysMenuContext,
-} from '@/client/providers/RedisKeysMenu'
+  RedisKeysProvider,
+  useRedisKeysContext,
+} from '@/client/providers/RedisKeysContext'
 import { Box } from '@/client/components/ui/Box'
 import { RedisKeysTree } from '../RedisKeysTree'
 import { RedisKeysTreeToolbar } from '../RedisKeysTreeToolbar'
@@ -10,7 +10,7 @@ import { LoaderMask } from '../../LoaderMask'
 
 export const RedisKeysMenuRoot = () => {
   const { setSelectedKey } = useRedisContext()
-  const { keyTreeNodes, loading: redisKeysLoading } = useRedisKeysMenuContext()
+  const { keyTreeNodes, loading: redisKeysLoading } = useRedisKeysContext()
   return (
     <Box
       position="relative"
@@ -41,8 +41,8 @@ export const RedisKeysMenuRoot = () => {
 
 export const RedisKeysMenu = () => {
   return (
-    <RedisKeysMenuProvider>
+    <RedisKeysProvider>
       <RedisKeysMenuRoot />
-    </RedisKeysMenuProvider>
+    </RedisKeysProvider>
   )
 }

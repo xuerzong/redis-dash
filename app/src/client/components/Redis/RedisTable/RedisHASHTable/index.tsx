@@ -4,7 +4,7 @@ import {
   setHASHData,
   type HASHData,
 } from '@/client/commands/redis'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisHASHTable: React.FC = () => {
@@ -14,7 +14,7 @@ export const RedisHASHTable: React.FC = () => {
     refreshRedisKeyState,
     setTableProps,
     filterValue,
-  } = useRedisKeyViewerContext()
+  } = useRedisKeyStateContext()
 
   const dataSource = useMemo(() => {
     const data = redisKeyState.value.data

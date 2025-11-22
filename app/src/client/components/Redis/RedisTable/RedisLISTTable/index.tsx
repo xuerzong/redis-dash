@@ -5,7 +5,7 @@ import {
   updateLISTData,
   type LISTData,
 } from '@/client/commands/redis'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisLISTTable: React.FC = () => {
@@ -15,7 +15,7 @@ export const RedisLISTTable: React.FC = () => {
     refreshRedisKeyState,
     setTableProps,
     filterValue,
-  } = useRedisKeyViewerContext()
+  } = useRedisKeyStateContext()
 
   const dataSource = useMemo(() => {
     const data = redisKeyState.value.data

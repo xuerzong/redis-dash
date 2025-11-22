@@ -1,13 +1,13 @@
 import { FolderTreeIcon, LayoutListIcon, RefreshCcwIcon } from 'lucide-react'
 import { Box } from '@/client/components/ui/Box'
 import { IconButton } from '@/client/components/ui/Button'
-import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
+import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
 import { Tooltip } from '@/client/components/ui/Tooltip'
 import { RedisKeySearchInput } from '../RedisKeySearchInput'
 
 export const RedisKeysTreeToolbar = () => {
-  const { viewMode, setViewMode } = useRedisKeysMenuContext()
-  const { refreshKeys } = useRedisKeysMenuContext()
+  const { viewMode, setViewMode } = useRedisKeysContext()
+  const { refreshKeys } = useRedisKeysContext()
   return (
     <Box
       width="100%"

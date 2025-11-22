@@ -31,17 +31,15 @@ const RedisKeysMenuContext =
 
 RedisKeysMenuContext.displayName = 'RedisKeysMenuContext'
 
-export const useRedisKeysMenuContext = () => {
+export const useRedisKeysContext = () => {
   const context = React.useContext(RedisKeysMenuContext)
   if (!context) {
-    throw new Error(
-      'useRedisKeysMenuContext must be used in <RedisKeysMenuProvider />'
-    )
+    throw new Error('useRedisKeysContext must be used in <RedisKeysProvider />')
   }
   return context
 }
 
-export const RedisKeysMenuProvider: React.FC<React.PropsWithChildren> = ({
+export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const redisId = useRedisId()

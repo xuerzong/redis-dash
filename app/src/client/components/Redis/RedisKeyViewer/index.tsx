@@ -1,8 +1,8 @@
 import { Box } from '@/client/components/ui/Box'
 import {
-  RedisKeyViewerProvider,
-  useRedisKeyViewerContext,
-} from '@/client/providers/RedisKeyViewer'
+  RedisKeyStateProvider,
+  useRedisKeyStateContext,
+} from '@/client/providers/RedisKeyStateContext'
 import { LoaderMask } from '@/client/components/LoaderMask'
 import { RedisKeyTTLInput } from '../RedisKeyTTLInput'
 import { RedisKeyNameInput } from '../RedisKeyNameInput'
@@ -14,7 +14,7 @@ import { RedisSTREAMTable } from '../RedisTable/RedisSTREAMTable'
 import { RedisHASHTable } from '../RedisTable/RedisHASHTable'
 
 export const RedisKeyViewerComponent: React.FC = () => {
-  const { redisKeyState, loading } = useRedisKeyViewerContext()
+  const { redisKeyState, loading } = useRedisKeyStateContext()
 
   return (
     <Box
@@ -66,8 +66,8 @@ export const RedisKeyViewerComponent: React.FC = () => {
 
 export const RedisKeyViewer = () => {
   return (
-    <RedisKeyViewerProvider>
+    <RedisKeyStateProvider>
       <RedisKeyViewerComponent />
-    </RedisKeyViewerProvider>
+    </RedisKeyStateProvider>
   )
 }

@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { Editor } from '@/client/components/Editor'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import { Box } from '@/client/components/ui/Box'
 import { Button } from '@/client/components/ui/Button'
 import { setSTRINGData } from '@/client/commands/redis'
@@ -9,7 +9,7 @@ import { useSyncState } from '@/client/hooks/useSyncState'
 
 export const RedisSTRINGEditor = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
-    useRedisKeyViewerContext()
+    useRedisKeyStateContext()
   const [value, setValue] = useSyncState<string>(redisKeyState.value)
   const [loading, setLoading] = useState(false)
 

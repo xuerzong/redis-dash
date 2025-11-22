@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { CheckIcon } from 'lucide-react'
 import { useSyncState } from '@/client/hooks/useSyncState'
 import { InputWithPrefix } from '@/client/components/ui/Input'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import { Box } from '@/client/components/ui/Box'
 import { renameKey } from '@/client/commands/redis/key'
 import { IconButton } from '@/client/components/ui/Button'
@@ -11,7 +11,7 @@ import { changeRedisKeys, useRedisStore } from '@/client/stores/redisStore'
 import { useRedisContext } from '@/client/providers/RedisContext'
 
 export const RedisKeyNameInput = () => {
-  const { redisId, redisKeyState } = useRedisKeyViewerContext()
+  const { redisId, redisKeyState } = useRedisKeyStateContext()
   const [keyName, setKeyName] = useSyncState(redisKeyState.keyName)
   const [checkLoading, setCheckLoaing] = useState(false)
   const redisKeys = useRedisStore((state) => state.redisKeys)

@@ -14,7 +14,7 @@ import {
 import { RedisTypeTag } from '../RedisTypeTag'
 import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
-import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
+import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
 
 interface RedisKeysTreeProps {
   nodes: TreeNode[]
@@ -46,7 +46,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
   deep = 0,
   onSelect,
 }) => {
-  const { keys } = useRedisKeysMenuContext()
+  const { keys } = useRedisKeysContext()
   const [open, setOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [hasSelected, setHasSelected] = useState(false)

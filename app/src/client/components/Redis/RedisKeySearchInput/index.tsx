@@ -2,12 +2,12 @@ import { SearchIcon } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 import { redisKeyTypes } from '@/constants/redisKeyTypes'
 import { Select } from '@/client/components/ui/Select'
-import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
+import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
 import s from './index.module.scss'
 
 export const RedisKeySearchInput = () => {
   const { searchValue, setSearchValue, filterType, setFilterType } =
-    useRedisKeysMenuContext()
+    useRedisKeysContext()
   const options = [
     { label: 'ALL', value: 'all' },
     ...redisKeyTypes.map((type) => ({ label: type, value: type })),

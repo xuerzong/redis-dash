@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import {
   delSTREAMData,
   setSTREAMData,
@@ -9,7 +9,7 @@ import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisSTREAMTable: React.FC = () => {
   const { redisId, redisKeyState, refreshRedisKeyState, filterValue } =
-    useRedisKeyViewerContext()
+    useRedisKeyStateContext()
 
   const dataSource = useMemo(() => {
     const data = redisKeyState.value.data

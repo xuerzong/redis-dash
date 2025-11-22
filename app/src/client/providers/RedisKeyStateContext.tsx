@@ -28,20 +28,20 @@ interface RedisKeyViewerContextState {
 export const RedisKeyViewerContext =
   React.createContext<RedisKeyViewerContextState | null>(null)
 
-interface RedisKeyViewerProviderProps {}
+interface RedisKeyStateProviderProps {}
 
-export const useRedisKeyViewerContext = () => {
+export const useRedisKeyStateContext = () => {
   const context = React.useContext(RedisKeyViewerContext)
   if (context === null) {
     throw new Error(
-      'useRedisKeyViewerContext must be used in <RedisKeyViewerProvider />'
+      'useRedisKeyStateContext must be used in <RedisKeyStateProvider />'
     )
   }
   return context
 }
 
-export const RedisKeyViewerProvider: React.FC<
-  React.PropsWithChildren<RedisKeyViewerProviderProps>
+export const RedisKeyStateProvider: React.FC<
+  React.PropsWithChildren<RedisKeyStateProviderProps>
 > = ({ children }) => {
   const [tableProps, setTableProps] = useState({
     pageNo: 1,

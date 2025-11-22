@@ -18,7 +18,7 @@ import { FormField } from '@/client/components/ui/Form'
 import { Editor } from '@/client/components/Editor'
 import { Modal } from '@/client/components/ui/Modal'
 import s from './index.module.scss'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 
 interface RedisTableField {
   type: 'input' | 'editor'
@@ -64,7 +64,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   const [addOpen, setAddOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [delLoading, setDelLoading] = useState(false)
-  const { setFilterValue } = useRedisKeyViewerContext()
+  const { setFilterValue } = useRedisKeyStateContext()
 
   useEffect(() => {
     if (!addOpen) {

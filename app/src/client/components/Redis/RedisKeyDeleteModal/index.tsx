@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { delKey } from '@/client/commands/redis'
 import { useRedisId } from '@/client/hooks/useRedisId'
 import { useRedisContext } from '@/client/providers/RedisContext'
-import { useRedisKeysMenuContext } from '@/client/providers/RedisKeysMenu'
+import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
 
 interface RedisKeyDeleteModalProps {
   keyName: string
@@ -22,7 +22,7 @@ export const RedisKeyDeleteModal: React.FC<RedisKeyDeleteModalProps> = ({
   trigger,
 }) => {
   const redisId = useRedisId()
-  const { refreshKeys: refreshRedisKeys } = useRedisKeysMenuContext()
+  const { refreshKeys: refreshRedisKeys } = useRedisKeysContext()
   const { setSelectedKey } = useRedisContext()
   const [loading, setLoading] = useState(false)
   const onDelKey = async () => {

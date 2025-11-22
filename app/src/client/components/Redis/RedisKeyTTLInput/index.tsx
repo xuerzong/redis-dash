@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from 'react'
 import { getTTL } from '@/client/commands/redis'
 import { NumberInputWithPrefix } from '@/client/components/ui/NumberInput'
 import { useSyncState } from '@/client/hooks/useSyncState'
-import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
+import { useRedisKeyStateContext } from '@/client/providers/RedisKeyStateContext'
 import { Box } from '@/client/components/ui/Box'
 import { IconButton } from '@/client/components/ui/Button'
 import { expireKey } from '@/client/commands/redis/key'
 
 export const RedisKeyTTLInput = () => {
-  const { redisId, redisKeyState } = useRedisKeyViewerContext()
+  const { redisId, redisKeyState } = useRedisKeyStateContext()
   const ttlIntervalIdRef = useRef<any>(null)
   const [hasFocused, setHasFocused] = useState(false)
   const [ttlValue, setTtlValue] = useSyncState(redisKeyState.ttl)
