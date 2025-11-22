@@ -1,6 +1,6 @@
 import { sendCommand } from '@/client/utils/invoke'
 
-interface HASHData {
+export interface HASHData {
   field: string
   value: string
 }

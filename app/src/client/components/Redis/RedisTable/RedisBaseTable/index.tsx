@@ -1,4 +1,5 @@
 import { toast } from 'sonner'
+import { useDebouncedCallback } from 'use-debounce'
 import { Box } from '@/client/components/ui/Box'
 import { Table, type TableColumn } from '@/client/components/ui/Table'
 import { Button, IconButton } from '@/client/components/ui/Button'
@@ -17,6 +18,7 @@ import { FormField } from '@/client/components/ui/Form'
 import { Editor } from '@/client/components/Editor'
 import { Modal } from '@/client/components/ui/Modal'
 import s from './index.module.scss'
+import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
 interface RedisTableField {
   type: 'input' | 'editor'
@@ -35,6 +37,8 @@ export interface RedisBaseTableProps {
   onRowDel?: (values: any) => Promise<void>
   defaultFormValues?: Record<string, any>
   onPageChange?: (page: { pageNo: number; pageSize: number }) => void
+  enablePageChanger?: boolean
+  onRowFilter?: (filterValue: string) => void
 }
 
 export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
@@ -48,6 +52,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   onRowDel,
   defaultFormValues = {},
   onPageChange,
+  enablePageChanger,
 }) => {
   const [pageNo, setPageNo] = useState(1)
   const [pageSize] = useState(100)
@@ -59,6 +64,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   const [addOpen, setAddOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [delLoading, setDelLoading] = useState(false)
+  const { setFilterValue } = useRedisKeyViewerContext()
 
   useEffect(() => {
     if (!addOpen) {
@@ -79,6 +85,10 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
       onPageChange?.({ pageNo: newTableProps.pageNo!, pageSize })
     }
   }
+
+  const debouncedOnRowFilter = useDebouncedCallback((value: string) => {
+    setFilterValue(value)
+  }, 500)
 
   const operationColumn: TableColumn<any> = useMemo(
     () => ({
@@ -140,12 +150,21 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
         justifyContent="flex-start"
         gap="0.5rem"
       >
-        <Box className={s.SearchInput}>
-          <SearchIcon className={s.SearchInputIcon} />
-          <Input placeholder="Search" />
+        <Box className={s.FilterInput}>
+          <SearchIcon className={s.FilterInputIcon} />
+          <Input
+            placeholder="Filter"
+            onChange={(e) => {
+              debouncedOnRowFilter(e.target.value)
+            }}
+          />
         </Box>
 
-        <Box flexShrink={0} display="flex" alignItems="center">
+        <Box
+          flexShrink={0}
+          display={enablePageChanger ? 'flex' : 'none'}
+          alignItems="center"
+        >
           <IconButton
             variant="outline"
             onClick={() => {

@@ -1,10 +1,21 @@
+import { useMemo } from 'react'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
-import { delSTREAMData, setSTREAMData } from '@/client/commands/redis/STREAM'
+import {
+  delSTREAMData,
+  setSTREAMData,
+  type STREAMData,
+} from '@/client/commands/redis/STREAM'
 import { RedisBaseTable } from '../RedisBaseTable'
 
 export const RedisSTREAMTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState } =
+  const { redisId, redisKeyState, refreshRedisKeyState, filterValue } =
     useRedisKeyViewerContext()
+
+  const dataSource = useMemo(() => {
+    const data = redisKeyState.value.data
+    return data.filter((d: STREAMData) => String(d.value).includes(filterValue))
+  }, [redisKeyState, filterValue])
+
   return (
     <RedisBaseTable
       rowKey={(row) => row['id']}
@@ -32,7 +43,7 @@ export const RedisSTREAMTable: React.FC = () => {
           type: 'editor',
         },
       ]}
-      dataSource={redisKeyState.value.data}
+      dataSource={dataSource}
       length={redisKeyState.value.length}
       defaultFormValues={{ id: '*' }}
       onRowAdd={async (value) => {

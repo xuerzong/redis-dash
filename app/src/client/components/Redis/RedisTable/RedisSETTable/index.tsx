@@ -1,10 +1,17 @@
+import { useMemo } from 'react'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 import { RedisBaseTable } from '../RedisBaseTable'
-import { delSETData, setSETData } from '@/client/commands/redis'
+import { delSETData, setSETData, type SETData } from '@/client/commands/redis'
 
 export const RedisSETTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState } =
+  const { redisId, redisKeyState, refreshRedisKeyState, filterValue } =
     useRedisKeyViewerContext()
+
+  const dataSource = useMemo(() => {
+    const data = redisKeyState.value.data
+    return data.filter((d: SETData) => String(d.member).includes(filterValue))
+  }, [redisKeyState, filterValue])
+
   return (
     <RedisBaseTable
       columns={[
@@ -21,7 +28,7 @@ export const RedisSETTable: React.FC = () => {
           type: 'editor',
         },
       ]}
-      dataSource={redisKeyState.value.data}
+      dataSource={dataSource}
       length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setSETData(redisId, redisKeyState.keyName, [values])

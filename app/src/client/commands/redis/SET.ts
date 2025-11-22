@@ -1,7 +1,7 @@
 import { sendCommand } from '@/client/utils/invoke'
 
-interface SETData {
-  member?: string
+export interface SETData {
+  member: string
 }
 
 export const getSETData = async (id: string, key: string) => {

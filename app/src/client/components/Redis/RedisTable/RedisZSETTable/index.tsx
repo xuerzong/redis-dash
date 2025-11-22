@@ -1,10 +1,21 @@
-import { delZSETData, setZSETData } from '@/client/commands/redis'
+import { useMemo } from 'react'
+import {
+  delZSETData,
+  setZSETData,
+  type ZSETData,
+} from '@/client/commands/redis'
 import { RedisBaseTable } from '../RedisBaseTable'
 import { useRedisKeyViewerContext } from '@/client/providers/RedisKeyViewer'
 
 export const RedisZSETTable: React.FC = () => {
-  const { redisId, redisKeyState, refreshRedisKeyState } =
+  const { redisId, redisKeyState, refreshRedisKeyState, filterValue } =
     useRedisKeyViewerContext()
+
+  const dataSource = useMemo(() => {
+    const data = redisKeyState.value.data
+    return data.filter((d: ZSETData) => String(d.member).includes(filterValue))
+  }, [redisKeyState, filterValue])
+
   return (
     <RedisBaseTable
       rowKey={(row) => row['member']}
@@ -32,7 +43,7 @@ export const RedisZSETTable: React.FC = () => {
           type: 'editor',
         },
       ]}
-      dataSource={redisKeyState.value.data}
+      dataSource={dataSource}
       length={redisKeyState.value.length}
       onRowAdd={async (values) => {
         await setZSETData(redisId, redisKeyState.keyName, [values])
