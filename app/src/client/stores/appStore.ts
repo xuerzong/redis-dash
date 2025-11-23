@@ -4,17 +4,24 @@ import { getConnections } from '../commands/api/connections'
 interface AppStoreState {
   init: boolean
   connections: any[]
+  connectionsLoading: boolean
 }
 
 const appStore = create<AppStoreState>(() => ({
   init: false,
   connections: [],
+  connectionsLoading: true,
 }))
 
 export const queryConnections = async () => {
-  return getConnections().then((res) => {
-    changeConnections(res)
-  })
+  appStore.setState({ connectionsLoading: true })
+  return getConnections()
+    .then((res) => {
+      changeConnections(res)
+    })
+    .finally(() => {
+      appStore.setState({ connectionsLoading: false })
+    })
 }
 
 export const changeConnections = (

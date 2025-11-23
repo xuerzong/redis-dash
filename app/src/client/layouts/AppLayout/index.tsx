@@ -5,7 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Box } from '@client/components/ui/Box'
 import { IconButton } from '@client/components/ui/Button'
 import { queryConnections } from '@client/stores/appStore'
-import { RedisConnectionMenu } from '@client/components/Redis/RedisConnectionMenu'
+import { RedisConnectionsMenu } from '@/client/components/Redis/RedisConnectionsMenu'
 import s from './index.module.scss'
 
 export const AppLayout = () => {
@@ -43,7 +43,7 @@ export const AppLayout = () => {
               <RotateCwIcon />
             </IconButton>
           </Box>
-          <RedisConnectionMenu />
+          <RedisConnectionsMenu />
         </Panel>
         <PanelResizeHandle />
         <Panel defaultSize={80} minSize={50} className={s.Content}>

@@ -1,8 +1,9 @@
 import { createHashRouter } from 'react-router'
 import { AppLayout } from './layouts/AppLayout'
 import { RootLayout } from './layouts/RootLayout'
+import { RedisLayout } from './layouts/RedisLayout'
 import CreatePage from './views/Create'
-import InstancePage from './views/Instance'
+import RedisPage from './views/Redis'
 import SettingsPage from './views/Settings'
 import LoadingPage from './views/Loading'
 import HomePage from './views/Home'
@@ -26,12 +27,18 @@ export const router = createHashRouter([
             element: <CreatePage />,
           },
           {
-            path: ':instanceId',
-            element: <InstancePage />,
-          },
-          {
-            path: ':instanceId/settings',
-            element: <RedisSettingsPage />,
+            path: ':redisId/',
+            element: <RedisLayout />,
+            children: [
+              {
+                path: '',
+                element: <RedisPage />,
+              },
+              {
+                path: 'settings',
+                element: <RedisSettingsPage />,
+              },
+            ],
           },
         ],
       },
