@@ -21,14 +21,14 @@
 ```bash
 npm -g @xuerzong/redis-studio
 
-redis-studio --version # OR `redis-studio -V`
+rds --version # OR `rds -V`
 
 # Start
-redis-studio start
+rds start
 
 # Stop
-redis-studio stop
+rds stop
 
 # Restart
-redis-studio restart
+rds restart
 ```

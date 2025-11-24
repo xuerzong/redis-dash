@@ -14,7 +14,7 @@
     "url": "https://github.com/xuerzong/redis-studio/issues"
   },
   "bin": {
-    "redis-studio": "./dist/cli.js"
+    "rds": "./dist/cli.js"
   },
   "files": [
     "dist"
