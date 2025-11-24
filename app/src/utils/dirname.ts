@@ -1,12 +1,15 @@
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
-let dirname = __dirname
+export const getESDirname = () => {
+  const __filename = fileURLToPath(import.meta.url)
+  return path.dirname(__filename)
+}
+
+let dirname = process.env.NODE_ENV === 'dev' ? getESDirname() : __dirname
 
 if (typeof dirname === 'undefined') {
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = path.dirname(__filename)
-  dirname = __dirname
+  dirname = getESDirname()
 }
 
 export { dirname }
