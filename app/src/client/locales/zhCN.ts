@@ -1,0 +1,13 @@
+export const zhCN: Record<string, string> = {
+  cancel: '取消',
+  submit: '提交',
+  confirm: '确认',
+  settings: '设置',
+  delete: '删除',
+  create: '新建',
+  operation: '操作',
+  'connection.create': '创建连接',
+  'connection.new': '新的连接',
+  'connection.save': '保存连接',
+  back: '返回',
+}
