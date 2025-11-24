@@ -26,7 +26,7 @@ export const ContextMenu: React.FC<
       </BaseContextMenu.Trigger>
 
       <BaseContextMenu.Portal>
-        <BaseContextMenu.Positioner>
+        <BaseContextMenu.Positioner className="ContextMenuPositioner">
           <BaseContextMenu.Popup className="ContextMenuContent">
             {menu.map((d) => (
               <BaseContextMenu.Item
