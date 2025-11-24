@@ -1,3 +1,4 @@
+import { useIntlContext } from '@/client/providers/IntlProvider'
 import { RedisForm } from '@client/components/Redis/RedisForm'
 import { Box } from '@client/components/ui/Box'
 import { Button } from '@client/components/ui/Button'
@@ -11,6 +12,7 @@ const Page = () => {
   const redisId = useRedisId()
   const navigate = useNavigate()
   const connections = useAppStore((state) => state.connections)
+  const { formatMessage } = useIntlContext()
   const currentConnection = connections.find((c) => c.id === redisId)
   return (
     <div>
@@ -22,7 +24,7 @@ const Page = () => {
           }}
         >
           <ChevronLeftIcon />
-          Back
+          {formatMessage('back')}
         </Button>
       </Box>
 

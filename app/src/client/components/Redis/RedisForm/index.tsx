@@ -12,6 +12,7 @@ import {
   createConnection,
   updateConnection,
 } from '@client/commands/api/connections'
+import { useIntlContext } from '@/client/providers/IntlProvider'
 
 interface RedisFormData {
   id?: string
@@ -48,6 +49,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
     ...DEFAULT_DATA,
     ...defaultValues,
   })
+  const { formatMessage } = useIntlContext()
 
   useEffect(() => {
     setValues({ ...DEFAULT_DATA, ...defaultValues })
@@ -185,7 +187,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
             loading={submitLoading}
             disabled={submitLoading}
           >
-            Save Connection
+            {formatMessage('connection.save')}
           </Button>
         )}
 
@@ -195,7 +197,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
             loading={submitLoading}
             disabled={submitLoading}
           >
-            Create Connection
+            {formatMessage('connection.create')}
           </Button>
         )}
       </Box>

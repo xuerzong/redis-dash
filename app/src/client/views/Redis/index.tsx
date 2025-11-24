@@ -20,12 +20,14 @@ import { useRedisId } from '@client/hooks/useRedisId'
 import { getConnectionStatus } from '@client/commands/api/connections'
 import { RedisKeysMenu } from '@client/components/Redis/RedisKeysMenu'
 import { RedisProvider, useRedisContext } from '@client/providers/RedisContext'
+import { useIntlContext } from '@/client/providers/IntlProvider'
 
 const Page = () => {
   const redisId = useRedisId()
   const navigate = useNavigate()
   const [delOpen, setDelOpen] = useState(false)
   const { selectedKey, setSelectedKey } = useRedisContext()
+  const { formatMessage } = useIntlContext()
 
   return (
     <Box height="100%" display="flex" flexDirection="column">
@@ -91,16 +93,16 @@ const Page = () => {
           <DropdownMenu
             menu={[
               {
-                label: 'Settings',
-                key: 'Settings',
+                label: formatMessage('settings'),
+                key: 'settings',
                 icon: <SettingsIcon />,
                 onClick() {
                   navigate(`/${redisId}/settings`)
                 },
               },
               {
-                label: 'Delete',
-                key: 'Delete',
+                label: formatMessage('delete'),
+                key: 'delete',
                 icon: <TrashIcon />,
                 onClick() {
                   setDelOpen(true)

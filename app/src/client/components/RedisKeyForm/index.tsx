@@ -18,6 +18,7 @@ import {
 import { setSTREAMData } from '@client/commands/redis/STREAM'
 import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
 import { useRedisContext } from '@client/providers/RedisContext'
+import { useIntlContext } from '@/client/providers/IntlProvider'
 
 const defaultValues = {
   type: 'STRING',
@@ -32,6 +33,7 @@ export const RedisKeyCreateForm = () => {
   const redisKeys = useRedisStore((state) => state.redisKeys)
   const { setSelectedKey } = useRedisContext()
   const [submitLoading, setSubmitLoading] = useState(false)
+  const { formatMessage } = useIntlContext()
 
   const onChange = (newValue: Partial<typeof values>) => {
     setValues((pre) => ({
@@ -185,7 +187,7 @@ export const RedisKeyCreateForm = () => {
         backgroundColor="var(--background-color)"
       >
         <Button type="button" onClick={onSubmit} loading={submitLoading}>
-          Create
+          {formatMessage('create')}
         </Button>
       </Box>
     </Box>

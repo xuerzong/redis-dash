@@ -15,6 +15,7 @@ import { RedisTypeTag } from '../RedisTypeTag'
 import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
 import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
+import { useIntlContext } from '@/client/providers/IntlProvider'
 
 interface RedisKeysTreeProps {
   nodes: TreeNode[]
@@ -52,6 +53,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
   const [hasSelected, setHasSelected] = useState(false)
   const hasChildren = Boolean(node.children && node.children.length)
   const isLeaf = !hasChildren
+  const { formatMessage } = useIntlContext()
 
   const type = useMemo(
     () =>
@@ -63,7 +65,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
     return [
       {
         key: 'delete',
-        label: 'Delete',
+        label: formatMessage('delete'),
         icon: <TrashIcon />,
         colorPalette: 'danger',
         onClick() {
@@ -71,7 +73,7 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
         },
       },
     ]
-  }, [])
+  }, [formatMessage])
 
   return (
     <>
