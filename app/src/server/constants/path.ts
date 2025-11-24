@@ -2,7 +2,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { dirname } from '@/utils/dirname'
 
-export const CLIENT_PATH = path.resolve(dirname, 'client')
+export const CLIENT_PATH = path.resolve(dirname)
 
 export const ASSETS_PATH = path.resolve(CLIENT_PATH, 'assets')
 
