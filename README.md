@@ -14,6 +14,8 @@
   </a>
 </p>
 
+<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+
 🚀 **Redis Studio** is a lightweight(<2MB), cross-platform Redis GUI (Graphical User Interface) Client. Redis Studio is designed to provide a simple and efficient way to manage and monitor your Redis instances.
 
 ## ✨ Features
