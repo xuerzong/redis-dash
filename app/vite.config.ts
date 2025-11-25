@@ -12,7 +12,12 @@ export default defineConfig({
             '@codemirror/lang-json',
             '@codemirror/state',
           ],
-          'xterm-vendor': ['@xterm/xterm', '@xterm/addon-fit'],
+          'xterm-vendor': [
+            '@xterm/xterm',
+            '@xterm/addon-fit',
+            '@xterm/addon-canvas',
+            '@xterm/addon-webgl',
+          ],
           'react-vendor': ['react', 'react-dom', 'react-router'],
           'ui-vendor': [
             '@base-ui-components/react',

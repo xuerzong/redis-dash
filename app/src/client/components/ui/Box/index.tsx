@@ -25,6 +25,10 @@ const stylePropertyKeys = [
 
   'width',
   'height',
+  'maxWidth',
+  'minWidth',
+  'maxHeight',
+  'minHeight',
 
   'border',
   'borderTop',

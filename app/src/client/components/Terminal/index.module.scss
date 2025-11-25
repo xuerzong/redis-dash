@@ -1,7 +1,14 @@
-.terminal {
-  font-family: var(--font-mono);
+.Terminal {
+  height: 100%;
+  :global {
+    .xterm-rows {
+      > div {
+        padding-inline: var(--spacing-md);
+      }
+    }
 
-  * {
-    font-family: var(--font-mono);
+    .xterm-cursor {
+      transition: all 0.5s ease-in !important;
+    }
   }
 }

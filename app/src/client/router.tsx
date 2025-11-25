@@ -7,6 +7,7 @@ import RedisPage from './views/Redis'
 import LoadingPage from './views/Loading'
 import HomePage from './views/Home'
 import RedisSettingsPage from './views/RedisSettings'
+import RedisTerminalPage from './views/RedisTerminal'
 
 export const router = createHashRouter([
   {
@@ -36,6 +37,10 @@ export const router = createHashRouter([
               {
                 path: 'settings',
                 element: <RedisSettingsPage />,
+              },
+              {
+                path: 'terminal',
+                element: <RedisTerminalPage />,
               },
             ],
           },

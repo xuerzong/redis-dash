@@ -1,122 +1,15 @@
-import {
-  MoreHorizontalIcon,
-  PlusIcon,
-  SettingsIcon,
-  TrashIcon,
-  XIcon,
-} from 'lucide-react'
-import { useNavigate } from 'react-router'
-import React, { useEffect, useRef, useState } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Box } from '@client/components/ui/Box'
-import { IconButton } from '@client/components/ui/Button'
-import { Tooltip } from '@client/components/ui/Tooltip'
 import { RedisKeyViewer } from '@client/components/Redis/RedisKeyViewer'
-import { Loader } from '@client/components/Loader'
 import { RedisKeyCreateForm } from '@client/components/RedisKeyForm'
-import { RedisConnectionDeleteModal } from '@client/components/Redis/RedisConnectionDeleteModal'
-import { DropdownMenu } from '@client/components/ui/DropdownMenu'
-import { useRedisId } from '@client/hooks/useRedisId'
-import { getConnectionStatus } from '@client/commands/api/connections'
 import { RedisKeysMenu } from '@client/components/Redis/RedisKeysMenu'
-import { RedisProvider, useRedisContext } from '@client/providers/RedisContext'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useRedisContext } from '@client/providers/RedisContext'
 
 const Page = () => {
-  const redisId = useRedisId()
-  const navigate = useNavigate()
-  const [delOpen, setDelOpen] = useState(false)
-  const { selectedKey, setSelectedKey } = useRedisContext()
-  const { formatMessage } = useIntlContext()
+  const { selectedKey } = useRedisContext()
 
   return (
     <Box height="100%" display="flex" flexDirection="column">
-      <Box
-        display="flex"
-        alignItems="center"
-        borderBottom="1px solid var(--border-color)"
-        height="2.5rem"
-        boxSizing="content-box"
-      >
-        {/* <Box
-          display="flex"
-          alignItems="center"
-          marginLeft="auto"
-          borderLeft="1px solid var(--border-color)"
-          paddingLeft="var(--spacing-md)"
-          flexShrink={0}
-        >
-          <Box fontSize="0.875rem" userSelect="none">
-            COUNT
-          </Box>
-          <Select
-            className={s.PageSizeSelector}
-            options={[
-              { label: '100', value: '100' },
-              { label: '200', value: '200' },
-              { label: '500', value: '500' },
-            ]}
-            value={keysCountLimit.toString()}
-            onChange={(e) => {
-              changeKeysCountLimit(Number(e))
-            }}
-          />
-        </Box> */}
-        <Box
-          style={
-            {
-              '--border-radius': 0,
-            } as any
-          }
-          display="flex"
-          alignItems="center"
-          marginLeft="auto"
-          flexShrink={0}
-        >
-          {/* <Tooltip content="Terminal">
-            <IconButton variant="ghost">
-              <TerminalIcon />
-            </IconButton>
-          </Tooltip> */}
-
-          <Tooltip content="Add Key">
-            <IconButton
-              variant="ghost"
-              onClick={() => {
-                setSelectedKey('')
-              }}
-            >
-              <PlusIcon />
-            </IconButton>
-          </Tooltip>
-
-          <DropdownMenu
-            menu={[
-              {
-                label: formatMessage('settings'),
-                key: 'settings',
-                icon: <SettingsIcon />,
-                onClick() {
-                  navigate(`/${redisId}/settings`)
-                },
-              },
-              {
-                label: formatMessage('delete'),
-                key: 'delete',
-                icon: <TrashIcon />,
-                onClick() {
-                  setDelOpen(true)
-                },
-              },
-            ]}
-          >
-            <IconButton variant="ghost">
-              <MoreHorizontalIcon />
-            </IconButton>
-          </DropdownMenu>
-        </Box>
-      </Box>
-
       <PanelGroup style={{ flex: 1 }} direction="horizontal">
         <Panel
           defaultSize={50}
@@ -148,98 +41,8 @@ const Page = () => {
           </Box>
         </Panel>
       </PanelGroup>
-
-      <RedisConnectionDeleteModal
-        redisId={redisId}
-        open={delOpen}
-        onOpenChange={setDelOpen}
-      />
     </Box>
   )
 }
 
-const ConnectRedisLoader: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
-  const redisId = useRedisId()
-  const [status, setStatus] = useState(0)
-  const [error, setError] = useState(false)
-  const retryTimeRef = useRef(10)
-  const retryTimerRef = useRef<any>(null)
-
-  const queryConnectionStatus = async (id: string) => {
-    retryTimeRef.current = retryTimeRef.current - 1
-    return getConnectionStatus(id).then((res) => {
-      if (res !== 1) {
-        if (retryTimeRef.current > 0) {
-          retryTimerRef.current = setTimeout(() => {
-            queryConnectionStatus(id)
-          }, 1000)
-        } else {
-          setError(true)
-        }
-      }
-      setStatus(res)
-    })
-  }
-
-  useEffect(() => {
-    setStatus(0)
-    setError(false)
-    retryTimeRef.current = 10
-  }, [redisId])
-
-  useEffect(() => {
-    queryConnectionStatus(redisId)
-    return () => {
-      clearTimeout(retryTimerRef.current)
-    }
-  }, [redisId])
-
-  if (error)
-    return (
-      <Box
-        width="100%"
-        height="100%"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        gap="var(--spacing-md)"
-      >
-        <XIcon style={{ width: '1.5rem', height: '1.5rem' }} />
-        Connect Redis Failed
-      </Box>
-    )
-
-  return (
-    <>
-      {status === 1 ? (
-        children
-      ) : (
-        <Box
-          width="100%"
-          height="100%"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          gap="var(--spacing-md)"
-        >
-          <Loader />
-          <Box>Connecting</Box>
-        </Box>
-      )}
-    </>
-  )
-}
-
-export default () => {
-  return (
-    <ConnectRedisLoader>
-      <RedisProvider>
-        <Page />
-      </RedisProvider>
-    </ConnectRedisLoader>
-  )
-}
+export default Page
