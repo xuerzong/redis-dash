@@ -30,6 +30,9 @@
 
 ### Install
 
+> [!IMPORTANT]
+> Before installation, you need to install [Node.js 18+](https://https://nodejs.org/).
+
 You can install the Redis Studio command-line tool globally via npm (Node Package Manager).
 
 ```bash

@@ -28,6 +28,9 @@
 
 ### 安装
 
+> [!IMPORTANT]
+> 在安装之前, 你需要安装 [Node.js 18+](https://https://nodejs.org/).
+
 您可以通过 npm (Node Package Manager) 在全局安装 Redis Studio 命令行工具。
 
 ```bash
