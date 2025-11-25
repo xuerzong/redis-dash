@@ -1,8 +1,8 @@
-import { GithubIcon } from 'lucide-react'
 import { Outlet, useNavigate } from 'react-router'
 import { Box } from '@client/components/ui/Box'
 import { IconButton } from '@client/components/ui/Button'
 import { LangSelector } from '@/client/components/LangSelector'
+import { GithubIcon } from '@/client/components/Icons/GithubIcon'
 import s from './index.module.scss'
 
 export const RootLayout = () => {
