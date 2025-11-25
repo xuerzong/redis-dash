@@ -1,15 +1,12 @@
-import { GithubIcon, SettingsIcon } from 'lucide-react'
+import { GithubIcon } from 'lucide-react'
 import { Outlet, useNavigate } from 'react-router'
 import { Box } from '@client/components/ui/Box'
-import { Button, IconButton } from '@client/components/ui/Button'
-import s from './index.module.scss'
-import { useIntlContext } from '@/client/providers/IntlProvider'
-import { Select } from '@/client/components/ui/Select'
+import { IconButton } from '@client/components/ui/Button'
 import { LangSelector } from '@/client/components/LangSelector'
+import s from './index.module.scss'
 
 export const RootLayout = () => {
   const navigate = useNavigate()
-  const { messages } = useIntlContext()
   return (
     <>
       <Box as="header" className={s.Header}>
@@ -25,16 +22,6 @@ export const RootLayout = () => {
         </Box>
         <Box display="flex" alignItems="center" gap="0.25rem" marginLeft="auto">
           <LangSelector />
-          <Button
-            variant="outline"
-            onClick={() => {
-              navigate('/settings')
-            }}
-          >
-            <SettingsIcon />
-            {messages['settings']}
-          </Button>
-
           <IconButton
             variant="outline"
             onClick={() => {

@@ -4,7 +4,6 @@ import { RootLayout } from './layouts/RootLayout'
 import { RedisLayout } from './layouts/RedisLayout'
 import CreatePage from './views/Create'
 import RedisPage from './views/Redis'
-import SettingsPage from './views/Settings'
 import LoadingPage from './views/Loading'
 import HomePage from './views/Home'
 import RedisSettingsPage from './views/RedisSettings'
@@ -41,10 +40,6 @@ export const router = createHashRouter([
             ],
           },
         ],
-      },
-      {
-        path: 'settings',
-        element: <SettingsPage />,
       },
     ],
   },
