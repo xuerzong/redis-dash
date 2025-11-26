@@ -44,7 +44,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const redisId = useRedisId()
-  const [viewMode, setViewMode] = useState<ViewModeType>('tree')
+  const [viewMode, setViewMode] = useState<ViewModeType>('list')
   const [searchValue, setSearchValue] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [loading, setLoading] = useState(false)
