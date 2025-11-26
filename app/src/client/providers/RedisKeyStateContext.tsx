@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import type { RedisKeyType } from '@/constants/redisKeyTypes'
+import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
 import { useDebouncedCallback } from 'use-debounce'
 import { getRedisState } from '../commands/redis'
 import { useRedisId } from '../hooks/useRedisId'

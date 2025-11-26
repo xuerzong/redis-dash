@@ -75,21 +75,6 @@
   border-radius: var(--border-radius);
 }
 
-[data-color-palette='success'] {
-  --color: var(--success-color) !important;
-  --bg-color: var(--success-bg-color) !important;
-}
-
-[data-color-palette='warning'] {
-  --color: var(--warning-color) !important;
-  --bg-color: var(--warning-bg-color) !important;
-}
-
-[data-color-palette='danger'] {
-  --color: var(--danger-color) !important;
-  --bg-color: var(--danger-bg-color) !important;
-}
-
 * {
   font-family:
     var(--font-sans),

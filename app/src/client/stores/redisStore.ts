@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { RedisKeyType } from '@/constants/redisKeyTypes'
+import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
 
 interface RedisStoreState {
   redisKeys: { key: string; type: RedisKeyType }[]

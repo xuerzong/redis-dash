@@ -1,4 +1,4 @@
-import type { RedisKeyType } from '@/constants/redisKeyTypes'
+import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
 import React, { useEffect, useMemo, useState } from 'react'
 import { TreeNode, keysToTree } from '../utils/tree'
 import { getKeys } from '../commands/redis'
