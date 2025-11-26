@@ -10,6 +10,8 @@ export const RedisTypeTag: React.FC<RedisTypeTagProps> = ({ type }) => {
     <Box
       display="inline-block"
       fontSize="0.75rem"
+      color="var(--color)"
+      backgroundColor="var(--bg-color)"
       colorPalette={getRedisTypeColor(type)}
       borderRadius="var(--border-radius)"
       padding="0.125rem 0.25rem"

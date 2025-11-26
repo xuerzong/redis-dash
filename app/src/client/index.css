@@ -96,11 +96,6 @@
   border-color: var(--border-color);
 }
 
-[data-box] {
-  background-color: var(--bg-color);
-  color: var(--color);
-}
-
 html,
 body {
   overscroll-behavior: none;

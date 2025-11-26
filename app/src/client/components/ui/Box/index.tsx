@@ -3,6 +3,7 @@ import { useDarkMode } from '@/client/hooks/useDarkMode'
 import { omit, pick } from '@client/utils/object'
 import { mergeProps } from '@client/utils/props'
 import React, { useMemo } from 'react'
+import { Slot } from '@radix-ui/react-slot'
 
 const stylePropertyKeys = [
   'position',
@@ -85,6 +86,7 @@ type DefaultElement = 'div'
 
 interface BoxOwnProps {
   as?: React.ElementType
+  asChild?: boolean
   children?: React.ReactNode
 }
 
@@ -98,11 +100,11 @@ type BoxProps<Root extends React.ElementType = DefaultElement> =
 
 const BoxComponent = React.forwardRef(
   <T extends React.ElementType = DefaultElement>(
-    { as = 'div', children, colorPalette, ...restProps }: BoxProps<T>,
+    { as = 'div', asChild, children, colorPalette, ...restProps }: BoxProps<T>,
     ref: React.Ref<any>
   ) => {
     const darkMode = useDarkMode()
-    const Component = as
+    const Component = asChild ? Slot : as
 
     const colorPaletteVars = useMemo(() => {
       if (!colorPalette) return
@@ -115,7 +117,7 @@ const BoxComponent = React.forwardRef(
         (pre, cur) => {
           return {
             ...pre,
-            [`--color-palettle-${cur}`]: `var(--color-${colorPalette}-${cur})`,
+            [`--color-palettle-${cur}`]: `var(--color-${_colorPalette}-${cur})`,
           }
         },
         darkMode

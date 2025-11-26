@@ -1,6 +1,7 @@
 import { ContextMenu as BaseContextMenu } from '@base-ui-components/react/context-menu'
 import { Slot } from '@radix-ui/react-slot'
 import './index.scss'
+import { Box } from '../Box'
 
 export type ContextMenuItemProps = {
   key: string
@@ -29,15 +30,15 @@ export const ContextMenu: React.FC<
         <BaseContextMenu.Positioner className="ContextMenuPositioner">
           <BaseContextMenu.Popup className="ContextMenuContent">
             {menu.map((d) => (
-              <BaseContextMenu.Item
-                key={d.key}
-                className="ContextMenuItem"
-                onClick={d.onClick}
-                data-color-palette={d.colorPalette}
-              >
-                <Slot className="ContextMenuItemIcon">{d.icon}</Slot>
-                {d.label}
-              </BaseContextMenu.Item>
+              <Box asChild key={d.key} as="div" colorPalette={d.colorPalette}>
+                <BaseContextMenu.Item
+                  className="ContextMenuItem"
+                  onClick={d.onClick}
+                >
+                  <Slot className="ContextMenuItemIcon">{d.icon}</Slot>
+                  {d.label}
+                </BaseContextMenu.Item>
+              </Box>
             ))}
           </BaseContextMenu.Popup>
         </BaseContextMenu.Positioner>
