@@ -24,21 +24,19 @@ export const RedisKeyViewerComponent: React.FC = () => {
       height="100%"
     >
       <Box
-        position="sticky"
-        top={0}
-        zIndex={1}
         display="flex"
         alignItems="center"
         gap="var(--spacing-md)"
         backgroundColor="var(--background-color)"
         padding="var(--spacing-md)"
         borderBottom="1px solid var(--border-color)"
+        flexShrink={0}
       >
         <RedisKeyNameInput />
 
         <RedisKeyTTLInput />
       </Box>
-      <Box padding="var(--spacing-md)">
+      <Box padding="var(--spacing-md)" flex={1} overflowY="auto">
         {redisKeyState.type === 'HASH' && (
           <RedisHASHTable key={redisKeyState.keyName} />
         )}

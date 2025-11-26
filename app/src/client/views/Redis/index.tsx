@@ -9,39 +9,41 @@ const Page = () => {
   const { selectedKey } = useRedisContext()
 
   return (
-    <Box height="100%" display="flex" flexDirection="column">
-      <PanelGroup style={{ flex: 1 }} direction="horizontal">
-        <Panel
-          defaultSize={50}
-          minSize={30}
-          style={{
-            position: 'relative',
-            borderRight: '1px solid var(--border-color)',
-          }}
+    <PanelGroup style={{ flex: 1, height: '100%' }} direction="horizontal">
+      <Panel
+        defaultSize={50}
+        minSize={30}
+        style={{
+          position: 'relative',
+          borderRight: '1px solid var(--border-color)',
+        }}
+      >
+        <RedisKeysMenu />
+      </Panel>
+      <PanelResizeHandle />
+      <Panel
+        style={{ position: 'relative', height: '100%' }}
+        defaultSize={50}
+        minSize={30}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="0.5rem"
+          // overflowY="auto"
+          height="100%"
+          // overscrollBehavior="none"
         >
-          <RedisKeysMenu />
-        </Panel>
-        <PanelResizeHandle />
-        <Panel style={{ position: 'relative' }} defaultSize={50} minSize={30}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap="0.5rem"
-            overflowY="auto"
-            height="100%"
-            overscrollBehavior="none"
-          >
-            <Box display={selectedKey ? 'block' : 'none'} flex={1}>
-              <RedisKeyViewer />
-            </Box>
-
-            <Box display={selectedKey ? 'none' : 'block'} flex={1}>
-              <RedisKeyCreateForm />
-            </Box>
+          <Box height="100%" display={selectedKey ? 'block' : 'none'} flex={1}>
+            <RedisKeyViewer />
           </Box>
-        </Panel>
-      </PanelGroup>
-    </Box>
+
+          <Box display={selectedKey ? 'none' : 'block'} flex={1}>
+            <RedisKeyCreateForm />
+          </Box>
+        </Box>
+      </Panel>
+    </PanelGroup>
   )
 }
 

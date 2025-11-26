@@ -143,8 +143,17 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap="var(--spacing-md)">
+    <Box
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      gap="var(--spacing-md)"
+    >
       <Box
+        position="sticky"
+        top={0}
+        backgroundColor="rgba(var(--color-background) / 0.5)"
+        backdropFilter="blur(4px)"
         display="flex"
         alignItems="center"
         justifyContent="flex-start"

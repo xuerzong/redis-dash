@@ -148,7 +148,7 @@ export const RedisLayoutComponent: React.FC = () => {
             </DropdownMenu>
           </Box>
         </Box>
-        <Box flex={1}>
+        <Box flex={1} height="calc(100% - 2.5rem)">
           <Outlet />
         </Box>
       </Box>
