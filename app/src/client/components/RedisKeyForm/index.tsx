@@ -7,7 +7,10 @@ import { Input } from '@client/components/ui/Input'
 import { Select } from '@client/components/ui/Select'
 import { NumberInputWithPrefix } from '@client/components/ui/NumberInput'
 import { useRedisId } from '@client/hooks/useRedisId'
-import { redisKeyTypes, type RedisKeyType } from '@/constants/redisKeyTypes'
+import {
+  redisKeyTypes,
+  type RedisKeyType,
+} from '@/client/constants/redisKeyTypes'
 import {
   setHASHData,
   setLISTData,

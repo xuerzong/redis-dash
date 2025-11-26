@@ -1,5 +1,5 @@
 import { sendCommand } from '@client/utils/invoke'
-import type { RedisKeyType } from '@/constants/redisKeyTypes'
+import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
 
 export const getTTL = (id: string, key: string) => {
   return sendCommand<number>({

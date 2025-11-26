@@ -1,5 +1,5 @@
 import { SearchIcon } from 'lucide-react'
-import { redisKeyTypes } from '@/constants/redisKeyTypes'
+import { redisKeyTypes } from '@/client/constants/redisKeyTypes'
 import { Select } from '@client/components/ui/Select'
 import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
 import s from './index.module.scss'

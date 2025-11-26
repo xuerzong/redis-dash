@@ -1,6 +1,8 @@
+import type { ColorPalette } from '@/client/constants/colorPalettes'
+import { useDarkMode } from '@/client/hooks/useDarkMode'
 import { omit, pick } from '@client/utils/object'
 import { mergeProps } from '@client/utils/props'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 const stylePropertyKeys = [
   'position',
@@ -91,7 +93,7 @@ type BoxProps<Root extends React.ElementType = DefaultElement> =
     Omit<BoxOwnProps, 'as'> &
     BoxOwnProps &
     StyleProperties & {
-      colorPalette?: 'success' | 'warning' | 'danger'
+      colorPalette?: ColorPalette
     }
 
 const BoxComponent = React.forwardRef(
@@ -99,12 +101,44 @@ const BoxComponent = React.forwardRef(
     { as = 'div', children, colorPalette, ...restProps }: BoxProps<T>,
     ref: React.Ref<any>
   ) => {
+    const darkMode = useDarkMode()
     const Component = as
+
+    const colorPaletteVars = useMemo(() => {
+      if (!colorPalette) return
+
+      let _colorPalette = colorPalette
+      if (_colorPalette === 'danger') _colorPalette = 'red'
+      if (_colorPalette === 'success') _colorPalette = 'green'
+      if (_colorPalette === 'warning') _colorPalette = 'yellow'
+      return [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].reduce(
+        (pre, cur) => {
+          return {
+            ...pre,
+            [`--color-palettle-${cur}`]: `var(--color-${colorPalette}-${cur})`,
+          }
+        },
+        darkMode
+          ? {
+              '--color': 'rgba(var(--color-palettle-500) / 1)',
+              '--bg-color': 'rgba(var(--color-palettle-950) / 1)',
+            }
+          : {
+              '--color': 'rgba(var(--color-palettle-600) / 1)',
+              '--bg-color': 'rgba(var(--color-palettle-100) / 1)',
+            }
+      )
+    }, [darkMode, colorPalette])
 
     const componentProps = omit(restProps, ...stylePropertyKeys)
     const styleProps = pick(restProps, ...stylePropertyKeys)
 
-    const mergedProps = mergeProps(componentProps, { style: styleProps })
+    const mergedProps = mergeProps(componentProps, {
+      style: {
+        ...styleProps,
+        ...colorPaletteVars,
+      },
+    })
 
     return (
       <Component
