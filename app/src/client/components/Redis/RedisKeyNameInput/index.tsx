@@ -9,6 +9,7 @@ import { renameKey } from '@client/commands/redis/key'
 import { IconButton } from '@client/components/ui/Button'
 import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
 import { useRedisContext } from '@client/providers/RedisContext'
+import { getRedisTypeColor } from '@/client/constants/redisColors'
 
 export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()
@@ -57,7 +58,15 @@ export const RedisKeyNameInput = () => {
         onChange={(e) => {
           setKeyName(e.target.value)
         }}
-        prefixNode={<Box textTransform="capitalize">{redisKeyState.type}</Box>}
+        prefixNode={
+          <Box
+            textTransform="capitalize"
+            color="var(--color)"
+            colorPalette={getRedisTypeColor(redisKeyState.type)}
+          >
+            {redisKeyState.type}
+          </Box>
+        }
       />
       <IconButton
         variant="outline"
