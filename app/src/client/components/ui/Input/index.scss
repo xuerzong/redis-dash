@@ -28,7 +28,7 @@
   flex-shrink: 0;
   border: 1px solid var(--muted-color);
   border-radius: var(--border-radius) 0 0 var(--border-radius);
-  box-sizing: content-box;
+  box-sizing: border-box;
   z-index: 0;
 }
 
