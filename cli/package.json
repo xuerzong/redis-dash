@@ -31,11 +31,10 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
-    "@types/commander": "^2.12.0",
-    "@types/node": "^24.10.1",
-    "commander": "^14.0.2",
+    "@types/cross-spawn": "^6.0.6",
+    "cross-spawn": "^7.0.6",
+    "mri": "^1.2.0",
     "picocolors": "^1.1.1",
-    "tree-kill": "^1.2.2",
-    "typescript": "^5.9.2"
+    "tree-kill": "^1.2.2"
   }
 }
