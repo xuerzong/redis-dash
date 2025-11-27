@@ -33,4 +33,10 @@ router.del('/api/connections/:id', async (req) => {
   return connectionDb.del(id)
 })
 
+router.post('/api/connections/:id/disconnect', async (req) => {
+  const { id } = req.params
+  const connection = await connectionDb.find(id)
+  await redisMap.closeInstance(connection)
+})
+
 export { router }

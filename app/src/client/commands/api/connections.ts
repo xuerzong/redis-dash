@@ -36,3 +36,10 @@ export const getConnectionStatus = async (id: string) => {
     url: `/api/connections/status?id=${id}`,
   })
 }
+
+export const postDisconnectConnection = async (id: string) => {
+  return sendRequest<number>({
+    method: 'POST',
+    url: `/api/connections/${id}/disconnect`,
+  })
+}

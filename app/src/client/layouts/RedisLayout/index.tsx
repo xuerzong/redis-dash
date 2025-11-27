@@ -9,6 +9,7 @@ import {
   ChevronLeftIcon,
   MoreHorizontalIcon,
   PlusIcon,
+  RefreshCcwIcon,
   SettingsIcon,
   TerminalIcon,
   TrashIcon,
@@ -18,7 +19,10 @@ import { useIntlContext } from '@/client/providers/IntlProvider'
 import { RedisProvider, useRedisContext } from '@/client/providers/RedisContext'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
-import { getConnectionStatus } from '@/client/commands/api/connections'
+import {
+  getConnectionStatus,
+  postDisconnectConnection,
+} from '@/client/commands/api/connections'
 import { Loader } from '@/client/components/Loader'
 import s from './index.module.scss'
 
@@ -100,7 +104,18 @@ export const RedisLayoutComponent: React.FC = () => {
             flexShrink={0}
             className={s.Actions}
           >
-            <Tooltip content="Terminal">
+            <Tooltip content={formatMessage('reconnect')}>
+              <IconButton
+                variant="outline"
+                onClick={async () => {
+                  await postDisconnectConnection(redisId)
+                  window.location.reload()
+                }}
+              >
+                <RefreshCcwIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip content={formatMessage('terminal')}>
               <IconButton
                 variant="outline"
                 onClick={() => {
@@ -111,7 +126,7 @@ export const RedisLayoutComponent: React.FC = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip content="Add Key">
+            <Tooltip content={formatMessage('key.add')}>
               <IconButton
                 variant="outline"
                 onClick={() => {

@@ -10,4 +10,7 @@ export const zhCN: Record<string, string> = {
   'connection.new': '新的连接',
   'connection.save': '保存连接',
   back: '返回',
+  reconnect: '重新连接',
+  terminal: '终端',
+  'key.add': '添加 Key',
 }
