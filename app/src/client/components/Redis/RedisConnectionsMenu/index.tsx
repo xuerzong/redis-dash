@@ -1,15 +1,16 @@
 import { useNavigate } from 'react-router'
 import { useState } from 'react'
-import { SettingsIcon, TrashIcon } from 'lucide-react'
+import { RefreshCcwIcon, SettingsIcon, TrashIcon } from 'lucide-react'
 import { useAppStore } from '@client/stores/appStore'
 import { ContextMenu } from '@client/components/ui/ContextMenu'
 import { Box } from '@client/components/ui/Box'
 import { RedisIcon } from '@client/components/Icons/RedisIcon'
 import { LoaderMask } from '@client/components/LoaderMask'
 import { useRedisId } from '@client/hooks/useRedisId'
+import { useIntlContext } from '@/client/providers/IntlProvider'
+import { postDisconnectConnection } from '@/client/commands/api/connections'
 import { RedisConnectionDeleteModal } from '../RedisConnectionDeleteModal'
 import s from './index.module.scss'
-import { useIntlContext } from '@/client/providers/IntlProvider'
 
 export const RedisConnectionsMenu = () => {
   const navigate = useNavigate()
@@ -32,6 +33,17 @@ export const RedisConnectionsMenu = () => {
             }
           }}
           menu={[
+            {
+              key: 'reconnect',
+              icon: <RefreshCcwIcon />,
+              label: formatMessage('reconnect'),
+              async onClick() {
+                await postDisconnectConnection(d.id)
+                if (d.id === redisId) {
+                  window.location.reload()
+                }
+              },
+            },
             {
               key: 'settings',
               icon: <SettingsIcon />,

@@ -10,4 +10,7 @@ export const enUS: Record<string, string> = {
   'connection.new': 'New Connection',
   'connection.save': 'Save Connection',
   back: 'Back',
+  reconnect: 'Reconnect',
+  terminal: 'Terminal',
+  'key.add': 'Add Key',
 }
