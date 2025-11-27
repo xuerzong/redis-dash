@@ -13,4 +13,5 @@ export const zhCN: Record<string, string> = {
   reconnect: '重新连接',
   terminal: '终端',
   'key.add': '添加 Key',
+  'placeholder.filterByKeyNameAndPattern': '输入键名或正则表达式筛选',
 }

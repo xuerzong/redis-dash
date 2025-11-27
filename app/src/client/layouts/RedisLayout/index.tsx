@@ -68,30 +68,6 @@ export const RedisLayoutComponent: React.FC = () => {
               {formatMessage('back')}
             </Button>
           )}
-          {/* <Box
-          display="flex"
-          alignItems="center"
-          marginLeft="auto"
-          borderLeft="1px solid var(--border-color)"
-          paddingLeft="var(--spacing-md)"
-          flexShrink={0}
-        >
-          <Box fontSize="0.875rem" userSelect="none">
-            COUNT
-          </Box>
-          <Select
-            className={s.PageSizeSelector}
-            options={[
-              { label: '100', value: '100' },
-              { label: '200', value: '200' },
-              { label: '500', value: '500' },
-            ]}
-            value={keysCountLimit.toString()}
-            onChange={(e) => {
-              changeKeysCountLimit(Number(e))
-            }}
-          />
-        </Box> */}
           <Box
             style={
               {

@@ -13,4 +13,5 @@ export const enUS: Record<string, string> = {
   reconnect: 'Reconnect',
   terminal: 'Terminal',
   'key.add': 'Add Key',
+  'placeholder.filterByKeyNameAndPattern': 'Filter by Key Name and Pattern',
 }

@@ -25,6 +25,9 @@ interface RedisKeysMenuContextState {
 
   refreshKeys: () => Promise<void>
   loading: boolean
+
+  keysCountLimit: number
+  setKeysCountLimit: (value: number) => void
 }
 
 const RedisKeysMenuContext =
@@ -48,6 +51,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   const [searchValue, setSearchValue] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [loading, setLoading] = useState(false)
+  const [keysCountLimit, setKeysCountLimit] = useState(200)
   const redisKeys = useRedisStore((state) => state.redisKeys)
 
   const [debouncedSearchValue] = useDebounce(searchValue, 500)
@@ -58,7 +62,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   ) => {
     setLoading(true)
     return getKeys(redisId, {
-      ...{ match: searchValue, count: 200 },
+      ...{ match: searchValue, count: keysCountLimit },
       ...params,
     })
       .then(changeRedisKeys)
@@ -68,8 +72,11 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   }
 
   useEffect(() => {
-    queryRedisKeys(redisId, { match: debouncedSearchValue })
-  }, [redisId, debouncedSearchValue])
+    queryRedisKeys(redisId, {
+      match: debouncedSearchValue,
+      count: keysCountLimit,
+    })
+  }, [redisId, debouncedSearchValue, keysCountLimit])
 
   const keyTreeNodes = useMemo(() => {
     const filteredKeys = (redisKeys || [])
@@ -101,6 +108,9 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
       refreshKeys: async () => {
         return queryRedisKeys(redisId, { match: searchValue })
       },
+
+      keysCountLimit,
+      setKeysCountLimit,
     }
   }, [
     redisId,
@@ -110,6 +120,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
     filterType,
     keyTreeNodes,
     loading,
+    keysCountLimit,
   ])
 
   return (
