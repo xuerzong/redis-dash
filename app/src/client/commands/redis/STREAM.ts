@@ -6,11 +6,17 @@ export interface STREAMData {
 }
 
 export const getSTREAMData = async (id: string, key: string) => {
-  const [[_, data]] = await sendCommand<[[string, [string, string[]][]]]>({
+  const result = await sendCommand<[[string, [string, string[]][]]]>({
     id,
     command: 'XREAD',
     args: ['COUNT', 100, 'STREAMS', key, 0],
   })
+
+  if (!result) {
+    return []
+  }
+
+  const [_, data] = result[0]
 
   return data.reduce((pre, cur) => {
     const [id, value] = cur
