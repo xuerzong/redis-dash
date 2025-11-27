@@ -4,8 +4,9 @@ import { FileInput } from '@client/components/ui/FileInput'
 import { FormField } from '@client/components/ui/Form'
 import { Modal } from '@client/components/ui/Modal'
 import { Switch } from '@client/components/ui/Switch'
+import { useSyncState } from '@/client/hooks/useSyncState'
 import { Settings2Icon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import s from './index.module.scss'
 
 type RedisSSLSwitchValue = {
@@ -34,14 +35,16 @@ export const RedisSSLSwitch: React.FC<RedisSSLSwitchProps> = ({
         0
   )
   const [open, setOpen] = useState(false)
-  const [checked, setChecked] = useState(initChecked)
-  const [SSLConfig, setSSLConfig] = useState(
-    value ? { ...defaultValue, ...value } : { ...defaultValue }
-  )
+  const [checked, setChecked] = useSyncState(initChecked)
 
-  useEffect(() => {
-    onChange?.(SSLConfig)
-  }, [SSLConfig])
+  const SSLConfig = useMemo(() => {
+    return { ...defaultValue, ...value }
+  }, [value, defaultValue])
+
+  const onChangeValue = (values: typeof SSLConfig) => {
+    const nextSSLConfig = { ...SSLConfig, ...values }
+    onChange?.(nextSSLConfig)
+  }
 
   return (
     <Box>
@@ -96,7 +99,7 @@ export const RedisSSLSwitch: React.FC<RedisSSLSwitchProps> = ({
             <FileInput
               value={SSLConfig.ca}
               onChange={(e) => {
-                setSSLConfig((pre) => ({ ...pre, ca: e }))
+                onChangeValue({ ca: e })
               }}
             />
           </FormField>
@@ -105,7 +108,7 @@ export const RedisSSLSwitch: React.FC<RedisSSLSwitchProps> = ({
             <FileInput
               value={SSLConfig.cert}
               onChange={(e) => {
-                setSSLConfig((pre) => ({ ...pre, cert: e }))
+                onChangeValue({ cert: e })
               }}
             />
           </FormField>
@@ -114,7 +117,7 @@ export const RedisSSLSwitch: React.FC<RedisSSLSwitchProps> = ({
             <FileInput
               value={SSLConfig.key}
               onChange={(e) => {
-                setSSLConfig((pre) => ({ ...pre, key: e }))
+                onChangeValue({ key: e })
               }}
             />
           </FormField>

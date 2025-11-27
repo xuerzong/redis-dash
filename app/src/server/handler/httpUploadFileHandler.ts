@@ -3,13 +3,10 @@ import formidable from 'formidable'
 import { json, notFound, serverError } from '@server/lib/response'
 import path from 'node:path'
 import fs from 'node:fs/promises'
-import { dirname } from '@/utils/dirname'
 import { ensureDir } from '@/utils/fs'
+import { CACHE_PATH } from '../constants/path'
 
-const UPLOAD_DIR = path.resolve(
-  process.env.NODE_ENV === 'dev' ? process.cwd() : dirname,
-  'uploads'
-)
+const UPLOAD_DIR = path.resolve(CACHE_PATH, 'uploads')
 
 export const httpUploadFileHandler: BaseHandlerFunc =
   (next?: HandlerFunc) => async (req, res) => {
