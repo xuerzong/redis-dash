@@ -14,4 +14,9 @@ export const zhCN: Record<string, string> = {
   terminal: '终端',
   'key.add': '添加 Key',
   'placeholder.filterByKeyNameAndPattern': '输入键名或正则表达式筛选',
+  language: '语言',
+  theme: '主题',
+  'theme.system': '系统',
+  'theme.dark': '深色',
+  'theme.light': '浅色',
 }

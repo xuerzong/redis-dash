@@ -48,25 +48,23 @@
   --color-danger-bg: var(--color-red-100);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-primary: 245 245 245;
-    --color-primary-foreground: 10 10 10;
-    --color-accent: 229 229 229;
+:root.dark {
+  --color-primary: 245 245 245;
+  --color-primary-foreground: 10 10 10;
+  --color-accent: 229 229 229;
 
-    --color-background: 0 0 0;
-    --color-muted: 23 23 23;
-    --color-foreground: 255 255 255;
+  --color-background: 0 0 0;
+  --color-muted: 23 23 23;
+  --color-foreground: 255 255 255;
 
-    --color-border: 38 38 38;
+  --color-border: 38 38 38;
 
-    --color-success: var(--color-green-600);
-    --color-success-bg: var(--color-green-950);
-    --color-warning: var(--color-yellow-600);
-    --color-warning-bg: var(--color-yellow-950);
-    --color-danger: var(--color-red-600);
-    --color-danger-bg: var(--color-red-950);
-  }
+  --color-success: var(--color-green-600);
+  --color-success-bg: var(--color-green-950);
+  --color-warning: var(--color-yellow-600);
+  --color-warning-bg: var(--color-yellow-950);
+  --color-danger: var(--color-red-600);
+  --color-danger-bg: var(--color-red-950);
 }
 
 [data-sonner-toast] {

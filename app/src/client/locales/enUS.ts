@@ -14,4 +14,9 @@ export const enUS: Record<string, string> = {
   terminal: 'Terminal',
   'key.add': 'Add Key',
   'placeholder.filterByKeyNameAndPattern': 'Filter by Key Name and Pattern',
+  language: 'Language',
+  theme: 'Theme',
+  'theme.system': 'System',
+  'theme.dark': 'Dark',
+  'theme.light': 'Light',
 }

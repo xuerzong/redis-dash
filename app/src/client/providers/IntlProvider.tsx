@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { locales } from '@/client/locales'
-
-const langs = ['zh-CN', 'en-US'] as const
-
-export type Lang = (typeof langs)[number]
+import { useConfigContext } from './ConfigProvider'
+import type { Lang } from '@/types'
 
 interface IntlContextState {
   lang: Lang
@@ -26,23 +24,19 @@ export const useIntlContext = () => {
 export const IntlProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const cacheLang = localStorage.getItem('rds-locale') as Lang
-  const [lang, setLang] = useState<Lang>(
-    langs.includes(cacheLang) ? cacheLang : 'en-US'
-  )
-  const messages = locales[lang]
-  useEffect(() => {
-    localStorage.setItem('rds-locale', lang)
-  }, [lang])
+  const { config, updateConfig } = useConfigContext()
+  const messages = locales[config.lang as Lang]
   const value = useMemo(() => {
     return {
-      lang,
-      setLang,
+      lang: config.lang,
+      setLang: (lang: Lang) => {
+        updateConfig({ lang })
+      },
       messages,
       formatMessage: (id: string) => {
-        return messages[id] || locales['en-US'][lang]
+        return messages[id] || locales['en-US'][config.lang]
       },
     }
-  }, [lang, messages])
+  }, [config.lang, messages, updateConfig])
   return <IntlContext value={value}>{children}</IntlContext>
 }

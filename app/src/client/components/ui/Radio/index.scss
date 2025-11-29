@@ -1,0 +1,59 @@
+.RadioGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.RadioItem {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.RadioRoot {
+  box-sizing: border-box;
+  display: flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+
+  &[data-unchecked] {
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+  }
+
+  &[data-checked] {
+    background-color: var(--primary-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+}
+
+.RadioIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[data-unchecked] {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    border-radius: 100%;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--primary-foreground-color);
+  }
+}

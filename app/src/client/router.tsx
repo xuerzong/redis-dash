@@ -2,12 +2,14 @@ import { createHashRouter } from 'react-router'
 import { AppLayout } from './layouts/AppLayout'
 import { RootLayout } from './layouts/RootLayout'
 import { RedisLayout } from './layouts/RedisLayout'
+import { SettingsLayout } from './layouts/SettingsLayout'
 import CreatePage from './views/Create'
 import RedisPage from './views/Redis'
 import LoadingPage from './views/Loading'
 import HomePage from './views/Home'
 import RedisSettingsPage from './views/RedisSettings'
 import RedisTerminalPage from './views/RedisTerminal'
+import SettingsPage from './views/Settings'
 
 export const router = createHashRouter([
   {
@@ -43,6 +45,16 @@ export const router = createHashRouter([
                 element: <RedisTerminalPage />,
               },
             ],
+          },
+        ],
+      },
+      {
+        path: 'settings',
+        element: <SettingsLayout />,
+        children: [
+          {
+            path: '',
+            element: <SettingsPage />,
           },
         ],
       },

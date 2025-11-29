@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router'
-import { SettingsIcon } from 'lucide-react'
+import { Outlet, useNavigate } from 'react-router'
+import { DatabaseIcon, SettingsIcon } from 'lucide-react'
 import { Box } from '@client/components/ui/Box'
 import { IconButton } from '@/client/components/ui/Button'
 import { GithubIcon } from '@/client/components/Icons/GithubIcon'
@@ -8,6 +8,7 @@ import { useIntlContext } from '@/client/providers/IntlProvider'
 import s from './index.module.scss'
 
 export const RootLayout = () => {
+  const navigate = useNavigate()
   const { formatMessage } = useIntlContext()
   return (
     <Box className={s.RootLayout} display="flex" height="100vh">
@@ -18,12 +19,24 @@ export const RootLayout = () => {
         width="calc(var(--sider-size) + 1px)"
         height="100%"
         borderRight="1px solid var(--border-color)"
-        boxSizing="content-box"
         className={s.RootMenu}
       >
+        <IconButton
+          variant="ghost"
+          onClick={() => {
+            navigate('/')
+          }}
+        >
+          <DatabaseIcon />
+        </IconButton>
         <Box flex={1} />
         <Tooltip content={formatMessage('settings')} placement="right">
-          <IconButton variant="ghost">
+          <IconButton
+            variant="ghost"
+            onClick={() => {
+              navigate('/settings')
+            }}
+          >
             <SettingsIcon />
           </IconButton>
         </Tooltip>

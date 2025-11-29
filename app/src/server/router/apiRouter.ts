@@ -1,6 +1,8 @@
 import { WSRouter } from '@server/lib/router'
 import { connectionDb } from '@server/lib/db'
 import { redisMap } from '@server/lib/redisMap'
+import { getConfig, setConfig } from '@server/services/config'
+import type { Config } from '@/types'
 
 const router = new WSRouter()
 
@@ -38,6 +40,14 @@ router.post('/api/connections/:id/disconnect', async (req) => {
   const connection = await connectionDb.find(id)
   if (!connection) return null
   await redisMap.closeInstance(connection)
+})
+
+router.get('/api/config', async () => {
+  return getConfig()
+})
+
+router.post('/api/config', async (req) => {
+  return setConfig(req.body as Config)
 })
 
 export { router }
