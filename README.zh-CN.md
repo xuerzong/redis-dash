@@ -1,8 +1,6 @@
 <div align="center">
-  <img width='128' height='auto' src="./assets/hero.png" >
+  <img src="./assets/hero.png" >
 </div>
-
----
 
 <div align='center'>
   <a href="https://www.npmjs.com/package/@xuerzong/redis-studio">
