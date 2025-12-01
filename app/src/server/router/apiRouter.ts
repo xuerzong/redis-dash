@@ -1,6 +1,6 @@
 import { WSRouter } from '@server/lib/router'
 import { connectionDb } from '@server/lib/db'
-import { redisMap } from '@server/lib/redisMap'
+import redisMap from '@server/lib/redisMap'
 import { getConfig, setConfig } from '@server/services/config'
 import type { Config } from '@/types'
 

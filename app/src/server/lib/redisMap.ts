@@ -1,6 +1,11 @@
 import Redis, { type RedisOptions } from 'ioredis'
 import { safeReadFile } from '@/utils/fs'
 import type { ConnectionData } from './db/connections'
+import { __DEV__ } from '../utils/env'
+
+declare global {
+  var redisMap: RedisMap
+}
 
 type RedisConfig = ConnectionData
 
@@ -89,4 +94,14 @@ export class RedisMap {
   }
 }
 
-export const redisMap = new RedisMap()
+const createRedisMap = () => {
+  return new RedisMap()
+}
+
+const redisMap = global.redisMap || createRedisMap()
+
+if (__DEV__) {
+  global.redisMap = redisMap
+}
+
+export default redisMap

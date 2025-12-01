@@ -3,7 +3,7 @@ import { WebSocketServer } from 'ws'
 import { Server as HTTPSServer } from 'https'
 import picocolors from 'picocolors'
 import { logger } from '@/utils/logger'
-import { redisMap } from '@server/lib/redisMap'
+import redisMap from '@server/lib/redisMap'
 import { connectionDb } from '@server/lib/db'
 import { apiRouter } from '@server/router'
 

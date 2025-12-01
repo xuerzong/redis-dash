@@ -4,7 +4,7 @@
   "description": "This is a lightweight Redis Manager.",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev tsx ./src/dev.ts",
+    "dev": "cross-env NODE_ENV=dev tsx watch ./src/dev.ts",
     "build:client": "tsc -p ./tsconfig.app.json && vite build",
     "build:server": "node ../scripts/build-server.mjs",
     "build": "npm-run-all build:*"
