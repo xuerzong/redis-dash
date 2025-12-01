@@ -23,3 +23,5 @@ export const logger = new Logger({
   stdout: process.stdout,
   stderr: process.stderr,
 })
+
+export default logger
