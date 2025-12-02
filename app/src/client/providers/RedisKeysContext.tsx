@@ -1,9 +1,13 @@
-import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
-import React, { useEffect, useMemo, useState } from 'react'
-import { TreeNode, keysToTree } from '../utils/tree'
-import { getKeys } from '../commands/redis'
-import { useRedisId } from '../hooks/useRedisId'
-import { changeRedisKeys, useRedisStore } from '../stores/redisStore'
+import type { RedisKeyType } from '@client/constants/redisKeyTypes'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { TreeNode, keysToTree } from '@client/utils/tree'
+import { getKeys } from '@client/commands/redis'
+import { useRedisId } from '@client/hooks/useRedisId'
+import {
+  changeRedisKeys,
+  initRedisKeys,
+  useRedisStore,
+} from '@client/stores/redisStore'
 import { useDebounce } from 'use-debounce'
 
 export const viewModes = ['list', 'tree'] as const
@@ -52,7 +56,8 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   const [filterType, setFilterType] = useState('all')
   const [loading, setLoading] = useState(false)
   const [keysCountLimit, setKeysCountLimit] = useState(200)
-  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const redisKeys = useRedisStore((state) => state.redisKeysMap[redisId])
+  const lastQueryKey = useRef(redisId)
 
   const [debouncedSearchValue] = useDebounce(searchValue, 500)
 
@@ -61,15 +66,25 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
     params?: { match?: string; count?: number }
   ) => {
     setLoading(true)
+    lastQueryKey.current = redisId
     return getKeys(redisId, {
       ...{ match: searchValue, count: keysCountLimit },
       ...params,
     })
-      .then(changeRedisKeys)
+      .then((keys) => {
+        // Prevent race condition in queryRedisKeys
+        if (lastQueryKey.current === redisId) {
+          changeRedisKeys(redisId, keys)
+        }
+      })
       .finally(() => {
         setLoading(false)
       })
   }
+
+  useEffect(() => {
+    initRedisKeys(redisId)
+  }, [redisId])
 
   useEffect(() => {
     queryRedisKeys(redisId, {

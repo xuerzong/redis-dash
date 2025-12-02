@@ -15,7 +15,7 @@ export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()
   const [keyName, setKeyName] = useSyncState(redisKeyState.keyName)
   const [checkLoading, setCheckLoaing] = useState(false)
-  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const redisKeys = useRedisStore((state) => state.redisKeysMap[redisId])
   const { setSelectedKey } = useRedisContext()
   const onCheck = () => {
     setCheckLoaing(true)
@@ -23,6 +23,7 @@ export const RedisKeyNameInput = () => {
       loading: 'Loading...',
       success() {
         changeRedisKeys(
+          redisId,
           redisKeys.map((redisKey) => {
             if (redisKey.key === redisKeyState.keyName) {
               return { ...redisKey, key: keyName }

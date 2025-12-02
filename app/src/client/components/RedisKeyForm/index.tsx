@@ -33,7 +33,7 @@ const defaultValues = {
 export const RedisKeyCreateForm = () => {
   const redisId = useRedisId()
   const [values, setValues] = useState({ ...defaultValues })
-  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const redisKeys = useRedisStore((state) => state.redisKeysMap[redisId])
   const { setSelectedKey } = useRedisContext()
   const [submitLoading, setSubmitLoading] = useState(false)
   const { formatMessage } = useIntlContext()
@@ -93,7 +93,7 @@ export const RedisKeyCreateForm = () => {
       {
         loading: 'Loading...',
         success: () => {
-          changeRedisKeys([
+          changeRedisKeys(redisId, [
             ...redisKeys,
             { type: values.type as RedisKeyType, key: values.key },
           ])

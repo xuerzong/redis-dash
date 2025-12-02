@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { getRedisState } from '../commands/redis'
-import { useRedisId } from '../hooks/useRedisId'
+import type { RedisKeyType } from '@client/constants/redisKeyTypes'
+import { getRedisState } from '@client/commands/redis'
+import { useRedisId } from '@client/hooks/useRedisId'
 import { useRedisContext } from './RedisContext'
 
 interface RedisKeyViewerContextState {
@@ -52,6 +52,7 @@ export const RedisKeyStateProvider: React.FC<
   const { selectedKey } = useRedisContext()
   const [loading, setLoading] = useState(true)
   const [filterValue, setFilterValue] = useState('')
+  const lastQueryKey = useRef(`${redisId}_${selectedKey}`)
 
   const [state, setState] = useState<{
     keyName: string
@@ -68,12 +69,18 @@ export const RedisKeyStateProvider: React.FC<
   const queryRedisKeyState = useDebouncedCallback(
     async (redisId: string, selectedKey: string, params: typeof tableProps) => {
       setLoading(true)
+
+      lastQueryKey.current = `${redisId}_${selectedKey}`
+
       if (import.meta.env.MODE === 'development') {
         await new Promise((resolve) => setTimeout(resolve, 1000))
       }
+
       await getRedisState(redisId, selectedKey, params)
         .then((nextState) => {
-          setState(nextState)
+          if (lastQueryKey.current === `${redisId}_${selectedKey}`) {
+            setState(nextState)
+          }
         })
         .finally(() => {
           setLoading(false)
