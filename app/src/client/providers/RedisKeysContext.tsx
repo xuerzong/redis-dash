@@ -1,9 +1,13 @@
-import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
+import type { RedisKeyType } from '@client/constants/redisKeyTypes'
 import React, { useEffect, useMemo, useState } from 'react'
-import { TreeNode, keysToTree } from '../utils/tree'
-import { getKeys } from '../commands/redis'
-import { useRedisId } from '../hooks/useRedisId'
-import { changeRedisKeys, useRedisStore } from '../stores/redisStore'
+import { TreeNode, keysToTree } from '@client/utils/tree'
+import { getKeys } from '@client/commands/redis'
+import { useRedisId } from '@client/hooks/useRedisId'
+import {
+  changeRedisKeys,
+  initRedisKeys,
+  useRedisStore,
+} from '@client/stores/redisStore'
 import { useDebounce } from 'use-debounce'
 
 export const viewModes = ['list', 'tree'] as const
@@ -52,7 +56,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   const [filterType, setFilterType] = useState('all')
   const [loading, setLoading] = useState(false)
   const [keysCountLimit, setKeysCountLimit] = useState(200)
-  const redisKeys = useRedisStore((state) => state.redisKeys)
+  const redisKeys = useRedisStore((state) => state.redisKeysMap[redisId])
 
   const [debouncedSearchValue] = useDebounce(searchValue, 500)
 
@@ -69,7 +73,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
       .then((keys) => {
         // Prevent race condition in queryRedisKeys
         if (currentRedisId === redisId) {
-          changeRedisKeys(keys)
+          changeRedisKeys(redisId, keys)
         }
       })
       .finally(() => {
@@ -78,8 +82,7 @@ export const RedisKeysProvider: React.FC<React.PropsWithChildren> = ({
   }
 
   useEffect(() => {
-    // Reset Keys When Switching Redis
-    changeRedisKeys([])
+    initRedisKeys(redisId)
   }, [redisId])
 
   useEffect(() => {
