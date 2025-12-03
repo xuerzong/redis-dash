@@ -26,10 +26,10 @@
 
 ## ✨ Features
 
--  **Multi-Connection Support:** Easily manage and switch between multiple Redis instances.
--  **Intuitive Key Browser:** Browse, search, edit, and delete various data types (String, List, Hash, Set, ZSet).
--  **Built-in CLI Console:** A powerful Redis Command Line Interface (CLI) allows you to execute native Redis commands directly.
--  **Cross-Platform:** Supports Windows, macOS, and Linux.
+-  🔗 **Multi-Connection Support:** Easily manage and switch between multiple Redis instances.
+-  🔎 **Intuitive Key Browser:** Browse, search, edit, and delete various data types (String, List, Hash, Set, ZSet).
+-  💻 **Built-in CLI Console:** A powerful Redis Command Line Interface (CLI) allows you to execute native Redis commands directly.
+-  🌍 **Cross-Platform:** Supports Windows, macOS, and Linux.
 
 ## 🚀 Get Started
 
