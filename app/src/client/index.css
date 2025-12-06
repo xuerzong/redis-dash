@@ -17,6 +17,7 @@
   --font-sans: var(--font-mono);
 
   --spacing-md: 0.5rem;
+  --titlebar-height: 29px;
 
   --color: var(--foreground-color);
   --bg-color: transparent;
@@ -91,6 +92,7 @@
 * {
   box-sizing: border-box;
   border-color: var(--border-color);
+  user-select: none;
 }
 
 html,

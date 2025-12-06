@@ -19,11 +19,9 @@ import { useIntlContext } from '@/client/providers/IntlProvider'
 import { RedisProvider, useRedisContext } from '@/client/providers/RedisContext'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
-import {
-  getConnectionStatus,
-  postDisconnectConnection,
-} from '@/client/commands/api/connections'
+import api from '@xuerzong/redis-studio-invoke/api'
 import { Loader } from '@/client/components/Loader'
+import { checkStatus } from '@/client/commands/redis'
 import s from './index.module.scss'
 
 export const RedisLayoutComponent: React.FC = () => {
@@ -84,7 +82,7 @@ export const RedisLayoutComponent: React.FC = () => {
               <IconButton
                 variant="outline"
                 onClick={async () => {
-                  await postDisconnectConnection(redisId)
+                  await api.postDisconnectConnection(redisId)
                   window.location.reload()
                 }}
               >
@@ -164,8 +162,8 @@ const ConnectRedisLoader: React.FC<React.PropsWithChildren> = ({
 
   const queryConnectionStatus = async (id: string) => {
     retryTimeRef.current = retryTimeRef.current - 1
-    return getConnectionStatus(id).then((res) => {
-      if (res !== 1) {
+    return checkStatus(id).then((res) => {
+      if (res !== 'PONG') {
         if (retryTimeRef.current > 0) {
           retryTimerRef.current = setTimeout(() => {
             queryConnectionStatus(id)
@@ -174,7 +172,7 @@ const ConnectRedisLoader: React.FC<React.PropsWithChildren> = ({
           setError(true)
         }
       }
-      setStatus(res)
+      setStatus(res === 'PONG' ? 1 : 0)
     })
   }
 

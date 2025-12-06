@@ -5,11 +5,9 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { router } from './router'
 import { IntlProvider } from './providers/IntlProvider'
 import { ConfigProvider } from './providers/ConfigProvider'
-import { initWebsocket } from './utils/ws'
+import '@xuerzong/redis-studio-invoke/init'
 import 'normalize.css'
 import './index.css'
-
-initWebsocket()
 
 const root = createRoot(document.getElementById('root')!)
 

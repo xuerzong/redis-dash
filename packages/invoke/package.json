@@ -1,0 +1,22 @@
+{
+  "name": "@xuerzong/redis-studio-invoke",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./init": "./src/init.ts",
+    "./api": "./src/api.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tauri-apps/api": "^2.9.1",
+    "@tauri-apps/plugin-fs": "^2.4.4"
+  }
+}

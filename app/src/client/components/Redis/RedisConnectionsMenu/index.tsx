@@ -8,7 +8,7 @@ import { RedisIcon } from '@client/components/Icons/RedisIcon'
 import { LoaderMask } from '@client/components/LoaderMask'
 import { useRedisId } from '@client/hooks/useRedisId'
 import { useIntlContext } from '@/client/providers/IntlProvider'
-import { postDisconnectConnection } from '@/client/commands/api/connections'
+import api from '@xuerzong/redis-studio-invoke/api'
 import { RedisConnectionDeleteModal } from '../RedisConnectionDeleteModal'
 import s from './index.module.scss'
 
@@ -38,7 +38,7 @@ export const RedisConnectionsMenu = () => {
               icon: <RefreshCcwIcon />,
               label: formatMessage('reconnect'),
               async onClick() {
-                await postDisconnectConnection(d.id)
+                await api.postDisconnectConnection(d.id)
                 if (d.id === redisId) {
                   window.location.reload()
                 }

@@ -22,54 +22,62 @@ export const RootLayout = () => {
   }, [location])
   const { formatMessage } = useIntlContext()
   return (
-    <Box className={s.RootLayout} display="flex" height="100vh">
+    <Box className={s.RootLayout}>
       <Box
-        display="flex"
-        flexDirection="column"
-        flexShrink={0}
-        width="calc(var(--sider-size) + 1px)"
-        height="100%"
-        borderRight="1px solid var(--border-color)"
-        className={s.RootMenu}
-      >
-        <IconButton
-          variant={pathname === '/' ? 'subtle' : 'ghost'}
-          onClick={() => {
-            if (redisId) {
-              changeConnectionsCollapsed(false)
-            } else {
-              navigate('/')
-            }
-          }}
-          data-active={pathname === '/'}
+        height="var(--titlebar-height)"
+        borderBottom="1px solid var(--border-color)"
+        data-tauri-drag-region
+      />
+      <Box display="flex" height="calc(100vh - var(--titlebar-height))">
+        <Box
+          display="flex"
+          flexDirection="column"
+          flexShrink={0}
+          width="calc(var(--sider-size) + 1px)"
+          height="100%"
+          borderRight="1px solid var(--border-color)"
+          className={s.RootMenu}
+          data-tauri-drag-region
         >
-          <DatabaseIcon />
-        </IconButton>
-        <Box flex={1} />
-        <Tooltip content={formatMessage('settings')} placement="right">
           <IconButton
-            variant={pathname === '/settings' ? 'subtle' : 'ghost'}
+            variant={pathname === '/' ? 'subtle' : 'ghost'}
             onClick={() => {
-              navigate('/settings')
+              if (redisId) {
+                changeConnectionsCollapsed(false)
+              } else {
+                navigate('/')
+              }
             }}
-            className={s.RootMenuButton}
-            data-active={pathname === '/settings'}
+            data-active={pathname === '/'}
           >
-            <SettingsIcon />
+            <DatabaseIcon />
           </IconButton>
-        </Tooltip>
+          <Box flex={1} />
+          <Tooltip content={formatMessage('settings')} placement="right">
+            <IconButton
+              variant={pathname === '/settings' ? 'subtle' : 'ghost'}
+              onClick={() => {
+                navigate('/settings')
+              }}
+              className={s.RootMenuButton}
+              data-active={pathname === '/settings'}
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
 
-        <IconButton
-          variant="ghost"
-          onClick={() => {
-            window.open('https://github.com/xuerzong/redis-studio', '_blank')
-          }}
-        >
-          <GithubIcon />
-        </IconButton>
-      </Box>
-      <Box width="calc(100vw - var(--sider-size) - 1px)" height="100%">
-        <Outlet />
+          <IconButton
+            variant="ghost"
+            onClick={() => {
+              window.open('https://github.com/xuerzong/redis-studio', '_blank')
+            }}
+          >
+            <GithubIcon />
+          </IconButton>
+        </Box>
+        <Box width="calc(100vw - var(--sider-size) - 1px)" height="100%">
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   )

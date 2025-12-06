@@ -1,4 +1,4 @@
-import { sendCommand } from '@client/utils/invoke'
+import { sendCommand } from '@xuerzong/redis-studio-invoke'
 
 export interface HASHData {
   field: string

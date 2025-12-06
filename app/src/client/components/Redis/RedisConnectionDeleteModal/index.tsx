@@ -4,7 +4,7 @@ import { Box } from '@client/components/ui/Box'
 import { Button } from '@client/components/ui/Button'
 import { Modal } from '@client/components/ui/Modal'
 import { queryConnections } from '@client/stores/appStore'
-import { delConnection } from '@client/commands/api/connections'
+import api from '@xuerzong/redis-studio-invoke/api'
 
 interface RedisConnectionDeleteModalProps {
   open?: boolean
@@ -33,7 +33,7 @@ export const RedisConnectionDeleteModal: React.FC<
           </Button>
           <Button
             onClick={() => {
-              toast.promise(delConnection(redisId), {
+              toast.promise(api.delConnection(redisId), {
                 loading: 'Loading...',
                 success: () => {
                   navigate('/')

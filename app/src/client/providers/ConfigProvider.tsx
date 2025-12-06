@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDarkMode } from '@client/hooks/useDarkMode'
-import { getSystemConfig, setSystemConfig } from '@client/commands/api/config'
+import api from '@xuerzong/redis-studio-invoke/api'
 import type { Config, Lang, Theme } from '@/types'
 
 interface ConfigContextState {
@@ -82,7 +82,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   }, [lang])
 
   const fetchConfig = useCallback(async () => {
-    const nextConfig = await getSystemConfig()
+    const nextConfig = await api.getSystemConfig()
     if (nextConfig) {
       setConfig((pre) => ({ ...pre, ...nextConfig }))
     }
@@ -92,7 +92,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     async (newConfig: Partial<Config>) => {
       const nextConfig = { ...config, ...newConfig }
       setConfig(nextConfig)
-      await setSystemConfig(nextConfig)
+      await api.setSystemConfig(nextConfig)
       fetchConfig()
     },
     [config, fetchConfig]

@@ -1,7 +1,7 @@
-import { sendCommand } from '@client/utils/invoke'
+import { sendCommand } from '@xuerzong/redis-studio-invoke'
 import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
 
-export const getTTL = (id: string, key: string) => {
+export const getTTL = async (id: string, key: string) => {
   return sendCommand<number>({
     id,
     command: 'TTL',
@@ -46,5 +46,13 @@ export const delKey = (id: string, key: string) => {
     id,
     command: 'DEL',
     args: [key],
+  })
+}
+
+export const checkStatus = (id: string) => {
+  return sendCommand({
+    id,
+    command: 'PING',
+    args: [],
   })
 }

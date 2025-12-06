@@ -16,11 +16,15 @@
     "format": "prettier --write .",
     "release": "npm-run-all build copy:*",
     "prepare": "husky",
-    "lint": "lint-staged"
+    "lint": "lint-staged",
+    "desktop:dev": "npm run tauri dev --workspace=desktop",
+    "desktop:build": "npm run tauri build --workspace=desktop"
   },
   "workspaces": [
     "cli",
-    "app"
+    "app",
+    "desktop",
+    "packages/*"
   ],
   "private": true,
   "author": "xuerzong@gmail.com",
@@ -34,6 +38,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.6.2",
     "rimraf": "^6.1.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

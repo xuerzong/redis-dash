@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getConnections } from '@client/commands/api/connections'
+import api from '@xuerzong/redis-studio-invoke/api'
 
 interface AppStoreState {
   connections: any[]
@@ -15,7 +15,8 @@ const appStore = create<AppStoreState>(() => ({
 
 export const queryConnections = async () => {
   appStore.setState({ connectionsLoading: true })
-  return getConnections()
+  return api
+    .getConnections()
     .then((res) => {
       changeConnections(res)
     })

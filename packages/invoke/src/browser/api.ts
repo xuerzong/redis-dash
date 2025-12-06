@@ -1,4 +1,13 @@
-import { sendRequest } from '@client/utils/invoke'
+import { invoke } from './invoke'
+
+export const sendRequest = <T = any>(data: {
+  method: 'GET' | 'POST' | 'DELETE' | 'PUT'
+  url: string
+  body?: any
+  query?: any
+}): Promise<T> => {
+  return invoke('sendRequest', data)
+}
 
 export const getConnections = async () => {
   return sendRequest<any[]>({
@@ -41,5 +50,20 @@ export const postDisconnectConnection = async (id: string) => {
   return sendRequest<number>({
     method: 'POST',
     url: `/api/connections/${id}/disconnect`,
+  })
+}
+
+export const getSystemConfig = () => {
+  return sendRequest<any>({
+    method: 'GET',
+    url: '/api/config',
+  })
+}
+
+export const setSystemConfig = (config: any) => {
+  return sendRequest({
+    method: 'POST',
+    url: '/api/config',
+    body: config,
   })
 }

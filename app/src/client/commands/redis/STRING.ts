@@ -1,6 +1,6 @@
-import { sendCommand } from '@client/utils/invoke'
+import { sendCommand } from '@xuerzong/redis-studio-invoke'
 
-export const getSTRINGData = (id: string, key: string) => {
+export const getSTRINGData = async (id: string, key: string) => {
   return sendCommand<string>({
     id,
     command: 'GET',

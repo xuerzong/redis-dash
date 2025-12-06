@@ -1,9 +1,11 @@
+import { invoke } from '@xuerzong/redis-studio-invoke'
+
 export const sendCommand = <T = any>(data: {
   id: string
   command: string
   args: any[]
 }): Promise<T> => {
-  return window.invoke('sendCommand', data)
+  return invoke('sendCommand', data)
 }
 
 export const sendRequest = <T = any>(data: {
@@ -12,5 +14,5 @@ export const sendRequest = <T = any>(data: {
   body?: any
   query?: any
 }): Promise<T> => {
-  return window.invoke('sendRequest', data)
+  return invoke('sendRequest', data)
 }

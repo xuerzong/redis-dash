@@ -8,10 +8,7 @@ import { FormField } from '@client/components/ui/Form'
 import { queryConnections } from '@client/stores/appStore'
 import s from './index.module.scss'
 import { RedisSSLSwitch } from './RedisSSLSwitch'
-import {
-  createConnection,
-  updateConnection,
-} from '@client/commands/api/connections'
+import api from '@xuerzong/redis-studio-invoke/api'
 import { useIntlContext } from '@/client/providers/IntlProvider'
 
 interface RedisFormData {
@@ -79,7 +76,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
       return
     }
     setSubmitLoading(true)
-    toast.promise(createConnection(values), {
+    toast.promise(api.createConnection(values), {
       loading: 'Loading...',
       success(newConnectionId) {
         navigate(`/${newConnectionId}`)
@@ -106,7 +103,7 @@ export const RedisForm: React.FC<RedisFormProps> = ({
     }
     setSubmitLoading(true)
     if (defaultValues?.id) {
-      toast.promise(updateConnection(defaultValues.id, values), {
+      toast.promise(api.updateConnection(defaultValues.id, values), {
         loading: 'Loading...',
         success() {
           queryConnections()
