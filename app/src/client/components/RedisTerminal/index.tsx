@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { Terminal, type TerminalRef } from '../Terminal'
-import { sendCommand } from '@/client/utils/invoke'
+import { sendCommand } from '@xuerzong/redis-studio-invoke'
 import { colorize } from '../Terminal/utils'
 
 interface RedisTerminalProps {
