@@ -60,6 +60,7 @@ async fn close_redis_command(redis_config: RedisConfig) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_os::init())
         .invoke_handler(tauri::generate_handler![send_redis_command, close_redis_command])
         .setup(|app| {
             if cfg!(debug_assertions) {

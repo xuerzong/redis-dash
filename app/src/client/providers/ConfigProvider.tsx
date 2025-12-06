@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDarkMode } from '@client/hooks/useDarkMode'
 import api from '@xuerzong/redis-studio-invoke/api'
 import type { Config, Lang, Theme } from '@/types'
+import { isTauri } from '@tauri-apps/api/core'
+import { type } from '@tauri-apps/plugin-os'
 
 interface ConfigContextState {
   config: Config
@@ -80,6 +82,12 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     document.documentElement.lang = lang
     localStorage.setItem('rds-lang', lang)
   }, [lang])
+
+  useEffect(() => {
+    if (isTauri()) {
+      document.documentElement.setAttribute('data-tauri', type())
+    }
+  }, [])
 
   const fetchConfig = useCallback(async () => {
     const nextConfig = await api.getSystemConfig()

@@ -8,6 +8,7 @@ import { useIntlContext } from '@client/providers/IntlProvider'
 import { useMemo } from 'react'
 import { useRedisId } from '@client/hooks/useRedisId'
 import { changeConnectionsCollapsed } from '@client/stores/appStore'
+import { TitlebarHeightSetter } from '@client/components/tauri/TitlebarHeightSetter'
 import s from './index.module.scss'
 
 export const RootLayout = () => {
@@ -23,11 +24,21 @@ export const RootLayout = () => {
   const { formatMessage } = useIntlContext()
   return (
     <Box className={s.RootLayout}>
+      <TitlebarHeightSetter />
       <Box
+        position="relative"
         height="var(--titlebar-height)"
-        borderBottom="1px solid var(--border-color)"
+        overflow="hidden"
         data-tauri-drag-region
-      />
+      >
+        <Box
+          position="absolute"
+          width="100%"
+          bottom={0}
+          height="1px"
+          backgroundColor="var(--border-color)"
+        />
+      </Box>
       <Box display="flex" height="calc(100vh - var(--titlebar-height))">
         <Box
           display="flex"
