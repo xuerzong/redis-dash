@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Redis Studio",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "identifier": "me.xuco.redis-studio",
   "build": {
     "frontendDist": "../app/dist",
@@ -27,6 +27,10 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/icon.png", "icons/icon.icns", "icons/icon.ico"]
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   }
 }

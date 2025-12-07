@@ -78,7 +78,10 @@ export const delConnection = async (id: string) => {
   })
 }
 
-export const getConnectionStatus = async (id: string) => 0
+export const getConnectionStatus = async (id: string) => {
+  console.log(id)
+  return 0
+}
 
 export const postDisconnectConnection = async (id: string) => {
   return invoke('close_redis_command', {

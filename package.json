@@ -18,7 +18,8 @@
     "prepare": "husky",
     "lint": "lint-staged",
     "desktop:dev": "npm run tauri dev --workspace=desktop",
-    "desktop:build": "npm run tauri build --workspace=desktop"
+    "desktop:build": "npm run tauri build --workspace=desktop",
+    "replace-version": "node scripts/replace-version.mjs"
   },
   "workspaces": [
     "cli",

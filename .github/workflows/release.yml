@@ -1,0 +1,135 @@
+name: Generate Artifacts
+on:
+  push:
+    tags: [v*]
+
+jobs:
+  build-artifacts:
+    permissions:
+      contents: write
+
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'
+            arch: 'arm64'
+            os: 'macos'
+            targets: 'aarch64-apple-darwin'
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'
+            arch: 'x64'
+            os: 'macos'
+            targets: 'x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+            arch: 'x64'
+            os: 'ubuntu'
+            targets: ''
+          - platform: 'ubuntu-22.04-arm'
+            args: ''
+            arch: 'arm64'
+            os: 'ubuntu'
+            targets: ''
+          - platform: 'windows-latest'
+            args: ''
+            arch: 'x64'
+            os: 'windows'
+            targets: ''
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.targets }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: 'desktop'
+          shared-key: ci
+          cache-on-failure: true
+
+      - name: install dependencies (Linux only)
+        if: matrix.os == 'ubuntu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install client dependencies
+        run: npm ci
+
+      - name: Build client
+        run: npm run build
+
+      - name: Set version
+        run: npm run replace-version
+        env:
+          RDS_VERSION: ${{ github.ref_name }}
+
+      - name: Build and Release Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          RDS_TARGET_ARCH: ${{ matrix.arch }}
+          ENABLE_CODE_SIGNING: ${{ secrets.APPLE_CERTIFICATE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # Apple signing stuff
+          APPLE_CERTIFICATE: ${{ matrix.os == 'macos' && secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ matrix.os == 'macos' && secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ matrix.os == 'macos' && secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ matrix.os == 'macos' && secrets.APPLE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ matrix.os == 'macos' && secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ matrix.os == 'macos' && secrets.APPLE_TEAM_ID }}
+        with:
+          projectPath: desktop
+          tagName: 'v__VERSION__'
+          releaseName: 'Release __VERSION__'
+          releaseBody: '[Changelog __VERSION__](https://redis-studio.xuco.me/v/__VERSION__)'
+          releaseDraft: true
+          prerelease: true
+          args: '${{ matrix.args }}'
+
+  publish-npm:
+    name: Publish to NPM
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Set version
+        run: npm run replace-version
+        env:
+          RDS_VERSION: ${{ github.ref_name }}
+
+      - name: Build and Release NPM Package
+        run: |
+          npm run release
+          npm run publish:cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
