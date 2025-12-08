@@ -61,22 +61,22 @@ export const RedisForm: React.FC<RedisFormProps> = ({
       return { success: false, error: 'Host Is Required' }
     }
 
-    if (!values.port) {
+    if (!values.port || isNaN(Number(values.port))) {
       return { success: false, error: 'Port Is Required' }
     }
 
-    return { success: true, data: values }
+    return { success: true, data: { ...values, port: Number(values.port) } }
   }
 
   const onCreateConnection = async () => {
-    const { success, error } = await validateValues()
+    const { success, error, data } = await validateValues()
     if (!success) {
       console.error(error)
       toast.error('Form Data Error')
       return
     }
     setSubmitLoading(true)
-    toast.promise(api.createConnection(values), {
+    toast.promise(api.createConnection(data), {
       loading: 'Loading...',
       success(newConnectionId) {
         navigate(`/${newConnectionId}`)
