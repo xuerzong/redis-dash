@@ -72,7 +72,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     setTimeout(() => {
       document.documentElement.style.setProperty(
         '--transition-duration',
-        '0.3s'
+        '0.1s'
       )
     })
     localStorage.setItem('rds-theme', theme)
