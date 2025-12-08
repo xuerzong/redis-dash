@@ -1,10 +1,12 @@
 import { useRef } from 'react'
+import { open } from '@tauri-apps/plugin-dialog'
+import { isTauri } from '@tauri-apps/api/core'
 import { Box } from '../Box'
+import { XIcon } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button, IconButton } from '../Button'
 import { Input } from '../Input'
 import './index.scss'
-import { XIcon } from 'lucide-react'
-import { toast } from 'sonner'
 
 interface FileInputPorps {
   value?: string
@@ -45,6 +47,16 @@ export const FileInput: React.FC<FileInputPorps> = ({
     )
   }
 
+  const onTauriUpload = async () => {
+    const selectFile = await open({
+      multiple: false,
+      directory: false,
+    })
+    if (selectFile) {
+      onChange?.(selectFile)
+    }
+  }
+
   return (
     <Box className="FileInput">
       <Input
@@ -62,7 +74,9 @@ export const FileInput: React.FC<FileInputPorps> = ({
         data-placeholder={Boolean(placeholder && !displayName)}
         variant="outline"
         className="FileInputButton"
-        onClick={() => inputRef.current?.click()}
+        onClick={() =>
+          isTauri() ? onTauriUpload() : inputRef.current?.click()
+        }
       >
         {displayName || placeholder}
       </Button>

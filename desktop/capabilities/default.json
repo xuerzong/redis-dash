@@ -38,6 +38,7 @@
           "path": "$HOME/.redis-studio-cache/**"
         }
       ]
-    }
+    },
+    "dialog:allow-open"
   ]
 }
