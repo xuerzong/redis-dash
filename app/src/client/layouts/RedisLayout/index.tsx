@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
-import { useRedisId } from '@/client/hooks/useRedisId'
-import { useAppStore } from '@/client/stores/appStore'
-import { Box } from '@/client/components/ui/Box'
-import { Tooltip } from '@/client/components/ui/Tooltip'
-import { Button, IconButton } from '@/client/components/ui/Button'
+import { useRedisId } from '@client/hooks/useRedisId'
+import { useAppStore } from '@client/stores/appStore'
+import { Box } from '@client/components/ui/Box'
+import { Tooltip } from '@client/components/ui/Tooltip'
+import { Button, IconButton } from '@client/components/ui/Button'
 import {
   ChevronLeftIcon,
   MoreHorizontalIcon,
@@ -16,13 +16,13 @@ import {
   TrashIcon,
   XIcon,
 } from 'lucide-react'
-import { useIntlContext } from '@/client/providers/IntlProvider'
-import { RedisProvider, useRedisContext } from '@/client/providers/RedisContext'
-import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
-import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
+import { useIntlContext } from '@client/providers/IntlProvider'
+import { RedisProvider, useRedisContext } from '@client/providers/RedisContext'
+import { DropdownMenu } from '@client/components/ui/DropdownMenu'
+import { RedisConnectionDeleteModal } from '@client/components/Redis/RedisConnectionDeleteModal'
 import api from '@xuerzong/redis-studio-invoke/api'
-import { Loader } from '@/client/components/Loader'
-import { checkStatus } from '@/client/commands/redis'
+import { Loader } from '@client/components/Loader'
+import { checkStatus } from '@client/commands/redis'
 import s from './index.module.scss'
 
 export const RedisLayoutComponent: React.FC = () => {

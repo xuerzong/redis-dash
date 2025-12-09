@@ -5,7 +5,6 @@ export const zhCN: Record<string, string> = {
   settings: '设置',
   delete: '删除',
   create: '新建',
-  operation: '操作',
   'connection.create': '创建连接',
   'connection.new': '新的连接',
   'connection.save': '保存连接',

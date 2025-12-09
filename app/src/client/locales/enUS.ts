@@ -5,7 +5,6 @@ export const enUS: Record<string, string> = {
   settings: 'Settings',
   delete: 'Delete',
   create: 'Create',
-  operation: 'Operation',
   'connection.create': 'Create Connection',
   'connection.new': 'New Connection',
   'connection.save': 'Save Connection',

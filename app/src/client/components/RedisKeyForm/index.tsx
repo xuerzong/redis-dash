@@ -10,7 +10,7 @@ import { useRedisId } from '@client/hooks/useRedisId'
 import {
   redisKeyTypes,
   type RedisKeyType,
-} from '@/client/constants/redisKeyTypes'
+} from '@client/constants/redisKeyTypes'
 import {
   setHASHData,
   setLISTData,
@@ -21,7 +21,7 @@ import {
 import { setSTREAMData } from '@client/commands/redis/STREAM'
 import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
 import { useRedisContext } from '@client/providers/RedisContext'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 
 const defaultValues = {
   type: 'STRING',

@@ -5,6 +5,7 @@
   padding: var(--spacing-md);
   min-width: 12rem;
   z-index: 999;
+  box-shadow: var(--box-shadow);
 }
 
 .DropdownMenuItem {
@@ -16,6 +17,8 @@
   cursor: pointer;
   padding: var(--spacing-md);
   font-size: 0.875rem;
+  height: 2rem;
+  border-radius: var(--border-radius);
   &:hover {
     background-color: var(--muted-color);
   }

@@ -1,6 +1,6 @@
-import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
-import { Select } from '@/client/components/ui/Select'
-import { redisKeyTypes } from '@/client/constants/redisKeyTypes'
+import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
+import { Select } from '@client/components/ui/Select'
+import { redisKeyTypes } from '@client/constants/redisKeyTypes'
 
 export const RedisKeysFilterTypeSelector = () => {
   const { filterType, setFilterType } = useRedisKeysContext()

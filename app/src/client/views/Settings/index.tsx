@@ -1,8 +1,8 @@
-import { LangSelector } from '@/client/components/LangSelector'
-import { ThemeSwitcher } from '@/client/components/ThemeSwitcher'
-import { Box } from '@/client/components/ui/Box'
-import { FormField } from '@/client/components/ui/Form'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { LangSelector } from '@client/components/LangSelector'
+import { ThemeSwitcher } from '@client/components/ThemeSwitcher'
+import { Box } from '@client/components/ui/Box'
+import { FormField } from '@client/components/ui/Form'
+import { useIntlContext } from '@client/providers/IntlProvider'
 
 const Page = () => {
   const { formatMessage } = useIntlContext()

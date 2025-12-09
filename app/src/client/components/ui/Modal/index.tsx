@@ -26,12 +26,14 @@ export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
       {trigger && <Dialog.Trigger>{trigger}</Dialog.Trigger>}
       <Dialog.Portal>
         <Dialog.Backdrop className="ModalBackdrop" />
-        <Dialog.Popup className="ModalContent">
+        <Dialog.Popup style={{ width: '90vw' }} className="ModalContent">
           <div className="ModalHeader">
             <Dialog.Title className="ModalTitle">{title}</Dialog.Title>
-            <Dialog.Description className="ModalDescription">
-              {description}
-            </Dialog.Description>
+            {description && (
+              <Dialog.Description className="ModalDescription">
+                {description}
+              </Dialog.Description>
+            )}
 
             <IconButton
               variant="ghost"

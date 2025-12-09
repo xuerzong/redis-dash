@@ -10,6 +10,8 @@
   cursor: pointer;
   transition: all var(--transition-duration) ease-in;
   color: var(--foreground-color);
+  white-space: nowrap;
+  overflow: hidden;
 
   &:hover {
     background-color: var(--muted-color);

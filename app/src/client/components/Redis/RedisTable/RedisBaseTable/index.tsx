@@ -13,13 +13,11 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Input } from '@client/components/ui/Input'
-import { Drawer } from '@client/components/ui/Drawer'
 import { FormField } from '@client/components/ui/Form'
 import { Editor } from '@client/components/Editor'
 import { Modal } from '@client/components/ui/Modal'
-import s from './index.module.scss'
 import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
-
+import s from './index.module.scss'
 interface RedisTableField {
   type: 'input' | 'editor'
   name: string
@@ -93,7 +91,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
   const operationColumn: TableColumn<any> = useMemo(
     () => ({
       key: 'operation',
-      label: 'Operation',
+      label: '',
       width: '6rem',
       render(_, record) {
         return (
@@ -112,6 +110,11 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
                   setFormDefaultValues(record || defaultFormValues)
                   setFormValues(record || defaultFormValues)
                 }}
+                style={
+                  {
+                    '--size': '1.5rem',
+                  } as any
+                }
               >
                 <PencilIcon />
               </IconButton>
@@ -123,6 +126,11 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
                   setFormValues(record || defaultFormValues)
                   setDelOpen(true)
                 }}
+                style={
+                  {
+                    '--size': '1.5rem',
+                  } as any
+                }
               >
                 <TrashIcon />
               </IconButton>
@@ -231,7 +239,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
         </Box>
       )}
 
-      <Drawer
+      <Modal
         title={formMode === 0 ? `Add Row` : 'Edit Row'}
         open={addOpen}
         onOpenChange={setAddOpen}
@@ -304,7 +312,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
             </Button>
           </Box>
         </Box>
-      </Drawer>
+      </Modal>
 
       <Modal
         title="Delete Row"

@@ -1,3 +1,7 @@
+.TooltipContent {
+  z-index: 999;
+}
+
 .TooltipWrapper {
   font-size: 0.75rem;
   background-color: var(--foreground-color);

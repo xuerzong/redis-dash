@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react'
 import { Button } from '@client/components/ui/Button'
 import s from './index.module.scss'
 import { useNavigate } from 'react-router'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 
 const Page = () => {
   const navigate = useNavigate()

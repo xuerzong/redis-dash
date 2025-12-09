@@ -6,11 +6,12 @@
 .ContextMenuSubContent {
   min-width: 12rem;
   background-color: var(--background-color);
-  padding: 0.25rem;
+  padding: var(--spacing-md);
   overflow: hidden;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   outline: none;
+  box-shadow: var(--box-shadow);
 }
 
 .ContextMenuItem {
@@ -21,7 +22,7 @@
   color: var(--color);
   display: flex;
   align-items: center;
-  height: 2.5rem;
+  height: 2rem;
   position: relative;
   padding: 0 var(--spacing-md);
   user-select: none;
@@ -29,6 +30,7 @@
   cursor: pointer;
   gap: var(--spacing-md);
   transition: all var(--transition-duration) ease-in;
+  border-radius: var(--border-radius);
 
   &:hover {
     background-color: var(--bg-color);

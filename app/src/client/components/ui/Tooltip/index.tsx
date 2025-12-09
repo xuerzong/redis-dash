@@ -16,7 +16,7 @@ export const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
       <RadixTooltip.Root delayDuration={300}>
         <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
-          <RadixTooltip.Content side={placement}>
+          <RadixTooltip.Content className="TooltipContent" side={placement}>
             <RadixTooltip.Arrow className="TooltipArrow" />
             <div className="TooltipWrapper">{content}</div>
           </RadixTooltip.Content>

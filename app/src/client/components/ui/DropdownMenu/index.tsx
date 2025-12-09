@@ -19,7 +19,10 @@ export const DropdownMenu: React.FC<
       <RadixDropdownMenu.Trigger asChild>{children}</RadixDropdownMenu.Trigger>
 
       <RadixDropdownMenu.Portal>
-        <RadixDropdownMenu.Content className="DropdownMenuContent">
+        <RadixDropdownMenu.Content
+          sideOffset={4}
+          className="DropdownMenuContent"
+        >
           {menu.map((d) => (
             <RadixDropdownMenu.Item
               key={d.key}
@@ -30,8 +33,6 @@ export const DropdownMenu: React.FC<
               {d.label}
             </RadixDropdownMenu.Item>
           ))}
-
-          <RadixDropdownMenu.Arrow />
         </RadixDropdownMenu.Content>
       </RadixDropdownMenu.Portal>
     </RadixDropdownMenu.Root>
