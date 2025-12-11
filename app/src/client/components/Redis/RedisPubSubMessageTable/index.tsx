@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRedisId } from '@client/hooks/useRedisId'
 import { useRedisPubSubContext } from '@client/providers/RedisPubSubContext'
 import { sendCommand } from '@xuerzong/redis-studio-invoke'
@@ -10,18 +10,16 @@ import { Input } from '../../ui/Input'
 import { Button } from '../../ui/Button'
 import { BellMinusIcon } from 'lucide-react'
 import { useIntlContext } from '@client/providers/IntlProvider'
+import {
+  addRedisPubSubMessage,
+  useRedisPubSubStore,
+} from '@client/stores/redisPubSubStore'
 
 export const RedisPubSubMessageTable = () => {
   const redisId = useRedisId()
   const { channel, setChannel } = useRedisPubSubContext()
   const { formatMessage } = useIntlContext()
-  const [messages, setMessages] = useState<
-    {
-      time: string
-      channel: string
-      message: string
-    }[]
-  >([])
+  const messages = useRedisPubSubStore((state) => state.messages)
 
   const columns: TableColumn[] = [
     {
@@ -60,14 +58,9 @@ export const RedisPubSubMessageTable = () => {
       })
       window.invokeCallbacks.set(`RedisPubSubRequestId`, (data: any) => {
         try {
-          setMessages((pre) => {
-            return [
-              {
-                time: dayjs().format('YYYY/MM/DD hh:mm:ss'),
-                ...JSON.parse(data),
-              },
-              ...pre,
-            ]
+          addRedisPubSubMessage({
+            time: dayjs().format('YYYY/MM/DD hh:mm:ss'),
+            ...JSON.parse(data),
           })
         } catch (e) {
           console.log(e)

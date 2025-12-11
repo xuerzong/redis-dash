@@ -1,12 +1,12 @@
 import { Box } from '@client/components/ui/Box'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import { RedisPubSubMessageForm } from '../../components/Redis/RedisPubSubMessageForm'
+import { RedisPubSubMessageForm } from '@client/components/Redis/RedisPubSubMessageForm'
 import {
   RedisPubSubProvider,
   useRedisPubSubContext,
-} from '@/client/providers/RedisPubSubContext'
-import { RedisPubSubMessageTable } from '../../components/Redis/RedisPubSubMessageTable'
-import { RedisPubSubChannelPicker } from '../../components/Redis/RedisPubSubChannelPicker'
+} from '@client/providers/RedisPubSubContext'
+import { RedisPubSubMessageTable } from '@client/components/Redis/RedisPubSubMessageTable'
+import { RedisPubSubChannelPicker } from '@client/components/Redis/RedisPubSubChannelPicker'
 
 const Page = () => {
   const { channel } = useRedisPubSubContext()
