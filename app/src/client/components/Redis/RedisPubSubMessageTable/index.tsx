@@ -1,25 +1,26 @@
 import dayjs from 'dayjs'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRedisId } from '@client/hooks/useRedisId'
 import { useRedisPubSubContext } from '@client/providers/RedisPubSubContext'
-import { sendCommand } from '@xuerzong/redis-studio-invoke'
-import api from '@xuerzong/redis-studio-invoke/api'
 import { Table, type TableColumn } from '@client/components/ui/Table'
-import { Box } from '../../ui/Box'
-import { Input } from '../../ui/Input'
-import { Button } from '../../ui/Button'
+import { Box } from '@client/components/ui/Box'
+import { Input } from '@client/components/ui/Input'
+import { Button } from '@client/components/ui/Button'
 import { BellMinusIcon } from 'lucide-react'
 import { useIntlContext } from '@client/providers/IntlProvider'
 import {
   addRedisPubSubMessage,
   useRedisPubSubStore,
 } from '@client/stores/redisPubSubStore'
+import { useRedisPubSub } from '@xuerzong/redis-studio-invoke/pub-sub'
 
 export const RedisPubSubMessageTable = () => {
   const redisId = useRedisId()
   const { channel, setChannel } = useRedisPubSubContext()
   const { formatMessage } = useIntlContext()
   const messages = useRedisPubSubStore((state) => state.messages)
+  const redisSubscriber = useRedisPubSub(redisId)
+  const removeSubscribeListener = useRef(() => {})
 
   const columns: TableColumn[] = [
     {
@@ -38,43 +39,25 @@ export const RedisPubSubMessageTable = () => {
     },
   ]
 
-  const onUnSubscribe = () => {
-    sendCommand({
-      id: redisId,
-      command: 'PUNSUBSCRIBE',
-      args: [channel],
-      role: 'subscriber',
-    })
-    window.invokeCallbacks.delete(channel)
-  }
-
-  const onSubscribe = () => {
-    api.postDisconnectConnection(redisId, 'subscriber').then(() => {
-      sendCommand({
-        id: redisId,
-        command: 'PSUBSCRIBE',
-        args: [channel],
-        role: 'subscriber',
-      })
-      window.invokeCallbacks.set(`RedisPubSubRequestId`, (data: any) => {
-        try {
-          addRedisPubSubMessage({
-            time: dayjs().format('YYYY/MM/DD hh:mm:ss'),
-            ...JSON.parse(data),
-          })
-        } catch (e) {
-          console.log(e)
-        }
-      })
-    })
+  const onSubscribe = async (channel: string) => {
+    removeSubscribeListener.current = await redisSubscriber(
+      channel,
+      (message) => {
+        addRedisPubSubMessage({
+          ...message,
+          time: dayjs().format('YYYY/MM/DD hh:mm:ss'),
+        })
+      }
+    )
   }
 
   useEffect(() => {
-    onSubscribe()
+    onSubscribe(channel)
     return () => {
-      onUnSubscribe()
+      removeSubscribeListener.current()
     }
-  }, [])
+  }, [channel])
+
   return (
     <Box display="flex" flexDirection="column" gap="var(--spacing-md)">
       <Box display="flex" justifyContent="flex-end">
@@ -87,7 +70,7 @@ export const RedisPubSubMessageTable = () => {
           <Input value={channel} readOnly />
           <Button
             onClick={() => {
-              onUnSubscribe()
+              removeSubscribeListener.current()
               setChannel('')
             }}
           >

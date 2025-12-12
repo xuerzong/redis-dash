@@ -1,4 +1,4 @@
-import { isTauri } from './init'
+import { isTauri } from '@tauri-apps/api/core'
 import * as broswerApi from './browser/api'
 import * as tauriApi from './tauri/api'
 import type { API } from './types'
