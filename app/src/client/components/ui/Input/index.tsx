@@ -6,7 +6,16 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
-    return <Box as="input" className="InputRoot Input" {...props} ref={ref} />
+    return (
+      <Box
+        as="input"
+        className="InputRoot Input"
+        {...props}
+        ref={ref}
+        spellCheck={false}
+        autoCorrect="off"
+      />
+    )
   }
 )
 

@@ -2,14 +2,19 @@ declare global {
   interface Window {
     invoke: (type: string, data: any) => Promise<any>
     invokeMessages: string[]
-    invokeCallbacks: Map<
+    invokePromiseCallbacks: Map<
       string,
       {
         resolve: (data: any) => void
         reject: (error: any) => void
       }
     >
+    invokeCallbacks: Map<string, (data: any, error?: any) => void>
   }
+}
+
+if (!window.invokePromiseCallbacks) {
+  window.invokePromiseCallbacks = new Map()
 }
 
 if (!window.invokeCallbacks) {
@@ -46,7 +51,7 @@ window.invoke = async (type: string, data: any) => {
     })
   )
   return new Promise((resolve, reject) => {
-    window.invokeCallbacks.set(requestId, {
+    window.invokePromiseCallbacks.set(requestId, {
       resolve,
       reject,
     })
@@ -61,7 +66,7 @@ export const initWebsocket = () => {
       const requestId = generateRequestId(type, data)
       ws.send(JSON.stringify({ type, data, requestId }))
       return new Promise((resolve, reject) => {
-        window.invokeCallbacks.set(requestId, {
+        window.invokePromiseCallbacks.set(requestId, {
           resolve,
           reject,
         })
@@ -84,11 +89,13 @@ export const initWebsocket = () => {
     console.log({ type, data, requestId })
     if (requestId) {
       if (code === -1) {
-        window.invokeCallbacks.get(requestId)?.reject(data)
+        window.invokeCallbacks.get(requestId)?.(null, data)
+        window.invokePromiseCallbacks.get(requestId)?.reject(data)
       } else {
-        window.invokeCallbacks.get(requestId)?.resolve(data)
+        window.invokeCallbacks.get(requestId)?.(data)
+        window.invokePromiseCallbacks.get(requestId)?.resolve(data)
       }
-      window.invokeCallbacks.delete(requestId)
+      window.invokePromiseCallbacks.delete(requestId)
     }
   }
 

@@ -18,6 +18,7 @@ export const sendCommand = <T = any>(commandParams: {
   id: string
   command: string
   args: any[]
+  role?: string
 }): Promise<T> => {
   if (isTauri()) {
     return tauriInvoke.sendCommand(commandParams)

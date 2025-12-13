@@ -6,3 +6,5 @@ export type Config = {
   lang: Lang
   theme: Theme
 }
+
+export type RedisRole = 'publisher' | 'subscriber'

@@ -10,6 +10,7 @@ import HomePage from './views/Home'
 import RedisSettingsPage from './views/RedisSettings'
 import RedisTerminalPage from './views/RedisTerminal'
 import SettingsPage from './views/Settings'
+import PubSubPage from './views/RedisPubSub'
 
 export const router = createHashRouter([
   {
@@ -43,6 +44,10 @@ export const router = createHashRouter([
               {
                 path: 'terminal',
                 element: <RedisTerminalPage />,
+              },
+              {
+                path: 'pub-sub',
+                element: <PubSubPage />,
               },
             ],
           },

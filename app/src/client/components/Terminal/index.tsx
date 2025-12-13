@@ -1,12 +1,12 @@
 import { Terminal as XtermTerminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { CanvasAddon } from '@xterm/addon-canvas'
-import { WebglAddon } from '@xterm/addon-webgl'
 import {
   forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
 } from 'react'
 import {
@@ -19,7 +19,9 @@ import {
   RESET_LINE,
   START_SYMBOL,
 } from './constants'
+import { WebLinksAddon } from './addons/WebLinksAddon/WebLinksAddon'
 import '@xterm/xterm/css/xterm.css'
+import type { ILinkProviderOptions } from './addons/WebLinksAddon/WebLinkProvider'
 import s from './index.module.scss'
 
 export interface TerminalRef {
@@ -30,10 +32,17 @@ export interface TerminalRef {
 interface TerminalProps {
   onMount?: () => void
   onEnter?: (value: string) => Promise<void> | void
+
+  addonOptions?: Partial<{
+    webLinks: Partial<{
+      callback: (event: MouseEvent, matchedContent: string) => void
+      options: ILinkProviderOptions
+    }>
+  }>
 }
 
 export const Terminal = forwardRef<TerminalRef, TerminalProps>(
-  ({ onEnter }, ref) => {
+  ({ onEnter, addonOptions }, ref) => {
     const terminalRef = useRef<HTMLDivElement>(null)
     const termRef = useRef<XtermTerminal | null>(null)
     const currentInputRef = useRef('')
@@ -120,24 +129,28 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
       }
     }, [])
 
+    const webLinksAddon = useMemo(() => {
+      return new WebLinksAddon(
+        addonOptions?.webLinks?.callback,
+        addonOptions?.webLinks?.options
+      )
+    }, [addonOptions])
+
     useEffect(() => {
       if (!terminalRef.current) return
       const term = new XtermTerminal({
         windowsMode: true,
         cursorBlink: true,
         fontSize: 16,
+        fontWeight: 400,
         fontFamily: 'Geist Mono',
         lineHeight: 1,
       })
       const fitAddon = new FitAddon()
       const canvasAddon = new CanvasAddon()
-      const webglAddon = new WebglAddon()
-      webglAddon.onContextLoss(() => {
-        webglAddon.dispose()
-        term.loadAddon(canvasAddon)
-      })
       term.loadAddon(fitAddon)
-      term.loadAddon(webglAddon)
+      term.loadAddon(canvasAddon)
+      term.loadAddon(webLinksAddon)
       term.open(terminalRef.current)
       term.write(START_SYMBOL)
       termRef.current = term
@@ -152,7 +165,7 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
         term.dispose()
         window.removeEventListener('resize', resize)
       }
-    }, [])
+    }, [webLinksAddon])
 
     useEffect(() => {
       const term = termRef.current

@@ -1,13 +1,13 @@
 import { colorize } from './utils'
 
 export const TermColors = {
-  Red: '\x1b[1;31m',
-  Green: '\x1b[1;32m',
-  Purple: '\x1b[1;35m',
-  Yellow: '\x1b[1;33m',
-  Blue: '\x1b[1;34m',
-  Cyan: '\x1b[1;36m',
-  White: '\x1b[1;37m',
+  Red: '\x1b[31m',
+  Green: '\x1b[32m',
+  Purple: '\x1b[35m',
+  Yellow: '\x1b[33m',
+  Blue: '\x1b[34m',
+  Cyan: '\x1b[36m',
+  White: '\x1b[37m',
   Reset: '\x1b[0m',
 }
 

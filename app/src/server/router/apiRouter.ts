@@ -39,7 +39,7 @@ router.post('/api/connections/:id/disconnect', async (req) => {
   const { id } = req.params
   const connection = await connectionDb.find(id)
   if (!connection) return null
-  await redisMap.closeInstance(connection)
+  await redisMap.closeInstance(connection, req.body?.role)
 })
 
 router.get('/api/config', async () => {

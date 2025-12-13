@@ -8,7 +8,7 @@ export interface API {
   updateConnection: (id: string, data: Connection) => Promise<string>
   delConnection: (id: string) => Promise<void>
   getConnectionStatus: (id: string) => Promise<number>
-  postDisconnectConnection: (id: string) => Promise<any>
+  postDisconnectConnection: (id: string, role?: string) => Promise<any>
 
   getSystemConfig: () => Promise<any>
   setSystemConfig: (config: any) => Promise<any>

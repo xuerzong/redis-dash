@@ -1,8 +1,12 @@
-import { type RedisOptions } from 'ioredis'
+import Redis, { type RedisOptions } from 'ioredis'
 import { safeReadFile } from '@server/utils/fs'
 import { __DEV__ } from '@server/utils/env'
 import type { ConnectionData } from './db/connections'
-import { RedisWithStatus } from './redisWithStatus'
+import type { RedisRole } from '@/types'
+import eventEmitter from '@server/lib/eventEmitter'
+import { REDIS_MESSAGE_EVENT } from '@server/constants/events'
+import { WebSocketMessage } from '@server/lib/message'
+import logger from './logger'
 
 declare global {
   var redisMap: RedisMap
@@ -11,18 +15,18 @@ declare global {
 type RedisConfig = ConnectionData
 
 export class RedisMap {
-  instances: Map<string, RedisWithStatus>
+  instances: Map<string, Redis>
 
-  static getKey(config: RedisConfig) {
-    return `${config.host}_${config.port}_${config.username}_${config.password}`
+  static getKey(config: RedisConfig, role: RedisRole = 'publisher') {
+    return `${config.host}_${config.port}_${config.username}_${config.password}:${role}`
   }
 
   constructor() {
     this.instances = new Map()
   }
 
-  async getInstance(config: RedisConfig) {
-    const key = RedisMap.getKey(config)
+  async getInstance(config: RedisConfig, role: RedisRole = 'publisher') {
+    const key = RedisMap.getKey(config, role)
     if (this.instances.has(key)) {
       return this.instances.get(key)!
     }
@@ -45,36 +49,46 @@ export class RedisMap {
 
     const enableTls = Object.keys(tlsParams).length > 0
 
-    const redis = new RedisWithStatus(
-      {
-        ...config,
-        port: Number(config.port),
-        ...(enableTls ? { tls: tlsParams } : {}),
-      },
-      {
-        onClose: () => {
-          this.instances.delete(key)
-        },
-        onEnd: () => {
-          this.instances.delete(key)
-        },
-      }
-    )
+    const redis = new Redis({
+      ...config,
+      port: Number(config.port),
+      ...(enableTls ? { tls: tlsParams } : {}),
+    })
+
+    redis.on('error', (error) => {
+      logger.error(error)
+      this.instances.delete(key)
+    })
+
+    redis.on('close', () => {
+      this.instances.delete(key)
+    })
+
+    redis.on('pmessage', (pattern, channel, message) => {
+      eventEmitter.emit(
+        REDIS_MESSAGE_EVENT,
+        new WebSocketMessage({
+          requestId: 'RedisPubSubRequestId',
+          data: JSON.stringify({ pattern, channel, message }),
+          type: 'onRedisMessage',
+        }).toString()
+      )
+    })
 
     this.instances.set(key, redis)
 
     return redis
   }
 
-  async closeInstance(config: RedisConfig) {
-    const key = RedisMap.getKey(config)
+  async closeInstance(config: RedisConfig, role: RedisRole = 'publisher') {
+    const key = RedisMap.getKey(config, role)
     const redisInstance = this.instances.get(key)
 
     if (redisInstance) {
       try {
-        await redisInstance.redis.quit()
+        await redisInstance.quit()
       } catch {
-        redisInstance.redis.disconnect()
+        redisInstance.disconnect()
       }
     }
   }

@@ -8,16 +8,23 @@ import { EditorState, Compartment, Prec } from '@codemirror/state'
 import { Box } from '@client/components/ui/Box'
 import { IconButton } from '@client/components/ui/Button'
 import { Select } from '@client/components/ui/Select'
+import { cn } from '@client/utils/cn'
 import s from './index.module.scss'
 
 interface EditorProps {
   value?: string
   onChange?: (value: string) => void
+  height?: string
 }
 
 const languageExtension = new Compartment()
 
-export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
+export const Editor: React.FC<EditorProps> = ({
+  value,
+  onChange,
+  height,
+  ...restProps
+}) => {
   const editorViewerRef = useRef<EditorView>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const [language, setLanguage] = useState('plaintext')
@@ -138,7 +145,13 @@ export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
   }
 
   return (
-    <Box position="relative" display="flex" flexDirection="column" gap="0.5rem">
+    <Box
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      gap="0.5rem"
+      {...restProps}
+    >
       <Box display="flex" gap="0.5rem">
         <Box width="10rem">
           <Select
@@ -151,7 +164,16 @@ export const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
           <FilesIcon />
         </IconButton>
       </Box>
-      <Box className={s.Editor} ref={editorRef} data-focused={hasFocused} />
+      <Box
+        style={
+          {
+            '--editor-height': height || '20rem',
+          } as any
+        }
+        className={cn('Editor', s.Editor)}
+        ref={editorRef}
+        data-focused={hasFocused}
+      />
       <Box
         position="absolute"
         display={editorError ? 'flex' : 'none'}

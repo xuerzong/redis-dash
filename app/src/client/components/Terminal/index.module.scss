@@ -1,14 +1,3 @@
 .Terminal {
   height: 100%;
-  :global {
-    .xterm-rows {
-      > div {
-        padding-inline: var(--spacing-md);
-      }
-    }
-
-    .xterm-cursor {
-      transition: all var(--transition-duration) ease-in !important;
-    }
-  }
 }

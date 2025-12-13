@@ -18,7 +18,7 @@
 
   :global {
     .cm-editor {
-      height: 20rem;
+      height: var(--editor-height);
 
       .cm-selectionBackground {
         background-color: rgba(var(--color-primary) / 0.5) !important;

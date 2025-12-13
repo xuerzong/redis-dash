@@ -6,7 +6,10 @@ import logger from '@server/lib/logger'
 import redisMap from '@server/lib/redisMap'
 import { connectionDb } from '@server/lib/db'
 import { apiRouter } from '@server/router'
-import { __DEV__ } from './server/utils/env'
+import { __DEV__ } from '@server/utils/env'
+import eventEmitter from '@server/lib/eventEmitter'
+import { REDIS_MESSAGE_EVENT } from '@server/constants/events'
+import type { RedisRole } from './types'
 
 const { bgGreen, white } = picocolors
 
@@ -18,6 +21,7 @@ const onWebsockerEvent = async ({
   type: string
   data: any
   requestId: string
+  role: RedisRole
 }) => {
   let response: any = null
   switch (type) {
@@ -30,17 +34,21 @@ const onWebsockerEvent = async ({
 
     // The Redis Command
     case 'sendCommand': {
-      const { id, command, args } = data
+      const { id, command, args, role = 'publisher' } = data
       const connection = await connectionDb.find(id)
       if (!connection) {
         return
       }
-      const redisInstance = await redisMap.getInstance(connection)
-      // No Ready Yet
-      if (redisInstance.status !== 1) {
-        return
+      const redisInstance = await redisMap.getInstance(connection, role)
+      if (command.toUpperCase() === 'PSUBSCRIBE') {
+        redisInstance.psubscribe(args[0])
+        break
       }
-      response = await redisInstance.redis.call(command, ...args)
+      if (command.toUpperCase() === 'PUNSUBSCRIBE') {
+        redisInstance.punsubscribe(args[0])
+        break
+      }
+      response = await redisInstance.call(command, ...args)
       break
     }
     default:
@@ -61,9 +69,9 @@ export const useWebsocketServer = (server: HttpServer | HTTPSServer) => {
           JSON.stringify(JSON.parse(message.toString()), null, 2)
         )
       }
-      const { type, data, requestId } = JSON.parse(message.toString())
+      const { type, data, requestId, role } = JSON.parse(message.toString())
       try {
-        const resp = await onWebsockerEvent({ type, data, requestId })
+        const resp = await onWebsockerEvent({ type, data, requestId, role })
         ws.send(JSON.stringify(resp))
       } catch (e: any) {
         logger.error(e)
@@ -84,6 +92,10 @@ export const useWebsocketServer = (server: HttpServer | HTTPSServer) => {
 
     ws.on('error', () => {
       logger.error('Websocket Error')
+    })
+
+    eventEmitter.on(REDIS_MESSAGE_EVENT, (data: string) => {
+      ws.send(data)
     })
   })
 }

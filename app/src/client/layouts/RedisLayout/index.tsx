@@ -9,6 +9,7 @@ import {
   ChevronLeftIcon,
   MoreHorizontalIcon,
   PlusIcon,
+  RadioIcon,
   RefreshCcwIcon,
   SettingsIcon,
   TerminalIcon,
@@ -89,16 +90,24 @@ export const RedisLayoutComponent: React.FC = () => {
                 <RefreshCcwIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip content={formatMessage('terminal')}>
-              <IconButton
-                variant="outline"
-                onClick={() => {
-                  navigate(`/${redisId}/terminal`)
-                }}
-              >
-                <TerminalIcon />
-              </IconButton>
-            </Tooltip>
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate(`/${redisId}/terminal`)
+              }}
+            >
+              <TerminalIcon />
+              <span>{formatMessage('terminal')}</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate(`/${redisId}/pub-sub`)
+              }}
+            >
+              <RadioIcon />
+              <span>{formatMessage('pub/sub')}</span>
+            </Button>
 
             <Tooltip content={formatMessage('key.add')}>
               <IconButton

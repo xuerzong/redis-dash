@@ -2,12 +2,14 @@ import { useCallback, useRef } from 'react'
 import { Terminal, type TerminalRef } from '../Terminal'
 import { sendCommand } from '@xuerzong/redis-studio-invoke'
 import { colorize } from '../Terminal/utils'
+import { useNavigate } from 'react-router'
 
 interface RedisTerminalProps {
   redisId: string
 }
 
 export const RedisTerminal: React.FC<RedisTerminalProps> = ({ redisId }) => {
+  const navigate = useNavigate()
   const terminalRef = useRef<TerminalRef>(null)
 
   const onEnter = useCallback(async (data: string) => {
@@ -19,6 +21,13 @@ export const RedisTerminal: React.FC<RedisTerminalProps> = ({ redisId }) => {
     }
     const [command, ...args] = parts
     if (!command) return
+
+    if (['SUBSCRIBE', 'PSUBSCRIBE'].includes(command.trim().toUpperCase())) {
+      term.writeln(
+        `Use ${colorize('Cyan', 'pub/sub ⬏')} tool to subscribe to channels.`
+      )
+      return
+    }
     await sendCommand({
       id: redisId,
       command,
@@ -44,5 +53,21 @@ export const RedisTerminal: React.FC<RedisTerminalProps> = ({ redisId }) => {
         term.writeln(colorize('Red', error))
       })
   }, [])
-  return <Terminal ref={terminalRef} onEnter={onEnter} />
+  return (
+    <Terminal
+      ref={terminalRef}
+      onEnter={onEnter}
+      addonOptions={{
+        webLinks: {
+          callback(event, matchedContent) {
+            event.preventDefault()
+            if (matchedContent === 'pub/sub') {
+              navigate(`/${redisId}/pub-sub`)
+            }
+          },
+          options: { urlRegex: /pub\/sub/ },
+        },
+      }}
+    />
+  )
 }

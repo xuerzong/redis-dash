@@ -90,7 +90,7 @@ interface BoxOwnProps {
   children?: React.ReactNode
 }
 
-type BoxProps<Root extends React.ElementType = DefaultElement> =
+export type BoxProps<Root extends React.ElementType = DefaultElement> =
   React.ComponentPropsWithoutRef<Root> &
     Omit<BoxOwnProps, 'as'> &
     BoxOwnProps &

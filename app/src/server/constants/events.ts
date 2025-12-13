@@ -1,0 +1,1 @@
+export const REDIS_MESSAGE_EVENT = Symbol('__REDIS_MESSAGE_EVENT__')

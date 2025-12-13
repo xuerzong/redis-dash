@@ -46,10 +46,11 @@ export const getConnectionStatus = async (id: string) => {
   })
 }
 
-export const postDisconnectConnection = async (id: string) => {
+export const postDisconnectConnection = async (id: string, role?: string) => {
   return sendRequest<number>({
     method: 'POST',
     url: `/api/connections/${id}/disconnect`,
+    body: { role },
   })
 }
 
