@@ -65,7 +65,7 @@ const useRedisPubSubTauri: UseRedisPubSub = (redisId: string) => {
         }
       )
       return async () => {
-        await runRedisPunsubscribe(channel)
+        await runRedisPunsubscribe(channel).catch(console.log)
         removeListener()
       }
     },

@@ -15,7 +15,6 @@ pub async fn run_redis_psubscribe(
   app_handle: tauri::AppHandle,
   redis_config: RedisConfig,
   channel: String,
-  role: String,
 ) -> Result<String, String> {
   let channel_key_external = channel.clone();
   let channel_key_in_task = channel_key_external.clone();
@@ -33,7 +32,7 @@ pub async fn run_redis_psubscribe(
 
   let redis_map = get_redis_map();
   let instance = redis_map
-    .get_instance(&redis_config, &role)
+    .get_instance(&redis_config)
     .await
     .map_err(|e| format!("Failed to connect or get instance: {}", e))?;
 
@@ -108,12 +107,11 @@ pub async fn send_redis_command(
   redis_config: RedisConfig,
   command: String,
   args: Vec<String>,
-  role: String,
 ) -> Result<serde_json::Value, String> {
   let redis_map = get_redis_map();
 
   let instance = redis_map
-    .get_instance(&redis_config, &role)
+    .get_instance(&redis_config)
     .await
     .map_err(|e| format!("Failed to connect or get instance: {}", e))?;
 
@@ -136,8 +134,8 @@ pub async fn send_redis_command(
 }
 
 #[tauri::command]
-pub async fn close_redis_command(redis_config: RedisConfig, role: String) -> Result<(), String> {
+pub async fn close_redis_command(redis_config: RedisConfig) -> Result<(), String> {
   let redis_map = get_redis_map();
-  redis_map.remove_instance(&redis_config, &role);
+  redis_map.remove_instance(&redis_config);
   Ok(())
 }

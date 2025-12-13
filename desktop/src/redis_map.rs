@@ -43,23 +43,18 @@ impl RedisMap {
     }
   }
 
-  fn get_key(config: &RedisConfig, role: &str) -> String {
+  fn get_key(config: &RedisConfig) -> String {
     format!(
-      "redis://{}@{}:{}/{}?role={}",
+      "redis://{}@{}:{}/{}",
       config.username.as_deref().unwrap_or("default"),
       config.host,
       config.port,
-      config.password.as_deref().unwrap_or(""),
-      role
+      config.password.as_deref().unwrap_or("")
     )
   }
 
-  pub async fn get_instance(
-    &self,
-    config: &RedisConfig,
-    role: &str,
-  ) -> Result<Arc<Client>, RedisError> {
-    let key = Self::get_key(config, role);
+  pub async fn get_instance(&self, config: &RedisConfig) -> Result<Arc<Client>, RedisError> {
+    let key = Self::get_key(config);
 
     let cell = self
       .instances
@@ -115,8 +110,8 @@ impl RedisMap {
     Ok(Arc::new(client))
   }
 
-  pub fn remove_instance(&self, config: &RedisConfig, role: &str) {
-    let key = Self::get_key(config, role);
+  pub fn remove_instance(&self, config: &RedisConfig) {
+    let key = Self::get_key(config);
     self.instances.remove(&key);
   }
 }
