@@ -52,7 +52,7 @@ export const RedisLayoutComponent: React.FC = () => {
           display="flex"
           alignItems="center"
           borderBottom="1px solid var(--border-color)"
-          height="2.5rem"
+          height="var(--control-size)"
           boxSizing="content-box"
           flexShrink={0}
         >

@@ -14,7 +14,7 @@
 .NumberInput {
   --color: var(--foreground-color);
   --bg-color: var(--background-color);
-  --size: 2.5rem;
+  --size: var(--control-size);
   --font-size: 1rem;
   position: relative;
   overflow: hidden;

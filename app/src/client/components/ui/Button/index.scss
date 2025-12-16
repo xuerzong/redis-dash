@@ -1,5 +1,5 @@
 .Button {
-  --size: 2.5rem;
+  --size: var(--control-size);
   --font-size: 0.875rem;
   --color: var(--primary-foreground-color);
   --bg-color: var(--primary-color);

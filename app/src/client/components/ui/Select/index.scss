@@ -1,5 +1,5 @@
 .Select {
-  --size: 2.5rem;
+  --size: var(--control-size);
   --font-size: 0.875rem;
   --svg-size: 0.875rem;
   position: relative;
