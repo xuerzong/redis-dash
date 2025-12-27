@@ -56,6 +56,7 @@ export const Editor: React.FC<EditorProps> = ({
         return JSON.stringify(JSON.parse(value), null, 2)
       } catch (e: any) {
         setEditorError(e.message)
+        return value
       }
     }
 
@@ -97,7 +98,7 @@ export const Editor: React.FC<EditorProps> = ({
         EditorView.lineWrapping,
       ],
     })
-  }, [language])
+  }, [])
 
   useEffect(() => {
     const view = new EditorView({
