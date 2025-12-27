@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { FilesIcon, XCircleIcon } from 'lucide-react'
+import { CheckIcon, CircleXIcon, FilesIcon, RefreshCcwIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import copy from 'copy-to-clipboard'
 import { basicSetup, EditorView } from 'codemirror'
@@ -8,13 +8,16 @@ import { EditorState, Compartment, Prec } from '@codemirror/state'
 import { Box } from '@client/components/ui/Box'
 import { IconButton } from '@client/components/ui/Button'
 import { Select } from '@client/components/ui/Select'
+import { Tooltip } from '@client/components/ui/Tooltip'
 import { cn } from '@client/utils/cn'
 import s from './index.module.scss'
 
 interface EditorProps {
   value?: string
-  onChange?: (value: string) => void
   height?: string
+  onChange?: (value: string) => void
+  onSave?: () => void
+  onRefresh?: () => void
 }
 
 const languageExtension = new Compartment()
@@ -23,6 +26,8 @@ export const Editor: React.FC<EditorProps> = ({
   value,
   onChange,
   height,
+  onSave,
+  onRefresh,
   ...restProps
 }) => {
   const editorViewerRef = useRef<EditorView>(null)
@@ -89,6 +94,7 @@ export const Editor: React.FC<EditorProps> = ({
           },
         }),
         updateListener,
+        EditorView.lineWrapping,
       ],
     })
   }, [language])
@@ -149,10 +155,12 @@ export const Editor: React.FC<EditorProps> = ({
       position="relative"
       display="flex"
       flexDirection="column"
-      gap="0.5rem"
+      border="1px solid var(--border-color)"
+      borderRadius="var(--border-radius)"
       {...restProps}
+      className={s.EditorRoot}
     >
-      <Box display="flex" gap="0.5rem">
+      <Box className={s.EditorToolbar}>
         <Box width="10rem">
           <Select
             value={language}
@@ -160,9 +168,37 @@ export const Editor: React.FC<EditorProps> = ({
             onChange={onChangeLanguage}
           />
         </Box>
-        <IconButton variant="ghost" onClick={onCopy}>
-          <FilesIcon />
-        </IconButton>
+        <Tooltip className={s.EditorToolbarTooltip} content="Copy value">
+          <IconButton variant="ghost" onClick={onCopy}>
+            <FilesIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip className={s.EditorToolbarTooltip} content="Refresh value">
+          <IconButton
+            variant="ghost"
+            onClick={() => {
+              onRefresh?.()
+            }}
+          >
+            <RefreshCcwIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Box display="flex" alignItems="center" marginLeft="auto">
+          {onSave && (
+            <IconButton variant="ghost" onClick={onSave}>
+              <CheckIcon />
+            </IconButton>
+          )}
+          {editorError && (
+            <Tooltip className={s.EditorErrorTooltip} content={editorError}>
+              <IconButton variant="ghost">
+                <CircleXIcon color="var(--danger-color)" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
       </Box>
       <Box
         style={
@@ -174,23 +210,6 @@ export const Editor: React.FC<EditorProps> = ({
         ref={editorRef}
         data-focused={hasFocused}
       />
-      <Box
-        position="absolute"
-        display={editorError ? 'flex' : 'none'}
-        alignItems="flex-start"
-        gap="0.25rem"
-        bottom={0}
-        left={0}
-        zIndex={1}
-        colorPalette="danger"
-        width="100%"
-        padding="0.5rem"
-        fontSize="0.75rem"
-        lineHeight="1rem"
-      >
-        <XCircleIcon className={s.EditorErrorIcon} />
-        {editorError}
-      </Box>
     </Box>
   )
 }

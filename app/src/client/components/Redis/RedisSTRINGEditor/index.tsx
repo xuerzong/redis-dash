@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Editor } from '@client/components/Editor'
 import { useRedisKeyStateContext } from '@client/providers/RedisKeyStateContext'
 import { Box } from '@client/components/ui/Box'
-import { Button } from '@client/components/ui/Button'
 import { setSTRINGData } from '@client/commands/redis'
 import { useSyncState } from '@client/hooks/useSyncState'
+import s from './index.module.scss'
 
 export const RedisSTRINGEditor = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
@@ -32,13 +32,15 @@ export const RedisSTRINGEditor = () => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap="var(--spacing-md)">
-      <Editor value={value} onChange={(e) => setValue(e)} />
-      <Box display="flex" alignItems="center" justifyContent="flex-end">
-        <Button onClick={onSave} disabled={loading} loading={loading}>
-          Save Change
-        </Button>
-      </Box>
+    <Box className={s.RedisStringEditor}>
+      <Editor
+        value={value}
+        onChange={(e) => setValue(e)}
+        onSave={onSave}
+        onRefresh={() => {
+          setValue(redisKeyState.value)
+        }}
+      />
     </Box>
   )
 }

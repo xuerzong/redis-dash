@@ -38,7 +38,7 @@ const Page = () => {
             <RedisKeyViewer />
           </Box>
 
-          <Box display={selectedKey ? 'none' : 'block'} flex={1}>
+          <Box display={selectedKey ? 'none' : 'block'} flex={1} height="100%">
             <RedisKeyCreateForm />
           </Box>
         </Box>

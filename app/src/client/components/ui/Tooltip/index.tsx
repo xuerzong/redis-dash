@@ -1,12 +1,15 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
+import { cn } from '@client/utils/cn'
 import './index.scss'
 
-interface TooltipProps {
+export interface TooltipProps {
+  className?: string
   content: React.ReactNode
   placement?: RadixTooltip.TooltipContentProps['side']
 }
 
 export const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
+  className,
   children,
   content,
   placement,
@@ -16,7 +19,10 @@ export const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
       <RadixTooltip.Root delayDuration={300}>
         <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
-          <RadixTooltip.Content side={placement}>
+          <RadixTooltip.Content
+            className={cn('TooltipContent', className)}
+            side={placement}
+          >
             <RadixTooltip.Arrow className="TooltipArrow" />
             <div className="TooltipWrapper">{content}</div>
           </RadixTooltip.Content>
