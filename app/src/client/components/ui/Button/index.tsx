@@ -2,7 +2,8 @@ import React from 'react'
 import { cn } from '@client/utils/cn'
 import './index.scss'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'outline' | 'ghost' | 'subtle'
   loading?: boolean
 }

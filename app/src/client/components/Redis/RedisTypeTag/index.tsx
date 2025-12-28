@@ -13,7 +13,7 @@ export const RedisTypeTag: React.FC<RedisTypeTagProps> = ({ type }) => {
       color="var(--color)"
       backgroundColor="var(--bg-color)"
       colorPalette={getRedisTypeColor(type)}
-      borderRadius="var(--border-radius)"
+      borderRadius="0.25rem"
       padding="0.125rem 0.25rem"
     >
       {type}

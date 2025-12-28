@@ -7,12 +7,16 @@ import { Tooltip } from '@client/components/ui/Tooltip'
 import { useIntlContext } from '@client/providers/IntlProvider'
 import { useMemo } from 'react'
 import { useRedisId } from '@client/hooks/useRedisId'
-import { changeConnectionsCollapsed } from '@client/stores/appStore'
+import {
+  changeConnectionsCollapsed,
+  useAppStore,
+} from '@client/stores/appStore'
 import { TitlebarHeightSetter } from '@client/components/tauri/TitlebarHeightSetter'
 import s from './index.module.scss'
 
 export const RootLayout = () => {
   const redisId = useRedisId()
+  const selectedRedisId = useAppStore((state) => state.selectedRedisId)
   const navigate = useNavigate()
   const location = useLocation()
   const pathname = useMemo(() => {
@@ -56,7 +60,12 @@ export const RootLayout = () => {
               if (redisId) {
                 changeConnectionsCollapsed(false)
               } else {
-                navigate('/')
+                if (selectedRedisId) {
+                  navigate(`/${selectedRedisId}`)
+                } else {
+                  changeConnectionsCollapsed(false)
+                  navigate('/')
+                }
               }
             }}
             data-active={pathname === '/'}

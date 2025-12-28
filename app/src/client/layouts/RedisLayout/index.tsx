@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router'
 import { useRedisId } from '@/client/hooks/useRedisId'
 import { useAppStore } from '@/client/stores/appStore'
 import { Box } from '@/client/components/ui/Box'
-import { Tooltip } from '@/client/components/ui/Tooltip'
 import { Button, IconButton } from '@/client/components/ui/Button'
 import {
   ChevronLeftIcon,
@@ -20,6 +19,7 @@ import { useIntlContext } from '@/client/providers/IntlProvider'
 import { RedisProvider, useRedisContext } from '@/client/providers/RedisContext'
 import { DropdownMenu } from '@/client/components/ui/DropdownMenu'
 import { RedisConnectionDeleteModal } from '@/client/components/Redis/RedisConnectionDeleteModal'
+import { TooltipIconButton } from '@client/components/TooltipIconButton'
 import api from '@xuerzong/redis-studio-invoke/api'
 import { Loader } from '@/client/components/Loader'
 import { checkStatus } from '@/client/commands/redis'
@@ -62,6 +62,7 @@ export const RedisLayoutComponent: React.FC = () => {
               onClick={() => {
                 navigate(`/${redisId}`, { replace: true })
               }}
+              style={{ '--border-radius': 0 } as any}
             >
               <ChevronLeftIcon />
               {formatMessage('back')}
@@ -79,17 +80,16 @@ export const RedisLayoutComponent: React.FC = () => {
             flexShrink={0}
             className={s.Actions}
           >
-            <Tooltip content={formatMessage('reconnect')}>
-              <IconButton
-                variant="outline"
-                onClick={async () => {
-                  await api.postDisconnectConnection(redisId)
-                  window.location.reload()
-                }}
-              >
-                <RefreshCcwIcon />
-              </IconButton>
-            </Tooltip>
+            <TooltipIconButton
+              content={formatMessage('reconnect')}
+              variant="outline"
+              onClick={async () => {
+                await api.postDisconnectConnection(redisId)
+                window.location.reload()
+              }}
+            >
+              <RefreshCcwIcon />
+            </TooltipIconButton>
             <Button
               variant="outline"
               onClick={() => {
@@ -109,16 +109,15 @@ export const RedisLayoutComponent: React.FC = () => {
               <span>{formatMessage('pub/sub')}</span>
             </Button>
 
-            <Tooltip content={formatMessage('key.add')}>
-              <IconButton
-                variant="outline"
-                onClick={() => {
-                  setSelectedKey('')
-                }}
-              >
-                <PlusIcon />
-              </IconButton>
-            </Tooltip>
+            <TooltipIconButton
+              content={formatMessage('key.add')}
+              variant="outline"
+              onClick={() => {
+                setSelectedKey('')
+              }}
+            >
+              <PlusIcon />
+            </TooltipIconButton>
 
             <DropdownMenu
               menu={[

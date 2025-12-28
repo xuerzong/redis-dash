@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { RefreshCcwIcon, SettingsIcon, TrashIcon } from 'lucide-react'
-import { useAppStore } from '@client/stores/appStore'
+import { changeSelectedRedisId, useAppStore } from '@client/stores/appStore'
 import { ContextMenu } from '@client/components/ui/ContextMenu'
 import { Box } from '@client/components/ui/Box'
 import { RedisIcon } from '@client/components/Icons/RedisIcon'
@@ -66,6 +66,7 @@ export const RedisConnectionsMenu = () => {
           <Box
             className={s.Instance}
             onClick={() => {
+              changeSelectedRedisId(d.id)
               navigate(`/${d.id}`)
             }}
             data-active={redisId === d.id}

@@ -10,7 +10,7 @@
   --muted-color: rgba(var(--color-muted) / 1);
 
   --border-color: rgba(var(--color-border) / 1);
-  --border-radius: 0rem;
+  --border-radius: 0.5rem;
   --border-style: dashed;
 
   --font-mono: 'Geist Mono', monospace;

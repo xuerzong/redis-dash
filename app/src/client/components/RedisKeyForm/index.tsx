@@ -109,7 +109,13 @@ export const RedisKeyCreateForm = () => {
     )
   }
   return (
-    <Box as="form" display="flex" flexDirection="column">
+    <Box
+      position="relative"
+      as="form"
+      display="flex"
+      flexDirection="column"
+      height="100%"
+    >
       <Box
         position="sticky"
         top={0}
@@ -158,7 +164,12 @@ export const RedisKeyCreateForm = () => {
         </Box>
       </Box>
 
-      <Box padding="var(--spacing-md)">
+      <Box
+        display="flex"
+        flexDirection="column"
+        padding="var(--spacing-md)"
+        height="calc(100% - 5rem - 3 * var(--spacing-md) - 1px)"
+      >
         {values.type === 'STRING' ? (
           <Editor
             value={values.value}
@@ -176,22 +187,18 @@ export const RedisKeyCreateForm = () => {
             The Value Must Be Set After the Key Is Created
           </Box>
         )}
-      </Box>
-
-      <Box
-        position="sticky"
-        bottom={0}
-        zIndex={1}
-        display="flex"
-        alignItems="center"
-        justifyContent="flex-end"
-        padding="var(--spacing-md)"
-        borderTop="1px solid var(--border-color)"
-        backgroundColor="var(--background-color)"
-      >
-        <Button type="button" onClick={onSubmit} loading={submitLoading}>
-          {formatMessage('create')}
-        </Button>
+        <Box
+          zIndex={1}
+          display="flex"
+          alignItems="center"
+          justifyContent="flex-end"
+          padding="var(--spacing-md)"
+          backgroundColor="var(--background-color)"
+        >
+          <Button type="button" onClick={onSubmit} loading={submitLoading}>
+            {formatMessage('create')}
+          </Button>
+        </Box>
       </Box>
     </Box>
   )
