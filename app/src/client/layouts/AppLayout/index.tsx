@@ -91,7 +91,7 @@ export const AppLayout = () => {
         </Panel>
 
         {!connectionsCollapsed && <PanelResizeHandle />}
-        <Panel defaultSize={80} minSize={50} className={s.Content}>
+        <Panel defaultSize={80} minSize={70} className={s.Content}>
           <Outlet />
         </Panel>
       </PanelGroup>

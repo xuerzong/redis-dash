@@ -11,7 +11,7 @@ const Page = () => {
   return (
     <PanelGroup style={{ flex: 1, height: '100%' }} direction="horizontal">
       <Panel
-        defaultSize={50}
+        defaultSize={30}
         minSize={30}
         style={{
           position: 'relative',
@@ -23,8 +23,8 @@ const Page = () => {
       <PanelResizeHandle />
       <Panel
         style={{ position: 'relative', height: '100%' }}
-        defaultSize={50}
-        minSize={30}
+        defaultSize={70}
+        minSize={50}
       >
         <Box
           display="flex"
