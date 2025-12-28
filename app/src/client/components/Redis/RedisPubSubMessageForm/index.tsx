@@ -43,7 +43,12 @@ export const RedisPubSubMessageForm = () => {
         />
       </FormField>
 
-      <FormField flex={1} name="message" label={formatMessage('message')}>
+      <FormField
+        flex={1}
+        minHeight={0}
+        name="message"
+        label={formatMessage('message')}
+      >
         <Slot className={s.MessageEditor} style={{ flex: 1 }}>
           <Editor
             value={message}
