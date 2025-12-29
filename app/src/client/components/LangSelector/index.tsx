@@ -1,4 +1,4 @@
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 import { Select } from '../ui/Select'
 
 export const LangSelector = () => {

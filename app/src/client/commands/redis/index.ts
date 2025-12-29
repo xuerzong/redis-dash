@@ -1,4 +1,4 @@
-import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
+import type { RedisKeyType } from '@client/constants/redisKeyTypes'
 import { getSTREAMData, getSTREAMLen } from '../redis/STREAM'
 import { getLISTData, getLISTLen } from './LIST'
 import { getHASHData, getHASHLen } from './HASH'

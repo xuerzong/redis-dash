@@ -11,7 +11,7 @@ export const RedisSTRINGEditor = () => {
   const { redisId, redisKeyState, refreshRedisKeyState } =
     useRedisKeyStateContext()
   const [value, setValue] = useSyncState<string>(redisKeyState.value)
-  const [loading, setLoading] = useState(false)
+  const [_loading, setLoading] = useState(false)
 
   const onSave = async () => {
     setLoading(true)

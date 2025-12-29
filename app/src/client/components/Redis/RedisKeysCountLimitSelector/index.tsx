@@ -1,4 +1,4 @@
-import { useRedisKeysContext } from '@/client/providers/RedisKeysContext'
+import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
 import { Box } from '@client/components/ui/Box'
 import { Select } from '@client/components/ui/Select'
 

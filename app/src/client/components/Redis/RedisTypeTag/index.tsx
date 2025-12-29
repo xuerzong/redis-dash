@@ -1,4 +1,4 @@
-import { getRedisTypeColor } from '@/client/constants/redisColors'
+import { getRedisTypeColor } from '@client/constants/redisColors'
 import { Box } from '@client/components/ui/Box'
 
 interface RedisTypeTagProps {

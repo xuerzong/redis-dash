@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { BellPlusIcon } from 'lucide-react'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 import { Box } from '@client/components/ui/Box'
 import { Button } from '@client/components/ui/Button'
 import { Input } from '@client/components/ui/Input'

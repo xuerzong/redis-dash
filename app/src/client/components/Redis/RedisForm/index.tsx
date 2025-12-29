@@ -9,7 +9,7 @@ import { queryConnections } from '@client/stores/appStore'
 import s from './index.module.scss'
 import { RedisSSLSwitch } from './RedisSSLSwitch'
 import api from '@xuerzong/redis-studio-invoke/api'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 
 interface RedisFormData {
   id?: string
