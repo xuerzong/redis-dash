@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { Loader } from '@/client/components/Loader'
-import { Box } from '@/client/components/ui/Box'
+import { Loader } from '@client/components/Loader'
+import { Box } from '@client/components/ui/Box'
 
 const Page = () => {
   const navigate = useNavigate()

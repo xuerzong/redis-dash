@@ -9,7 +9,7 @@ import { renameKey } from '@client/commands/redis/key'
 import { IconButton } from '@client/components/ui/Button'
 import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
 import { useRedisContext } from '@client/providers/RedisContext'
-import { getRedisTypeColor } from '@/client/constants/redisColors'
+import { getRedisTypeColor } from '@client/constants/redisColors'
 
 export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()

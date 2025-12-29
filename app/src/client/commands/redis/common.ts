@@ -1,5 +1,5 @@
 import { sendCommand } from '@xuerzong/redis-studio-invoke'
-import type { RedisKeyType } from '@/client/constants/redisKeyTypes'
+import type { RedisKeyType } from '@client/constants/redisKeyTypes'
 
 export const getTTL = async (id: string, key: string) => {
   return sendCommand<number>({

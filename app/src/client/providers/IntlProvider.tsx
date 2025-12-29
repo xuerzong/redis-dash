@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { locales } from '@/client/locales'
+import { locales } from '@client/locales'
 import { useConfigContext } from './ConfigProvider'
 import type { Lang } from '@/types'
 

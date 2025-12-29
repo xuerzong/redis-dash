@@ -15,7 +15,7 @@ import { RedisTypeTag } from '../RedisTypeTag'
 import { RedisKeyDeleteModal } from '../RedisKeyDeleteModal'
 import s from './index.module.scss'
 import { useRedisKeysContext } from '@client/providers/RedisKeysContext'
-import { useIntlContext } from '@/client/providers/IntlProvider'
+import { useIntlContext } from '@client/providers/IntlProvider'
 
 interface RedisKeysTreeProps {
   nodes: TreeNode[]
