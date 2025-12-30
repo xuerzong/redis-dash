@@ -1,5 +1,5 @@
 {
-  "name": "redis-studio",
+  "name": "redis-dash",
   "version": "0.0.0",
   "description": "This is a lightweight Redis Manager.",
   "main": "index.js",

@@ -1,4 +1,4 @@
-import { sendCommand } from '@xuerzong/redis-studio-invoke'
+import { sendCommand } from '@xuerzong/redis-dash-invoke'
 import type { RedisKeyType } from '@client/constants/redisKeyTypes'
 
 export const getTTL = async (id: string, key: string) => {

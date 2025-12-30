@@ -9,13 +9,13 @@ import LanguageSelect from '@web/components/LanguageSelect.astro'
 const lang = Astro.currentLocale
 const locales = {
   zh: {
-    title: 'Redis Studio',
+    title: 'Redis Dash',
     description: '🚀 轻量级、跨平台的 Redis GUI（图形用户界面）',
     download: '下载应用',
     caption: '适用于 Mac、Windows 和 Linux',
   },
   en: {
-    title: 'Redis Studio',
+    title: 'Redis Dash',
     description: '🚀 A lightweight, cross-platform Redis GUI Client.',
     download: 'Download',
     caption: 'Available for Mac, Windows, and Linux',
@@ -43,7 +43,7 @@ const locale = locales[lang as 'zh' | 'en']
     <div class="flex items-center justify-center space-x-4">
       <a
         class="flex bg-red-400 py-2 px-4 rounded ring-2 ring-red-400/25 items-center space-x-2 cursor-pointer"
-        href="https://github.com/xuerzong/redis-studio/releases"
+        href="https://github.com/xuerzong/redis-dash/releases"
         target="_blank"
         rel="noopener noreferrer"
         type="button"
@@ -54,7 +54,7 @@ const locale = locales[lang as 'zh' | 'en']
 
       <a
         class="flex bg-black text-white py-2 px-4 rounded items-center space-x-2 cursor-pointer"
-        href="https://github.com/xuerzong/redis-studio"
+        href="https://github.com/xuerzong/redis-dash"
         target="_blank"
         rel="noopener noreferrer"
         type="button"
@@ -80,7 +80,7 @@ const locale = locales[lang as 'zh' | 'en']
     >
       <span class="text-green-500">npm</span>
       <span class="text-yellow-500">install </span>
-      <span>@xuerzong/redis-studio</span>
+      <span>redis-dash</span>
       <span>-g</span>
 
       <CopyIcon

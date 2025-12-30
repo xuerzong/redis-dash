@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import api from '@xuerzong/redis-studio-invoke/api'
+import api from '@xuerzong/redis-dash-invoke/api'
 
 interface AppStoreState {
   connections: any[]

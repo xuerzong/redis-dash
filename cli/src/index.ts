@@ -32,7 +32,7 @@ Options:
 Commands:
 
 start [options]\t\tstart rds in background
-restart [options]\tstop then start redis-studio background server
+restart [options]\tstop then start redis-dash background server
 stop\t\t\tstop rds background server and its children
 status\t\t\tcheck rds status
 `
@@ -74,7 +74,7 @@ function startServer(options: StartServerOptions) {
   child.unref()
 
   console.log(
-    `Redis Studio started in background (PID: ${child.pid}) on port ${options.port}`
+    `Redis Dash started in background (PID: ${child.pid}) on port ${options.port}`
   )
   console.log(`You can open it in your broswer:\n`)
 

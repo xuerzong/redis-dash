@@ -89,7 +89,7 @@ export const RootLayout = () => {
           <IconButton
             variant="ghost"
             onClick={() => {
-              window.open('https://github.com/xuerzong/redis-studio', '_blank')
+              window.open('https://github.com/xuerzong/redis-dash', '_blank')
             }}
           >
             <GithubIcon />

@@ -100,7 +100,7 @@ jobs:
           projectPath: desktop
           tagName: 'v__VERSION__'
           releaseName: 'Release __VERSION__'
-          releaseBody: '[Changelog __VERSION__](https://redis-studio.xuco.me/v/__VERSION__)'
+          releaseBody: '[Changelog __VERSION__](https://redis-dash.xuco.me/v/__VERSION__)'
           releaseDraft: true
           prerelease: true
           args: '${{ matrix.args }}'

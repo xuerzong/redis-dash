@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { Terminal, type TerminalRef } from '../Terminal'
-import { sendCommand } from '@xuerzong/redis-studio-invoke'
+import { sendCommand } from '@xuerzong/redis-dash-invoke'
 import { colorize } from '../Terminal/utils'
 import { useNavigate } from 'react-router'
 
