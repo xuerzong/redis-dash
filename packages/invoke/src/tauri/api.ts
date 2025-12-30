@@ -8,8 +8,8 @@ import {
 import { nanoid } from 'nanoid'
 import { invoke } from './invoke'
 
-const systemConfigPath = '.redis-studio-cache/config.json'
-const connectionsDirPath = '.redis-studio-cache/db/connections'
+const systemConfigPath = '.redis-dash-cache/config.json'
+const connectionsDirPath = '.redis-dash-cache/db/connections'
 
 export const createConnection = async (data: any) => {
   const id = nanoid(8)

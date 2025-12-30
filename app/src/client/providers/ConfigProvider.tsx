@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDarkMode } from '@client/hooks/useDarkMode'
-import api from '@xuerzong/redis-studio-invoke/api'
+import api from '@xuerzong/redis-dash-invoke/api'
 import type { Config, Lang, Theme } from '@/types'
 import { isTauri } from '@tauri-apps/api/core'
 import { type } from '@tauri-apps/plugin-os'

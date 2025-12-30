@@ -4,7 +4,7 @@ import { Box } from '@client/components/ui/Box'
 import { Button } from '@client/components/ui/Button'
 import { Modal } from '@client/components/ui/Modal'
 import { queryConnections } from '@client/stores/appStore'
-import api from '@xuerzong/redis-studio-invoke/api'
+import api from '@xuerzong/redis-dash-invoke/api'
 
 interface RedisConnectionDeleteModalProps {
   open?: boolean

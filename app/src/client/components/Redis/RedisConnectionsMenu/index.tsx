@@ -8,7 +8,7 @@ import { RedisIcon } from '@client/components/Icons/RedisIcon'
 import { LoaderMask } from '@client/components/LoaderMask'
 import { useRedisId } from '@client/hooks/useRedisId'
 import { useIntlContext } from '@client/providers/IntlProvider'
-import api from '@xuerzong/redis-studio-invoke/api'
+import api from '@xuerzong/redis-dash-invoke/api'
 import { RedisConnectionDeleteModal } from '../RedisConnectionDeleteModal'
 import s from './index.module.scss'
 

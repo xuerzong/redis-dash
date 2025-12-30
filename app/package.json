@@ -1,5 +1,5 @@
 {
-  "name": "@xuerzong/redis-studio-app",
+  "name": "@xuerzong/redis-dash-app",
   "version": "0.0.0",
   "description": "This is a lightweight Redis Manager.",
   "main": "index.js",

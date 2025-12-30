@@ -8,7 +8,7 @@ import { FormField } from '@client/components/ui/Form'
 import { queryConnections } from '@client/stores/appStore'
 import s from './index.module.scss'
 import { RedisSSLSwitch } from './RedisSSLSwitch'
-import api from '@xuerzong/redis-studio-invoke/api'
+import api from '@xuerzong/redis-dash-invoke/api'
 import { useIntlContext } from '@client/providers/IntlProvider'
 
 interface RedisFormData {

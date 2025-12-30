@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Redis Studio",
+  "productName": "Redis Dash",
   "version": "0.0.1",
-  "identifier": "me.xuco.redis-studio",
+  "identifier": "me.xuco.redis-dash",
   "build": {
     "frontendDist": "../app/dist",
     "devUrl": "http://localhost:5090"
@@ -11,7 +11,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Redis Studio",
+        "title": "Redis Dash",
         "width": 800,
         "height": 600,
         "resizable": true,
@@ -27,10 +27,6 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/icon.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ]
+    "icon": ["icons/icon.png", "icons/icon.icns", "icons/icon.ico"]
   }
 }

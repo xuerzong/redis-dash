@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@xuerzong/redis-studio-invoke/*": ["./*"]
+      "@xuerzong/redis-dash-invoke/*": ["./*"]
     }
   },
   "include": ["src"],

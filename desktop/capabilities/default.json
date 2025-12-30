@@ -11,7 +11,7 @@
       "identifier": "fs:allow-read-text-file",
       "allow": [
         {
-          "path": "$HOME/.redis-studio-cache/**"
+          "path": "$HOME/.redis-dash-cache/**"
         }
       ]
     },
@@ -19,7 +19,7 @@
       "identifier": "fs:allow-read-dir",
       "allow": [
         {
-          "path": "$HOME/.redis-studio-cache/**"
+          "path": "$HOME/.redis-dash-cache/**"
         }
       ]
     },
@@ -27,7 +27,7 @@
       "identifier": "fs:allow-write-file",
       "allow": [
         {
-          "path": "$HOME/.redis-studio-cache/**"
+          "path": "$HOME/.redis-dash-cache/**"
         }
       ]
     },
@@ -35,7 +35,7 @@
       "identifier": "fs:allow-remove",
       "allow": [
         {
-          "path": "$HOME/.redis-studio-cache/**"
+          "path": "$HOME/.redis-dash-cache/**"
         }
       ]
     },

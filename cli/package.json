@@ -1,5 +1,5 @@
 {
-  "name": "@xuerzong/redis-studio",
+  "name": "@xuerzong/redis-dash",
   "version": "0.0.9",
   "description": "This is a lightweight Redis Manager.",
   "main": "./dist/cli.js",
@@ -8,12 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xuerzong/redis-studio"
+    "url": "https://github.com/xuerzong/redis-dash"
   },
   "bugs": {
-    "url": "https://github.com/xuerzong/redis-studio/issues"
+    "url": "https://github.com/xuerzong/redis-dash/issues"
   },
   "bin": {
+    "rdd": "./dist/cli.js",
     "rds": "./dist/cli.js"
   },
   "files": [
@@ -24,7 +25,7 @@
   },
   "keywords": [
     "redis",
-    "redis-studio",
+    "redis-dash",
     "cli"
   ],
   "author": "xuerzong@gmail.com",

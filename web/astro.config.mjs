@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://redis-studio.xuco.me',
+  site: 'https://redis-dash.xuco.me',
   base: '/',
   i18n: {
     locales: ['zh', 'en'],
