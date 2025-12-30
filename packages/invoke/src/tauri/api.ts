@@ -4,6 +4,7 @@ import {
   readTextFile,
   writeFile,
   remove,
+  mkdir,
 } from '@tauri-apps/plugin-fs'
 import { nanoid } from 'nanoid'
 import { invoke } from './invoke'
@@ -11,8 +12,16 @@ import { invoke } from './invoke'
 const systemConfigPath = '.redis-dash-cache/config.json'
 const connectionsDirPath = '.redis-dash-cache/db/connections'
 
+export const ensureCacheDbDir = async () => {
+  return mkdir(connectionsDirPath, {
+    baseDir: BaseDirectory.Home,
+    recursive: true,
+  })
+}
+
 export const createConnection = async (data: any) => {
   const id = nanoid(8)
+  await ensureCacheDbDir()
   await writeFile(
     `${connectionsDirPath}/${id}.json`,
     new TextEncoder().encode(JSON.stringify(data)),
@@ -26,6 +35,7 @@ export const createConnection = async (data: any) => {
 export const getConnections = async () => {
   const connections: any[] = []
   try {
+    await ensureCacheDbDir()
     const entries = await readDir(connectionsDirPath, {
       baseDir: BaseDirectory.Home,
     })
