@@ -1,6 +1,6 @@
 {
-  "name": "@xuerzong/redis-dash",
-  "version": "0.0.9",
+  "name": "redis-dash",
+  "version": "0.0.1",
   "description": "This is a lightweight Redis Manager.",
   "main": "./dist/cli.js",
   "scripts": {

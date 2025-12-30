@@ -3,12 +3,12 @@
 </div>
 
 <div align='center'>
-  <a href="https://www.npmjs.com/package/@xuerzong/redis-dash">
-    <img  src="https://img.shields.io/npm/v/%40xuerzong%2Fredis-dash?style=for-the-badge" alt="npm version"/>
+  <a href="https://www.npmjs.com/package/redis-dash">
+    <img  src="https://img.shields.io/npm/v/redis-dash?style=for-the-badge" alt="npm version"/>
   </a>
 
-  <a href="https://www.npmjs.com/package/@xuerzong/redis-dash">
-    <img src="https://img.shields.io/npm/dw/%40xuerzong%2Fredis-dash?style=for-the-badge" alt="npm downloads"/>
+  <a href="https://www.npmjs.com/package/redis-dash">
+    <img src="https://img.shields.io/npm/dw/redis-dash?style=for-the-badge" alt="npm downloads"/>
   </a>
   
   <a href="https://github.com/xuerzong/redis-dash/blob/main/LICENSE">
@@ -41,7 +41,7 @@
 You can install the Redis Dash command-line tool globally via npm (Node Package Manager).
 
 ```bash
-npm -g @xuerzong/redis-dash
+npm -g redis-dash
 ```
 
 ### Start Server
