@@ -39,6 +39,14 @@
         }
       ]
     },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        {
+          "path": "$HOME/.redis-dash-cache/**"
+        }
+      ]
+    },
     "dialog:allow-open"
   ]
 }
