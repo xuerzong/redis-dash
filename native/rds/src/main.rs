@@ -273,6 +273,7 @@ async fn print_status() {
 
 async fn run_server(options: ServerOptions) -> Result<(), String> {
     let asset_root = resolve_asset_root(options.asset_root)?;
+    ensure_cache_layout().await?;
     let cache_root = cache_root()?;
     let upload_dir = cache_root.join("uploads");
     let config_path = cache_root.join("config.json");
@@ -872,6 +873,7 @@ fn safe_join(base: &Path, request_path: &str) -> Result<PathBuf, AppError> {
 }
 
 async fn ensure_cache_layout() -> Result<(), String> {
+    migrate_legacy_cache_root().await?;
     let root = cache_root()?;
     fs::create_dir_all(root.join("db").join("connections"))
         .await
@@ -881,7 +883,36 @@ async fn ensure_cache_layout() -> Result<(), String> {
         .map_err(|error| error.to_string())
 }
 
+async fn migrate_legacy_cache_root() -> Result<(), String> {
+    let new_root = cache_root()?;
+    let legacy_root = legacy_cache_root()?;
+
+    if fs::try_exists(&new_root)
+        .await
+        .map_err(|error| error.to_string())?
+    {
+        return Ok(());
+    }
+
+    if !fs::try_exists(&legacy_root)
+        .await
+        .map_err(|error| error.to_string())?
+    {
+        return Ok(());
+    }
+
+    fs::rename(&legacy_root, &new_root)
+        .await
+        .map_err(|error| error.to_string())
+}
+
 fn cache_root() -> Result<PathBuf, String> {
+    dirs::home_dir()
+        .map(|path| path.join(".redis-dash-cache"))
+        .ok_or_else(|| "failed to resolve home directory".to_string())
+}
+
+fn legacy_cache_root() -> Result<PathBuf, String> {
     dirs::home_dir()
         .map(|path| path.join(".redis-studio-cache"))
         .ok_or_else(|| "failed to resolve home directory".to_string())
