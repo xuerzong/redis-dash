@@ -19,8 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@client/*": ["src/client/*"],
-      "@server/*": ["src/server/*"]
+      "@client/*": ["src/client/*"]
     },
 
     /* Linting */
@@ -29,6 +28,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["src/server/**/*.ts"]
+  "include": ["src"]
 }
