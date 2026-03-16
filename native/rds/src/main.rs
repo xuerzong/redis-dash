@@ -19,20 +19,17 @@ use axum::{
     Json, Router,
 };
 use clap::{Args, CommandFactory, Parser, Subcommand};
-use dashmap::DashMap;
 use futures_util::{stream::SplitSink, SinkExt, StreamExt};
 use nanoid::nanoid;
-use redis::{aio::PubSub, Client, ConnectionAddr, ConnectionInfo, RedisConnectionInfo, Value};
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Map, Value as JsonValue};
-use sysinfo::{Pid, ProcessesToUpdate, System};
-use tokio::{
-    fs,
-    io::AsyncWriteExt,
-    net::TcpListener,
-    sync::{Mutex, OnceCell},
-    task::JoinHandle,
+use rds_core::{
+    create_json_record, delete_json_record, execute_redis_command, find_json_record,
+    get_json_config, list_json_records, open_redis_pubsub, set_json_config, update_json_record,
+    RedisConfig, RedisMap,
 };
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value as JsonValue};
+use sysinfo::{Pid, ProcessesToUpdate, System};
+use tokio::{fs, io::AsyncWriteExt, net::TcpListener, sync::Mutex, task::JoinHandle};
 use url::Url;
 
 #[derive(Parser, Debug)]
@@ -96,6 +93,20 @@ struct ConnectionData {
     id: Option<String>,
 }
 
+impl ConnectionData {
+    fn redis_config(&self) -> RedisConfig {
+        RedisConfig {
+            host: self.host.clone(),
+            port: self.port,
+            username: (!self.username.is_empty()).then(|| self.username.clone()),
+            password: (!self.password.is_empty()).then(|| self.password.clone()),
+            ca: self.ca.clone(),
+            key: self.key.clone(),
+            cert: self.cert.clone(),
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 struct RequestEnvelope {
     #[serde(rename = "type")]
@@ -148,87 +159,7 @@ struct StatusQuery {
     id: String,
 }
 
-type RedisInstanceCell = Arc<OnceCell<Arc<Client>>>;
 type WebSocketSender = Arc<Mutex<SplitSink<WebSocket, Message>>>;
-
-#[derive(Debug)]
-struct RedisMap {
-    instances: DashMap<String, RedisInstanceCell>,
-}
-
-impl RedisMap {
-    fn new() -> Self {
-        Self {
-            instances: DashMap::new(),
-        }
-    }
-
-    fn cache_key(config: &ConnectionData, role: &str) -> String {
-        format!(
-            "{}:{}:{}:{}:{}",
-            config.host, config.port, config.username, config.password, role
-        )
-    }
-
-    async fn get_instance(
-        &self,
-        config: &ConnectionData,
-        role: &str,
-    ) -> Result<Arc<Client>, String> {
-        let key = Self::cache_key(config, role);
-        let cell = self
-            .instances
-            .entry(key.clone())
-            .or_insert_with(|| Arc::new(OnceCell::new()))
-            .clone();
-
-        let client = cell
-            .get_or_try_init(|| async move { Self::create_connection(config).await })
-            .await
-            .map_err(|error| error.to_string())?;
-
-        Ok(client.clone())
-    }
-
-    async fn create_connection(config: &ConnectionData) -> Result<Arc<Client>, redis::RedisError> {
-        let tls_enabled = safe_read_file(&config.ca).await.is_some()
-            || safe_read_file(&config.key).await.is_some()
-            || safe_read_file(&config.cert).await.is_some();
-
-        let addr = if tls_enabled {
-            ConnectionAddr::TcpTls {
-                host: config.host.clone(),
-                port: config.port,
-                insecure: true,
-                tls_params: None,
-            }
-        } else {
-            ConnectionAddr::Tcp(config.host.clone(), config.port)
-        };
-
-        let redis = RedisConnectionInfo {
-            db: 0,
-            username: if config.username.is_empty() {
-                None
-            } else {
-                Some(config.username.clone())
-            },
-            password: if config.password.is_empty() {
-                None
-            } else {
-                Some(config.password.clone())
-            },
-            protocol: redis::ProtocolVersion::RESP2,
-        };
-
-        let client = Client::open(ConnectionInfo { addr, redis })?;
-        Ok(Arc::new(client))
-    }
-
-    fn remove_instance(&self, config: &ConnectionData, role: &str) {
-        self.instances.remove(&Self::cache_key(config, role));
-    }
-}
 
 #[tokio::main]
 async fn main() {
@@ -541,16 +472,18 @@ async fn handle_redis_invoke(
                 .ok_or_else(|| "PUNSUBSCRIBE requires a pattern".to_string())?
                 .to_string();
             stop_pubsub_task(subscriptions.clone(), &invoke.id, &pattern).await;
-            state.redis_map.remove_instance(&connection, &role);
+            state
+                .redis_map
+                .remove_instance_with_role(&connection.redis_config(), &role);
             JsonValue::Null
         }
         _ => {
             execute_redis_command(
                 state.redis_map.clone(),
-                &connection,
+                &connection.redis_config(),
                 &role,
                 &invoke.command,
-                &invoke.args,
+                &redis_args(&invoke.args),
             )
             .await?
         }
@@ -601,7 +534,7 @@ async fn route_api_request(
             };
             match execute_redis_command(
                 state.redis_map.clone(),
-                &connection,
+                &connection.redis_config(),
                 "publisher",
                 "PING",
                 &[],
@@ -612,14 +545,16 @@ async fn route_api_request(
                 Err(_) => Ok(json!(-1)),
             }
         }
-        ("POST", ["api", "connections"]) => {
-            create_connection_record(&state.connections_dir, invoke.body).await
-        }
+        ("POST", ["api", "connections"]) => create_json_record(&state.connections_dir, invoke.body)
+            .await
+            .map(JsonValue::String),
         ("PUT", ["api", "connections", id]) => {
-            update_connection_record(&state.connections_dir, id, invoke.body).await
+            update_json_record(&state.connections_dir, id, invoke.body)
+                .await
+                .map(|()| JsonValue::Null)
         }
         ("DELETE", ["api", "connections", id]) => {
-            delete_connection_record(&state.connections_dir, id).await?;
+            delete_json_record(&state.connections_dir, id).await?;
             Ok(JsonValue::Null)
         }
         ("POST", ["api", "connections", id, "disconnect"]) => {
@@ -629,13 +564,15 @@ async fn route_api_request(
                 .and_then(JsonValue::as_str)
                 .unwrap_or("publisher");
             if let Some(connection) = find_connection(&state.connections_dir, id).await? {
-                state.redis_map.remove_instance(&connection, role);
+                state
+                    .redis_map
+                    .remove_instance_with_role(&connection.redis_config(), role);
             }
             Ok(JsonValue::Null)
         }
-        ("GET", ["api", "config"]) => get_config_value(&state.config_path).await,
+        ("GET", ["api", "config"]) => get_json_config(&state.config_path).await,
         ("POST", ["api", "config"]) => {
-            set_config_value(&state.config_path, invoke.body).await?;
+            set_json_config(&state.config_path, invoke.body).await?;
             Ok(JsonValue::Null)
         }
         _ => Ok(JsonValue::Null),
@@ -658,8 +595,8 @@ async fn start_pubsub_task(
     )
     .await;
 
-    let client = state.redis_map.get_instance(&connection, &role).await?;
-    let mut pubsub = open_pubsub(client.clone()).await?;
+    let mut pubsub =
+        open_redis_pubsub(state.redis_map.clone(), &connection.redis_config(), &role).await?;
     pubsub
         .psubscribe(pattern.clone())
         .await
@@ -708,81 +645,6 @@ async fn stop_pubsub_task(
     }
 }
 
-async fn open_pubsub(client: Arc<Client>) -> Result<PubSub, String> {
-    client
-        .get_async_pubsub()
-        .await
-        .map_err(|error| error.to_string())
-}
-
-async fn execute_redis_command(
-    redis_map: Arc<RedisMap>,
-    connection: &ConnectionData,
-    role: &str,
-    command: &str,
-    args: &[JsonValue],
-) -> Result<JsonValue, String> {
-    let client = redis_map.get_instance(connection, role).await?;
-    let mut multiplexed = client
-        .get_multiplexed_async_connection()
-        .await
-        .map_err(|error| error.to_string())?;
-
-    let mut cmd = redis::cmd(command);
-    for argument in args {
-        match argument {
-            JsonValue::Null => cmd.arg(""),
-            JsonValue::Bool(value) => cmd.arg(value.to_string()),
-            JsonValue::Number(value) => cmd.arg(value.to_string()),
-            JsonValue::String(value) => cmd.arg(value),
-            _ => cmd.arg(argument.to_string()),
-        };
-    }
-
-    let value: Value = cmd
-        .query_async(&mut multiplexed)
-        .await
-        .map_err(|error| error.to_string())?;
-
-    Ok(parse_redis_value(value))
-}
-
-fn parse_redis_value(value: Value) -> JsonValue {
-    match value {
-        Value::Nil => JsonValue::Null,
-        Value::Int(value) => json!(value),
-        Value::BulkString(bytes) => json!(String::from_utf8_lossy(&bytes).to_string()),
-        Value::Array(values) => {
-            JsonValue::Array(values.into_iter().map(parse_redis_value).collect())
-        }
-        Value::SimpleString(value) => json!(value),
-        Value::Okay => json!("OK"),
-        Value::Map(entries) => JsonValue::Array(
-            entries
-                .into_iter()
-                .map(|(key, value)| json!([parse_redis_value(key), parse_redis_value(value)]))
-                .collect(),
-        ),
-        Value::Attribute { data, attributes } => json!({
-          "data": parse_redis_value(*data),
-          "attributes": attributes
-            .into_iter()
-            .map(|(key, value)| json!([parse_redis_value(key), parse_redis_value(value)]))
-            .collect::<Vec<_>>()
-        }),
-        Value::Set(values) => JsonValue::Array(values.into_iter().map(parse_redis_value).collect()),
-        Value::Double(value) => json!(value),
-        Value::Boolean(value) => json!(value),
-        Value::VerbatimString { text, .. } => json!(text),
-        Value::BigNumber(value) => json!(value.to_string()),
-        Value::Push { kind, data } => json!({
-          "kind": format!("{kind:?}"),
-          "data": data.into_iter().map(parse_redis_value).collect::<Vec<_>>()
-        }),
-        Value::ServerError(error) => json!(format!("{error:?}")),
-    }
-}
-
 async fn get_connections(State(state): State<Arc<AppState>>) -> Result<Json<JsonValue>, AppError> {
     Ok(Json(
         list_connections(&state.connections_dir)
@@ -796,8 +658,9 @@ async fn create_connection(
     Json(payload): Json<JsonValue>,
 ) -> Result<Json<JsonValue>, AppError> {
     Ok(Json(
-        create_connection_record(&state.connections_dir, payload)
+        create_json_record(&state.connections_dir, payload)
             .await
+            .map(JsonValue::String)
             .map_err(AppError::from)?,
     ))
 }
@@ -808,8 +671,9 @@ async fn update_connection(
     Json(payload): Json<JsonValue>,
 ) -> Result<Json<JsonValue>, AppError> {
     Ok(Json(
-        update_connection_record(&state.connections_dir, &id, payload)
+        update_json_record(&state.connections_dir, &id, payload)
             .await
+            .map(|()| JsonValue::Null)
             .map_err(AppError::from)?,
     ))
 }
@@ -818,7 +682,7 @@ async fn delete_connection(
     State(state): State<Arc<AppState>>,
     AxumPath(id): AxumPath<String>,
 ) -> Result<StatusCode, AppError> {
-    delete_connection_record(&state.connections_dir, &id)
+    delete_json_record(&state.connections_dir, &id)
         .await
         .map_err(AppError::from)?;
     Ok(StatusCode::NO_CONTENT)
@@ -862,7 +726,7 @@ async fn disconnect_connection(
 
 async fn get_config(State(state): State<Arc<AppState>>) -> Result<Json<JsonValue>, AppError> {
     Ok(Json(
-        get_config_value(&state.config_path)
+        get_json_config(&state.config_path)
             .await
             .map_err(AppError::from)?,
     ))
@@ -872,7 +736,7 @@ async fn set_config(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<JsonValue>,
 ) -> Result<StatusCode, AppError> {
-    set_config_value(&state.config_path, payload)
+    set_json_config(&state.config_path, payload)
         .await
         .map_err(AppError::from)?;
     Ok(StatusCode::NO_CONTENT)
@@ -948,30 +812,13 @@ async fn serve_file_response(path: PathBuf) -> Result<Response, AppError> {
 }
 
 async fn list_connections(connections_dir: &Path) -> Result<JsonValue, String> {
-    fs::create_dir_all(connections_dir)
-        .await
-        .map_err(|error| error.to_string())?;
-
-    let mut entries = fs::read_dir(connections_dir)
-        .await
-        .map_err(|error| error.to_string())?;
     let mut connections = Vec::new();
 
-    while let Some(entry) = entries
-        .next_entry()
-        .await
-        .map_err(|error| error.to_string())?
-    {
-        let path = entry.path();
-        if path.extension().and_then(|value| value.to_str()) != Some("json") {
-            continue;
-        }
-        let Some(id) = path.file_stem().and_then(|value| value.to_str()) else {
-            continue;
-        };
-        if let Some(connection) = find_connection(connections_dir, id).await? {
-            connections.push(serde_json::to_value(connection).map_err(|error| error.to_string())?);
-        }
+    for (id, value) in list_json_records(connections_dir).await? {
+        let mut connection =
+            serde_json::from_value::<ConnectionData>(value).map_err(|error| error.to_string())?;
+        connection.id = Some(id);
+        connections.push(serde_json::to_value(connection).map_err(|error| error.to_string())?);
     }
 
     Ok(JsonValue::Array(connections))
@@ -981,121 +828,14 @@ async fn find_connection(
     connections_dir: &Path,
     id: &str,
 ) -> Result<Option<ConnectionData>, String> {
-    let path = connection_file_path(connections_dir, id)?;
-    let content = match fs::read_to_string(&path).await {
-        Ok(content) => content,
-        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
-        Err(error) => return Err(error.to_string()),
+    let Some(value) = find_json_record(connections_dir, id).await? else {
+        return Ok(None);
     };
 
     let mut connection =
-        serde_json::from_str::<ConnectionData>(&content).map_err(|error| error.to_string())?;
+        serde_json::from_value::<ConnectionData>(value).map_err(|error| error.to_string())?;
     connection.id = Some(id.to_string());
     Ok(Some(connection))
-}
-
-async fn create_connection_record(
-    connections_dir: &Path,
-    payload: JsonValue,
-) -> Result<JsonValue, String> {
-    fs::create_dir_all(connections_dir)
-        .await
-        .map_err(|error| error.to_string())?;
-
-    let id = payload
-        .get("id")
-        .and_then(JsonValue::as_str)
-        .map(ToOwned::to_owned)
-        .unwrap_or_else(|| nanoid!(8));
-
-    let mut object = payload
-        .as_object()
-        .cloned()
-        .ok_or_else(|| "connection payload must be an object".to_string())?;
-    object.remove("id");
-
-    let serialized =
-        serde_json::to_vec_pretty(&JsonValue::Object(object)).map_err(|error| error.to_string())?;
-    fs::write(connection_file_path(connections_dir, &id)?, serialized)
-        .await
-        .map_err(|error| error.to_string())?;
-    Ok(JsonValue::String(id))
-}
-
-async fn update_connection_record(
-    connections_dir: &Path,
-    id: &str,
-    payload: JsonValue,
-) -> Result<JsonValue, String> {
-    let path = connection_file_path(connections_dir, id)?;
-    let current = match fs::read_to_string(&path).await {
-        Ok(content) => serde_json::from_str::<JsonValue>(&content).unwrap_or_else(|_| json!({})),
-        Err(error) if error.kind() == io::ErrorKind::NotFound => json!({}),
-        Err(error) => return Err(error.to_string()),
-    };
-
-    let merged = merge_json_objects(current, payload)?;
-    let object = merged
-        .as_object()
-        .cloned()
-        .ok_or_else(|| "connection payload must be an object".to_string())?;
-
-    fs::write(
-        path,
-        serde_json::to_vec_pretty(&JsonValue::Object(object)).map_err(|error| error.to_string())?,
-    )
-    .await
-    .map_err(|error| error.to_string())?;
-
-    Ok(JsonValue::Null)
-}
-
-async fn delete_connection_record(connections_dir: &Path, id: &str) -> Result<(), String> {
-    let path = connection_file_path(connections_dir, id)?;
-    match fs::remove_file(path).await {
-        Ok(()) => Ok(()),
-        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
-        Err(error) => Err(error.to_string()),
-    }
-}
-
-async fn get_config_value(config_path: &Path) -> Result<JsonValue, String> {
-    match fs::read_to_string(config_path).await {
-        Ok(content) => serde_json::from_str(&content).map_err(|error| error.to_string()),
-        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(JsonValue::Null),
-        Err(error) => Err(error.to_string()),
-    }
-}
-
-async fn set_config_value(config_path: &Path, payload: JsonValue) -> Result<(), String> {
-    if let Some(parent) = config_path.parent() {
-        fs::create_dir_all(parent)
-            .await
-            .map_err(|error| error.to_string())?;
-    }
-    fs::write(
-        config_path,
-        serde_json::to_vec_pretty(&payload).map_err(|error| error.to_string())?,
-    )
-    .await
-    .map_err(|error| error.to_string())
-}
-
-fn merge_json_objects(current: JsonValue, next: JsonValue) -> Result<JsonValue, String> {
-    let mut current_object = current.as_object().cloned().unwrap_or_else(Map::new);
-    let next_object = next
-        .as_object()
-        .cloned()
-        .ok_or_else(|| "connection payload must be an object".to_string())?;
-
-    for (key, value) in next_object {
-        if key == "id" {
-            continue;
-        }
-        current_object.insert(key, value);
-    }
-
-    Ok(JsonValue::Object(current_object))
 }
 
 fn sanitize_file_name(file_name: &str) -> String {
@@ -1105,11 +845,16 @@ fn sanitize_file_name(file_name: &str) -> String {
         .collect::<String>()
 }
 
-async fn safe_read_file(path: &Option<String>) -> Option<Vec<u8>> {
-    let Some(path) = path else {
-        return None;
-    };
-    fs::read(path).await.ok()
+fn redis_args(args: &[JsonValue]) -> Vec<String> {
+    args.iter()
+        .map(|argument| match argument {
+            JsonValue::Null => String::new(),
+            JsonValue::Bool(value) => value.to_string(),
+            JsonValue::Number(value) => value.to_string(),
+            JsonValue::String(value) => value.clone(),
+            _ => argument.to_string(),
+        })
+        .collect()
 }
 
 fn safe_join(base: &Path, request_path: &str) -> Result<PathBuf, AppError> {
@@ -1283,13 +1028,6 @@ fn print_banner(text: &str) {
         println!("*{}*", " ".repeat(width - 2));
     }
     println!("{border}");
-}
-
-fn connection_file_path(connections_dir: &Path, id: &str) -> Result<PathBuf, String> {
-    if id.contains('/') || id.contains('\\') || id.contains("..") {
-        return Err("invalid connection id".to_string());
-    }
-    Ok(connections_dir.join(format!("{id}.json")))
 }
 
 #[derive(Debug)]

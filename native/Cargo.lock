@@ -1012,19 +1012,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "rds-core"
+version = "0.1.0"
+dependencies = [
+ "dashmap",
+ "nanoid",
+ "once_cell",
+ "redis",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "rds-native"
 version = "0.1.0"
 dependencies = [
  "axum",
  "clap",
- "dashmap",
  "dirs",
  "futures-util",
  "libc",
  "mime_guess",
  "nanoid",
- "once_cell",
- "redis",
+ "rds-core",
  "serde",
  "serde_json",
  "sysinfo",
