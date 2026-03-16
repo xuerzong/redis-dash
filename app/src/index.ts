@@ -1,31 +1,61 @@
-import http from 'node:http'
-import { useWebsocketServer } from './wsServer'
-import { initDatabase } from './server/lib/db'
-import {
-  httpUploadFileHandler,
-  httpStaticHandler,
-  httpHtmlHanlder,
-} from './server/handler'
+import path from 'node:path'
+import fs from 'node:fs'
+import { spawn } from 'node:child_process'
+
+const port = parseInt(process.env.PORT || '5090')
+
+const resolveNativeBinary = () => {
+  const envBinary = process.env.RDS_SERVER_BIN
+  const candidates = [
+    envBinary,
+    path.resolve(__dirname, '../bin/rds'),
+    path.resolve(__dirname, '../bin/rds.exe'),
+    path.resolve(__dirname, '../../native/target/release/rds'),
+    path.resolve(__dirname, '../../native/target/release/rds.exe'),
+  ].filter(Boolean) as string[]
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate
+    }
+  }
+
+  throw new Error('Unable to locate native `rds` binary.')
+}
 
 const bootstrap = async () => {
-  await initDatabase()
-  const server = http.createServer(
-    httpUploadFileHandler(httpStaticHandler(httpHtmlHanlder()))
+  const binary = resolveNativeBinary()
+  const child = spawn(
+    binary,
+    ['serve', '--port', String(port), '--asset-root', __dirname],
+    {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        RDS_ASSET_ROOT: __dirname,
+      },
+    }
   )
-  useWebsocketServer(server)
-  const port = parseInt(process.env.PORT || '5090')
 
-  server.listen(port, () => {
-    console.log(`🚀 The server is running at http://127.0.0.1:${port}`)
+  child.on('exit', (code) => {
+    process.exit(code ?? 0)
   })
-  server.on('error', () => {
+
+  child.on('error', (error) => {
+    console.error(error)
     process.exit(1)
   })
+
   process.on('SIGINT', () => {
-    server.close(() => {
-      process.exit(0)
-    })
+    child.kill('SIGINT')
+  })
+
+  process.on('SIGTERM', () => {
+    child.kill('SIGTERM')
   })
 }
 
-bootstrap()
+bootstrap().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})

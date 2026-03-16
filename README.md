@@ -41,8 +41,10 @@
 You can install the Redis Dash command-line tool globally via npm (Node Package Manager).
 
 ```bash
-npm -g redis-dash
+npm install -g redis-dash
 ```
+
+The npm package now wraps a native Rust binary. The published package includes the platform binary generated during release.
 
 ### Start Server
 
@@ -97,4 +99,24 @@ cd ./redis-dash
 npm install
 
 npm run start
+```
+
+## 📦 Release
+
+Build the web assets, compile the Rust CLI/server, and prepare both npm and standalone binary artifacts:
+
+```bash
+npm run release
+```
+
+After the command finishes:
+
+- The npm package payload is in `cli/dist`
+- The platform native binary is in `cli/dist/native/<platform>/rds`
+- The standalone binary bundle is in `cli/dist/binary/<platform>`
+
+Publish the npm package with:
+
+```bash
+npm run publish:cli
 ```

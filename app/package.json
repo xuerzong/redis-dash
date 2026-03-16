@@ -12,6 +12,9 @@
   "author": "xuerzong@gmail.com",
   "license": "MIT",
   "type": "module",
+  "dependencies": {
+    "@xuerzong/redis-dash-invoke": "*"
+  },
   "devDependencies": {
     "@base-ui-components/react": "^1.0.0-beta.4",
     "@codemirror/lang-json": "^6.0.2",
