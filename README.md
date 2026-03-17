@@ -18,7 +18,7 @@
 
 <p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
 
-🚀 **Redis Dash** is a lightweight(<2MB), cross-platform Redis GUI (Graphical User Interface) Client. Redis Dash is designed to provide a simple and efficient way to manage and monitor your Redis instances.
+🚀 **Redis Dash** is a cross-platform Redis GUI (Graphical User Interface) Client. Redis Dash is designed to provide a simple and efficient way to manage and monitor your Redis instances.
 
 <p align='center'>
   <img src='./assets/screenshot.png'>
@@ -45,6 +45,8 @@ npm install -g redis-dash
 ```
 
 The npm package now wraps a native Rust binary. The published package includes the platform binary generated during release.
+
+The current npm package bundles native binaries for multiple platforms, so the install package size is significantly larger than early versions.
 
 ### Start Server
 
