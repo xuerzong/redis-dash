@@ -75,7 +75,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install client dependencies
-        run: RDS_SKIP_POSTINSTALL=1 npm ci
+        run: npm ci
+        env:
+          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Build client
         run: npm run build
@@ -185,7 +187,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install client dependencies
-        run: RDS_SKIP_POSTINSTALL=1 npm ci
+        run: npm ci
+        env:
+          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Set version
         run: npm run replace-version
@@ -239,7 +243,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
-        run: RDS_SKIP_POSTINSTALL=1 npm ci
+        run: npm ci
+        env:
+          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Set version
         run: npm run replace-version

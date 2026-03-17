@@ -22,7 +22,9 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install dependencies
-        run: RDS_SKIP_POSTINSTALL=1 npm ci
+        run: npm ci
+        env:
+          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Build web project
         run: npm run build:web
