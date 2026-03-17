@@ -10,7 +10,15 @@ const BIN_NAME = process.platform === 'win32' ? 'rds.exe' : 'rds'
 const PLATFORM_ID = `${process.platform}-${process.arch}`
 const DIST_DIR = path.resolve(process.cwd(), 'dist', 'native', PLATFORM_ID)
 const BIN_PATH = path.resolve(DIST_DIR, BIN_NAME)
+const BIN_VERSION_PATH = path.resolve(DIST_DIR, `${BIN_NAME}.version`)
 const PACKAGE_JSON_PATH = path.resolve(process.cwd(), 'package.json')
+const DOWNLOAD_TIMEOUT_MS = Number(
+  process.env.RDS_DOWNLOAD_TIMEOUT_MS ?? 120_000
+)
+const DOWNLOAD_AGENT = new https.Agent({
+  keepAlive: true,
+  timeout: DOWNLOAD_TIMEOUT_MS,
+})
 
 const readPackageVersion = async () => {
   const raw = await fsPromises.readFile(PACKAGE_JSON_PATH, 'utf8')
@@ -30,13 +38,12 @@ const getAssetName = () => {
 
 const normalizeBaseUrl = (input) => input.replace(/\/+$/, '')
 
-const resolveDownloadUrl = async () => {
+const resolveDownloadUrl = async (version) => {
   if (process.env.RDS_BINARY_URL) {
     return process.env.RDS_BINARY_URL
   }
 
   const assetName = getAssetName()
-  const version = await readPackageVersion()
 
   if (process.env.RDS_BINARY_MIRROR) {
     return `${normalizeBaseUrl(process.env.RDS_BINARY_MIRROR)}/v${version}/${assetName}`
@@ -51,7 +58,8 @@ const downloadFile = async (url, outputPath, redirectCount = 0) => {
   }
 
   await new Promise((resolve, reject) => {
-    const req = https.get(url, (response) => {
+    const requestStartedAt = Date.now()
+    const req = https.get(url, { agent: DOWNLOAD_AGENT }, (response) => {
       const statusCode = response.statusCode ?? 0
       const location = response.headers.location
 
@@ -79,8 +87,13 @@ const downloadFile = async (url, outputPath, redirectCount = 0) => {
     })
 
     req.on('error', reject)
-    req.setTimeout(20000, () => {
-      req.destroy(new Error('Download timeout (20s).'))
+    req.setTimeout(DOWNLOAD_TIMEOUT_MS, () => {
+      const elapsedMs = Date.now() - requestStartedAt
+      req.destroy(
+        new Error(
+          `Download timeout after ${elapsedMs}ms (configured ${DOWNLOAD_TIMEOUT_MS}ms).`
+        )
+      )
     })
   })
 }
@@ -93,11 +106,30 @@ const ensureBinary = async () => {
     return
   }
 
-  if (fs.existsSync(BIN_PATH)) {
-    return
+  const version = await readPackageVersion()
+
+  if (fs.existsSync(BIN_PATH) && fs.existsSync(BIN_VERSION_PATH)) {
+    const installedVersion = (
+      await fsPromises.readFile(BIN_VERSION_PATH, 'utf8')
+    ).trim()
+
+    if (installedVersion === version) {
+      console.log(
+        `[redis-dash] Native binary already installed for ${PLATFORM_ID} (v${version}).`
+      )
+      return
+    }
+
+    console.log(
+      `[redis-dash] Native binary version mismatch for ${PLATFORM_ID}: installed v${installedVersion}, required v${version}. Re-downloading...`
+    )
+  } else if (fs.existsSync(BIN_PATH)) {
+    console.log(
+      `[redis-dash] Native binary found for ${PLATFORM_ID} without version metadata. Re-downloading...`
+    )
   }
 
-  const downloadUrl = await resolveDownloadUrl()
+  const downloadUrl = await resolveDownloadUrl(version)
   const tempPath = path.resolve(
     os.tmpdir(),
     `redis-dash-${Date.now()}-${getAssetName()}`
@@ -109,6 +141,7 @@ const ensureBinary = async () => {
     console.log(`[redis-dash] Downloading native binary for ${PLATFORM_ID}...`)
     await downloadFile(downloadUrl, tempPath)
     await fsPromises.copyFile(tempPath, BIN_PATH)
+    await fsPromises.writeFile(BIN_VERSION_PATH, `${version}\n`, 'utf8')
 
     if (process.platform !== 'win32') {
       await fsPromises.chmod(BIN_PATH, 0o755)
