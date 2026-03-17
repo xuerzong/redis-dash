@@ -27,17 +27,17 @@ jobs:
             args: ''
             arch: 'x64'
             os: 'ubuntu'
-            targets: ''
+            targets: 'x86_64-unknown-linux-gnu'
           - platform: 'ubuntu-22.04-arm'
             args: ''
             arch: 'arm64'
             os: 'ubuntu'
-            targets: ''
+            targets: 'aarch64-unknown-linux-gnu'
           - platform: 'windows-latest'
             args: ''
             arch: 'x64'
             os: 'windows'
-            targets: ''
+            targets: 'x86_64-pc-windows-msvc'
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 40
 
@@ -47,6 +47,9 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -108,6 +111,7 @@ jobs:
   build-cli-artifacts:
     permissions:
       contents: write
+    needs: build-desktop
 
     name: Build CLI Artifacts
     strategy:
@@ -198,12 +202,6 @@ jobs:
         run: npm run build --workspace=cli
         env:
           CARGO_BUILD_TARGET: ${{ matrix.rust_target }}
-          RDS_PLATFORM_ID: ${{ matrix.platform_id }}
-          RDS_BINARY_NAME: ${{ matrix.binary_name }}
-
-      - name: Build standalone binary bundle
-        run: npm run package:binary
-        env:
           RDS_PLATFORM_ID: ${{ matrix.platform_id }}
           RDS_BINARY_NAME: ${{ matrix.binary_name }}
 
