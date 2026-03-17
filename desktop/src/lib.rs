@@ -1,5 +1,6 @@
 pub mod commands;
 
+use commands::api::*;
 use commands::redis::*;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -9,6 +10,7 @@ pub fn run() {
     .plugin(tauri_plugin_os::init())
     .plugin(tauri_plugin_dialog::init())
     .invoke_handler(tauri::generate_handler![
+      send_request,
       send_redis_command,
       close_redis_command,
       run_redis_psubscribe,
