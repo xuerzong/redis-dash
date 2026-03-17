@@ -4,9 +4,23 @@ on:
     tags: [v*]
 
 jobs:
+  prepare-release:
+    permissions:
+      contents: write
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+
   build-desktop:
     permissions:
       contents: write
+    needs: prepare-release
 
     name: Build Desktop
     strategy:
@@ -113,7 +127,7 @@ jobs:
   build-cli-artifacts:
     permissions:
       contents: write
-    needs: build-desktop
+    needs: prepare-release
 
     name: Build CLI Artifacts
     strategy:
@@ -218,6 +232,16 @@ jobs:
           else
             cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}"
           fi
+
+      - name: Upload CLI binary to R2
+        if: secrets.CF_R2_API_TOKEN != '' && secrets.CF_ACCOUNT_ID != '' && secrets.CF_R2_BUCKET != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_R2_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: >-
+            r2 object put ${{ secrets.CF_R2_BUCKET }}/${{ github.ref_name }}/rds-${{ matrix.platform_id }}${{ matrix.os == 'windows' && '.exe' || '' }}
+            --file=release-assets/rds-${{ matrix.platform_id }}${{ matrix.os == 'windows' && '.exe' || '' }}
 
       - name: Upload CLI binary to GitHub Release
         uses: softprops/action-gh-release@v2
