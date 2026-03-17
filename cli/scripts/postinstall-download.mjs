@@ -12,6 +12,7 @@ const DIST_DIR = path.resolve(process.cwd(), 'dist', 'native', PLATFORM_ID)
 const BIN_PATH = path.resolve(DIST_DIR, BIN_NAME)
 const BIN_VERSION_PATH = path.resolve(DIST_DIR, `${BIN_NAME}.version`)
 const PACKAGE_JSON_PATH = path.resolve(process.cwd(), 'package.json')
+const DEFAULT_BINARY_MIRROR = 'https://download.xuco.me'
 const DOWNLOAD_TIMEOUT_MS = Number(
   process.env.RDS_DOWNLOAD_TIMEOUT_MS ?? 120_000
 )
@@ -49,7 +50,7 @@ const resolveDownloadUrl = async (version) => {
     return `${normalizeBaseUrl(process.env.RDS_BINARY_MIRROR)}/v${version}/${assetName}`
   }
 
-  return `https://github.com/xuerzong/redis-dash/releases/download/v${version}/${assetName}`
+  return `${DEFAULT_BINARY_MIRROR}/v${version}/${assetName}`
 }
 
 const logDownloadProgress = (response, platformId) => {
