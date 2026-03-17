@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use super::redis::{run_redis_psubscribe, run_redis_punsubscribe};
 use rds_core::{
   create_json_record, delete_json_record, execute_redis_command, find_json_record, get_json_config,
   global_redis_map, list_json_records, set_json_config, update_json_record, RedisConfig,
@@ -41,8 +42,34 @@ impl ConnectionData {
   }
 }
 
+#[derive(Debug, Deserialize)]
+struct RedisCommandBody {
+  id: String,
+  command: String,
+  #[serde(default)]
+  args: Vec<JsonValue>,
+  #[serde(default)]
+  role: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RedisPubSubBody {
+  id: String,
+  channel: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct RedisPunsubscribeBody {
+  channel: String,
+  #[serde(default)]
+  id: Option<String>,
+  #[serde(default)]
+  role: Option<String>,
+}
+
 #[tauri::command]
 pub async fn send_request(
+  app_handle: tauri::AppHandle,
   method: String,
   url: String,
   body: JsonValue,
@@ -107,8 +134,72 @@ pub async fn send_request(
       set_json_config(&config_path(), body).await?;
       Ok(JsonValue::Null)
     }
+    ("POST", ["api", "redis", "command"]) => run_redis_command(body).await,
+    ("POST", ["api", "redis", "psubscribe"]) => run_redis_psubscribe_by_api(app_handle, body).await,
+    ("POST", ["api", "redis", "punsubscribe"]) => run_redis_punsubscribe_by_api(body).await,
     _ => Ok(JsonValue::Null),
   }
+}
+
+async fn run_redis_command(body: JsonValue) -> Result<JsonValue, String> {
+  let payload =
+    serde_json::from_value::<RedisCommandBody>(body).map_err(|error| error.to_string())?;
+  let Some(connection) = find_connection(&payload.id).await? else {
+    return Err(format!("No connection found with ID: {}", payload.id));
+  };
+
+  let role = payload.role.unwrap_or_else(|| "publisher".to_string());
+  execute_redis_command(
+    global_redis_map(),
+    &connection.redis_config(),
+    &role,
+    &payload.command,
+    &redis_args(&payload.args),
+  )
+  .await
+}
+
+async fn run_redis_psubscribe_by_api(
+  app_handle: tauri::AppHandle,
+  body: JsonValue,
+) -> Result<JsonValue, String> {
+  let payload =
+    serde_json::from_value::<RedisPubSubBody>(body).map_err(|error| error.to_string())?;
+  let Some(connection) = find_connection(&payload.id).await? else {
+    return Err(format!("No connection found with ID: {}", payload.id));
+  };
+
+  run_redis_psubscribe(app_handle, connection.redis_config(), payload.channel).await?;
+  Ok(JsonValue::Null)
+}
+
+async fn run_redis_punsubscribe_by_api(body: JsonValue) -> Result<JsonValue, String> {
+  let payload =
+    serde_json::from_value::<RedisPunsubscribeBody>(body).map_err(|error| error.to_string())?;
+
+  run_redis_punsubscribe(payload.channel).await?;
+
+  if let Some(id) = payload.id {
+    let role = payload.role.unwrap_or_else(|| "subscriber".to_string());
+    if let Some(connection) = find_connection(&id).await? {
+      global_redis_map().remove_instance_with_role(&connection.redis_config(), &role);
+    }
+  }
+
+  Ok(JsonValue::Null)
+}
+
+fn redis_args(args: &[JsonValue]) -> Vec<String> {
+  args
+    .iter()
+    .map(|argument| match argument {
+      JsonValue::Null => String::new(),
+      JsonValue::Bool(value) => value.to_string(),
+      JsonValue::Number(value) => value.to_string(),
+      JsonValue::String(value) => value.clone(),
+      _ => argument.to_string(),
+    })
+    .collect()
 }
 
 async fn ensure_cache_layout() -> Result<(), String> {
