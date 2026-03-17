@@ -52,6 +52,33 @@ const resolveDownloadUrl = async (version) => {
   return `https://github.com/xuerzong/redis-dash/releases/download/v${version}/${assetName}`
 }
 
+const logDownloadProgress = (response, platformId) => {
+  const contentLengthHeader = response.headers['content-length']
+  const totalBytes = Number(contentLengthHeader)
+
+  if (!Number.isFinite(totalBytes) || totalBytes <= 0) {
+    return
+  }
+
+  let downloadedBytes = 0
+  let lastLoggedPercent = 0
+
+  response.on('data', (chunk) => {
+    downloadedBytes += chunk.length
+    const percent = Math.min(
+      100,
+      Math.floor((downloadedBytes / totalBytes) * 100)
+    )
+
+    if (percent >= 100 || percent - lastLoggedPercent >= 5) {
+      lastLoggedPercent = percent
+      console.log(
+        `[redis-dash] Download progress (${platformId}): ${percent}% (${downloadedBytes}/${totalBytes} bytes)`
+      )
+    }
+  })
+}
+
 const downloadFile = async (url, outputPath, redirectCount = 0) => {
   if (redirectCount > 5) {
     throw new Error('Too many redirects while downloading native binary.')
@@ -80,6 +107,8 @@ const downloadFile = async (url, outputPath, redirectCount = 0) => {
         reject(new Error(`Download failed with status ${statusCode}: ${url}`))
         return
       }
+
+      logDownloadProgress(response, PLATFORM_ID)
 
       pipeline(response, createWriteStream(outputPath))
         .then(resolve)
