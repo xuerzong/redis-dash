@@ -12,7 +12,7 @@ import {
   addRedisPubSubMessage,
   useRedisPubSubStore,
 } from '@client/stores/redisPubSubStore'
-import { useRedisPubSub } from '@xuerzong/redis-dash-invoke/pub-sub'
+import { useRedisPubSub } from '@xuerzong/redis-dash-invoke/useRedisPubSub'
 
 export const RedisPubSubMessageTable = () => {
   const redisId = useRedisId()
