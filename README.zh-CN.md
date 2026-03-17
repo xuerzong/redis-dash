@@ -39,8 +39,10 @@
 您可以通过 npm (Node Package Manager) 在全局安装 Redis Dash 命令行工具。
 
 ```bash
-npm -g redis-dash
+npm install -g redis-dash
 ```
+
+现在 npm 包内部会包装一个 Rust 原生二进制。执行发布流程时，会把对应平台的原生可执行文件一起打包进去。
 
 ### 启动服务
 
@@ -103,4 +105,24 @@ cd ./redis-dash
 npm install
 
 npm run start
+```
+
+## 📦 发布
+
+构建前端资源、编译 Rust CLI/服务端，并生成 npm 与独立二进制所需产物：
+
+```bash
+npm run release
+```
+
+命令执行完成后：
+
+- npm 包内容位于 `cli/dist`
+- 平台原生二进制位于 `cli/dist/native/<platform>/rds`
+- 独立二进制分发目录位于 `cli/dist/binary/<platform>`
+
+发布 npm 包：
+
+```bash
+npm run publish:cli
 ```

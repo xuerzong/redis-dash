@@ -1,7 +1,6 @@
-use crate::redis_map::{get_redis_map, RedisConfig};
-use crate::utils::parse_redis_value::parse_redis_value;
 use futures_util::StreamExt;
 use once_cell::sync::Lazy;
+use rds_core::{execute_redis_command, global_redis_map, open_redis_pubsub, RedisConfig};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use tauri::Emitter;
@@ -31,15 +30,7 @@ pub async fn run_redis_psubscribe(
   }
 
   let redis_map = get_redis_map();
-  let instance = redis_map
-    .get_instance(&redis_config)
-    .await
-    .map_err(|e| format!("Failed to connect or get instance: {}", e))?;
-
-  let mut pub_sub = instance
-    .get_async_pubsub()
-    .await
-    .map_err(|e| format!("Failed to connect or get instance: {}", e))?;
+  let mut pub_sub = open_redis_pubsub(redis_map, &redis_config, "subscriber").await?;
 
   let handle = tokio::spawn(async move {
     if let Err(e) = pub_sub.psubscribe(channel_key_in_task.clone()).await {
@@ -109,28 +100,7 @@ pub async fn send_redis_command(
   args: Vec<String>,
 ) -> Result<serde_json::Value, String> {
   let redis_map = get_redis_map();
-
-  let instance = redis_map
-    .get_instance(&redis_config)
-    .await
-    .map_err(|e| format!("Failed to connect or get instance: {}", e))?;
-
-  let mut conn = instance
-    .get_multiplexed_async_connection()
-    .await
-    .map_err(|e| format!("Failed to get connection: {}", e))?;
-
-  let mut cmd = redis::cmd(&command);
-  for arg in args {
-    cmd.arg(arg);
-  }
-
-  let result: redis::Value = cmd
-    .query_async(&mut conn)
-    .await
-    .map_err(|e| format!("Redis execution error: {}", e))?;
-
-  Ok(parse_redis_value(result))
+  execute_redis_command(redis_map, &redis_config, "publisher", &command, &args).await
 }
 
 #[tauri::command]
@@ -138,4 +108,8 @@ pub async fn close_redis_command(redis_config: RedisConfig) -> Result<(), String
   let redis_map = get_redis_map();
   redis_map.remove_instance(&redis_config);
   Ok(())
+}
+
+fn get_redis_map() -> std::sync::Arc<rds_core::RedisMap> {
+  global_redis_map()
 }

@@ -1,6 +1,4 @@
 pub mod commands;
-pub mod redis_map;
-pub mod utils;
 
 use commands::redis::*;
 

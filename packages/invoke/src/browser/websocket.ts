@@ -60,7 +60,8 @@ window.invoke = async (type: string, data: any) => {
 
 export const initWebsocket = () => {
   const { host } = window.location
-  const ws = new WebSocket(`ws://${host}`)
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+  const ws = new WebSocket(`${protocol}://${host}/ws`)
   ws.onopen = () => {
     window.invoke = async (type: string, data: any) => {
       const requestId = generateRequestId(type, data)

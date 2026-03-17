@@ -79,11 +79,10 @@ checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
 name = "app"
 version = "0.1.0"
 dependencies = [
- "dashmap",
  "futures-util",
  "log",
  "once_cell",
- "redis",
+ "rds-core",
  "serde",
  "serde_json",
  "tauri",
@@ -2096,6 +2095,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nanoid"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ffa00dec017b5b1a8b7cf5e2c008bfda1aa7e0697ac1508b491fdf2622fb4d8"
+dependencies = [
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "ndk"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3063,6 +3071,19 @@ name = "raw-window-handle"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "20675572f6f24e9e76ef639bc5552774ed45f1c30e2951e1e99c59888861c539"
+
+[[package]]
+name = "rds-core"
+version = "0.1.0"
+dependencies = [
+ "dashmap",
+ "nanoid",
+ "once_cell",
+ "redis",
+ "serde",
+ "serde_json",
+ "tokio",
+]
 
 [[package]]
 name = "redis"
