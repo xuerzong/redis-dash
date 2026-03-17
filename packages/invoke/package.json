@@ -10,7 +10,7 @@
     ".": "./src/index.ts",
     "./init": "./src/init.ts",
     "./api": "./src/api.ts",
-    "./pub-sub": "./src/sub-pub.ts"
+    "./useRedisPubSub": "./src/useRedisPubSub.ts"
   },
   "keywords": [],
   "author": "",

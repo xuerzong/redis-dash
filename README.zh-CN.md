@@ -16,7 +16,7 @@
   </a>
 </div>
 
-🚀 **Redis Dash** 是一个轻量级（<2MB）、跨平台的 Redis GUI（图形用户界面）客户端。Redis Dash 旨在提供一种简单高效的方式来管理和监控您的 Redis 实例。
+🚀 **Redis Dash** 是一个跨平台的 Redis GUI（图形用户界面）客户端。Redis Dash 旨在提供一种简单高效的方式来管理和监控您的 Redis 实例。
 
 <p align='center'>
   <img src='./assets/screenshot.png'>
@@ -43,6 +43,8 @@ npm install -g redis-dash
 ```
 
 现在 npm 包内部会包装一个 Rust 原生二进制。执行发布流程时，会把对应平台的原生可执行文件一起打包进去。
+
+当前 npm 包会内置多个平台的原生二进制，因此安装包体积会比早期版本明显增大。
 
 ### 启动服务
 

@@ -4,11 +4,11 @@ on:
     tags: [v*]
 
 jobs:
-  build-artifacts:
+  build-desktop:
     permissions:
       contents: write
 
-    name: Build
+    name: Build Desktop
     strategy:
       fail-fast: false
       matrix:
@@ -27,17 +27,17 @@ jobs:
             args: ''
             arch: 'x64'
             os: 'ubuntu'
-            targets: ''
+            targets: 'x86_64-unknown-linux-gnu'
           - platform: 'ubuntu-22.04-arm'
             args: ''
             arch: 'arm64'
             os: 'ubuntu'
-            targets: ''
+            targets: 'aarch64-unknown-linux-gnu'
           - platform: 'windows-latest'
             args: ''
             arch: 'x64'
             os: 'windows'
-            targets: ''
+            targets: 'x86_64-pc-windows-msvc'
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 40
 
@@ -47,6 +47,9 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -105,9 +108,125 @@ jobs:
           prerelease: true
           args: '${{ matrix.args }}'
 
+  build-cli-artifacts:
+    permissions:
+      contents: write
+    needs: build-desktop
+
+    name: Build CLI Artifacts
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            arch: 'arm64'
+            os: 'macos'
+            rust_target: 'aarch64-apple-darwin'
+            platform_id: 'darwin-arm64'
+            binary_name: 'rds'
+          - platform: 'macos-latest'
+            arch: 'x64'
+            os: 'macos'
+            rust_target: 'x86_64-apple-darwin'
+            platform_id: 'darwin-x64'
+            binary_name: 'rds'
+          - platform: 'ubuntu-22.04'
+            arch: 'x64'
+            os: 'ubuntu'
+            rust_target: 'x86_64-unknown-linux-gnu'
+            platform_id: 'linux-x64'
+            binary_name: 'rds'
+          - platform: 'ubuntu-22.04-arm'
+            arch: 'arm64'
+            os: 'ubuntu'
+            rust_target: 'aarch64-unknown-linux-gnu'
+            platform_id: 'linux-arm64'
+            binary_name: 'rds'
+          - platform: 'windows-latest'
+            arch: 'x64'
+            os: 'windows'
+            rust_target: 'x86_64-pc-windows-msvc'
+            platform_id: 'win32-x64'
+            binary_name: 'rds.exe'
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: 'native'
+          shared-key: ci
+          cache-on-failure: true
+
+      - name: install dependencies (Linux only)
+        if: matrix.os == 'ubuntu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install client dependencies
+        run: npm ci
+
+      - name: Set version
+        run: npm run replace-version
+        env:
+          RDS_VERSION: ${{ github.ref_name }}
+
+      - name: Build app assets
+        run: npm run build:app
+
+      - name: Copy app assets into CLI package
+        run: npm run copy:app
+
+      - name: Build native CLI for target
+        run: npm run build --workspace=cli
+        env:
+          CARGO_BUILD_TARGET: ${{ matrix.rust_target }}
+          RDS_PLATFORM_ID: ${{ matrix.platform_id }}
+          RDS_BINARY_NAME: ${{ matrix.binary_name }}
+
+      - name: Prepare CLI release asset
+        shell: bash
+        run: |
+          mkdir -p release-assets
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}.exe"
+          else
+            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}"
+          fi
+
+      - name: Upload CLI binary to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+          files: release-assets/*
+          overwrite_files: true
+
   publish-npm:
     name: Publish to NPM
-    needs: build-artifacts
+    needs: build-cli-artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -127,9 +246,24 @@ jobs:
         env:
           RDS_VERSION: ${{ github.ref_name }}
 
-      - name: Build and Release NPM Package
-        run: |
-          npm run release
-          npm run publish:cli
+      - name: Build app assets
+        run: npm run build:app
+
+      - name: Copy app assets
+        run: npm run copy:app
+
+      - name: Build CLI entry only
+        run: npm run build --workspace=cli
+        env:
+          RDS_SKIP_NATIVE_BUILD: '1'
+
+      - name: Ensure npm package does not bundle native binaries
+        run: rm -rf cli/dist/native
+
+      - name: Copy README into CLI package
+        run: npm run copy:readme
+
+      - name: Publish NPM package
+        run: npm publish --workspace=cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
