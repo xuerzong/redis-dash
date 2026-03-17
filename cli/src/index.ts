@@ -22,7 +22,7 @@ const resolveBinaryPath = () => {
   }
 
   throw new Error(
-    `Unable to locate native CLI binary for ${platformId}. Expected ${binaryName}.`
+    `Unable to locate native CLI binary for ${platformId}. Expected ${binaryName}. The npm postinstall step should download this file. You can reinstall with RDS_BINARY_MIRROR or RDS_BINARY_URL to use a custom mirror.`
   )
 }
 

@@ -13,6 +13,7 @@ const binaryName =
 const platformId =
   process.env.RDS_PLATFORM_ID || `${process.platform}-${process.arch}`
 const cargoTarget = process.env.CARGO_BUILD_TARGET
+const skipNativeBuild = process.env.RDS_SKIP_NATIVE_BUILD === '1'
 
 const sourceBinaryPath = path.resolve(
   workspaceRoot,
@@ -60,7 +61,9 @@ const buildNativeBinary = () => {
 }
 
 const main = async () => {
-  buildNativeBinary()
+  if (!skipNativeBuild) {
+    buildNativeBinary()
+  }
 
   await build({
     entryPoints: [path.resolve(rootDir, 'src', 'index.ts')],
@@ -74,9 +77,11 @@ const main = async () => {
     },
   })
 
-  await fs.mkdir(path.dirname(distBinaryPath), { recursive: true })
-  await fs.copyFile(sourceBinaryPath, distBinaryPath)
-  await fs.chmod(distBinaryPath, 0o755)
+  if (!skipNativeBuild) {
+    await fs.mkdir(path.dirname(distBinaryPath), { recursive: true })
+    await fs.copyFile(sourceBinaryPath, distBinaryPath)
+    await fs.chmod(distBinaryPath, 0o755)
+  }
 }
 
 main().catch((error) => {

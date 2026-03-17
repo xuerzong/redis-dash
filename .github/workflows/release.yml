@@ -207,16 +207,24 @@ jobs:
           RDS_PLATFORM_ID: ${{ matrix.platform_id }}
           RDS_BINARY_NAME: ${{ matrix.binary_name }}
 
-      - name: Prepare native artifact
+      - name: Prepare CLI release asset
+        shell: bash
         run: |
-          mkdir -p "artifacts/native-${{ matrix.platform_id }}"
-          cp -R "cli/dist/native/${{ matrix.platform_id }}/." "artifacts/native-${{ matrix.platform_id }}/"
+          mkdir -p release-assets
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}.exe"
+          else
+            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}"
+          fi
 
-      - name: Upload native artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload CLI binary to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: native-${{ matrix.platform_id }}
-          path: artifacts/native-${{ matrix.platform_id }}
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+          files: release-assets/*
+          overwrite_files: true
 
   publish-npm:
     name: Publish to NPM
@@ -246,23 +254,13 @@ jobs:
       - name: Copy app assets
         run: npm run copy:app
 
-      - name: Build CLI entry and Linux native binary
+      - name: Build CLI entry only
         run: npm run build --workspace=cli
+        env:
+          RDS_SKIP_NATIVE_BUILD: '1'
 
-      - name: Download native binaries from matrix builds
-        uses: actions/download-artifact@v4
-        with:
-          pattern: native-*
-          path: artifacts
-
-      - name: Merge native binaries into CLI package
-        run: |
-          mkdir -p cli/dist/native
-          for dir in artifacts/native-*; do
-            platform="${dir##*/native-}"
-            mkdir -p "cli/dist/native/${platform}"
-            cp -R "$dir/." "cli/dist/native/${platform}/"
-          done
+      - name: Ensure npm package does not bundle native binaries
+        run: rm -rf cli/dist/native
 
       - name: Copy README into CLI package
         run: npm run copy:readme

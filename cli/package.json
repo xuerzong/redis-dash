@@ -4,7 +4,8 @@
   "description": "This is a lightweight Redis Manager.",
   "main": "./dist/cli.js",
   "scripts": {
-    "build": "node ../scripts/build-cli.mjs"
+    "build": "node ../scripts/build-cli.mjs",
+    "postinstall": "node ./scripts/postinstall-download.mjs"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "files": [
     "dist",
+    "scripts",
     "README.md"
   ],
   "publishConfig": {
