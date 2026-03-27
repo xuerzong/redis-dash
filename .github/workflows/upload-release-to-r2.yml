@@ -1,0 +1,55 @@
+name: Upload Release to R2
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 0.1.1 or v0.1.1)'
+        required: true
+        type: string
+      assets:
+        description: 'Specific assets to upload (optional, comma-separated names). Leave empty for all.'
+        required: false
+        type: string
+      dryRun:
+        description: 'Dry run (no actual upload)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  upload:
+    name: Upload Release Assets to R2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Build upload script arguments
+        id: build_args
+        run: |
+          args="--version ${{ inputs.version }}"
+          
+          if [ -n "${{ inputs.assets }}" ]; then
+            for asset in $(echo "${{ inputs.assets }}" | tr ',' ' '); do
+              args="$args --asset $asset"
+            done
+          fi
+          
+          if [ "${{ inputs.dryRun }}" == "true" ]; then
+            args="$args --dry-run"
+          fi
+          
+          echo "args=$args" >> $GITHUB_OUTPUT
+
+      - name: Upload Release Assets to R2
+        run: npm run upload:release:r2 -- ${{ steps.build_args.outputs.args }}
+        env:
+          CF_R2_API_TOKEN: ${{ secrets.CF_R2_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
