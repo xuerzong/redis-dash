@@ -11,6 +11,7 @@ const PLATFORM_ID = `${process.platform}-${process.arch}`
 const DIST_DIR = path.resolve(process.cwd(), 'dist', 'native', PLATFORM_ID)
 const BIN_PATH = path.resolve(DIST_DIR, BIN_NAME)
 const BIN_VERSION_PATH = path.resolve(DIST_DIR, `${BIN_NAME}.version`)
+const CLI_ENTRY_PATH = path.resolve(process.cwd(), 'dist', 'cli.js')
 const PACKAGE_JSON_PATH = path.resolve(process.cwd(), 'package.json')
 const DOWNLOAD_TIMEOUT_MS = Number(
   process.env.RDS_DOWNLOAD_TIMEOUT_MS ?? 120_000
@@ -128,6 +129,10 @@ const downloadFile = async (url, outputPath, redirectCount = 0) => {
 }
 
 const ensureBinary = async () => {
+  if (process.platform !== 'win32' && fs.existsSync(CLI_ENTRY_PATH)) {
+    await fsPromises.chmod(CLI_ENTRY_PATH, 0o755)
+  }
+
   if (process.env.RDS_SKIP_POSTINSTALL === '1') {
     console.log(
       '[redis-dash] Skip native binary download (RDS_SKIP_POSTINSTALL=1).'

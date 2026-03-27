@@ -31,6 +31,7 @@ const distBinaryPath = path.resolve(
   platformId,
   binaryName
 )
+const distCliPath = path.resolve(rootDir, 'dist', 'cli.js')
 
 const buildNativeBinary = () => {
   const args = [
@@ -76,6 +77,10 @@ const main = async () => {
       js: '#!/usr/bin/env node',
     },
   })
+
+  if (process.platform !== 'win32') {
+    await fs.chmod(distCliPath, 0o755)
+  }
 
   if (!skipNativeBuild) {
     await fs.mkdir(path.dirname(distBinaryPath), { recursive: true })
