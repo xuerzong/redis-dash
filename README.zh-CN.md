@@ -46,6 +46,21 @@ npm install -g redis-dash
 
 当前 npm 包会内置多个平台的原生二进制，因此安装包体积会比早期版本明显增大。
 
+### 自定义二进制镜像
+
+如果在安装过程中遇到下载缓慢或网络问题，可以使用 `RDS_BINARY_MIRROR` 环境变量指定自定义的二进制镜像源：
+
+```bash
+RDS_BINARY_MIRROR=https://download.xuco.me/redis-dash npm install -g redis-dash
+```
+
+支持的镜像源：
+
+- 官方: `https://github.com/xuerzong/redis-dash/releases/download`
+- 加速（国内）: `https://download.xuco.me/redis-dash`
+
+镜像源地址应指向包含发布版本二进制的目录，格式为：`v<version>/<platform-binary>`。
+
 ### 启动服务
 
 > [!NOTE]
