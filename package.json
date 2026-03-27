@@ -23,7 +23,8 @@
     "lint": "lint-staged",
     "desktop:dev": "npm run tauri dev --workspace=desktop",
     "desktop:build": "npm run tauri build --workspace=desktop",
-    "replace-version": "node scripts/replace-version.mjs"
+    "replace-version": "node scripts/replace-version.mjs",
+    "upload:release:r2": "node ./scripts/upload-release-assets-to-r2.mjs"
   },
   "workspaces": [
     "cli",
@@ -37,6 +38,7 @@
   "license": "MIT",
   "type": "module",
   "devDependencies": {
+    "@octokit/rest": "^22.0.1",
     "@types/node": "^24.2.0",
     "esbuild": "^0.25.8",
     "husky": "^9.1.7",
