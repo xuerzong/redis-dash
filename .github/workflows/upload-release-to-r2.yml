@@ -34,17 +34,17 @@ jobs:
         id: build_args
         run: |
           args="--version ${{ inputs.version }}"
-          
+
           if [ -n "${{ inputs.assets }}" ]; then
             for asset in $(echo "${{ inputs.assets }}" | tr ',' ' '); do
               args="$args --asset $asset"
             done
           fi
-          
+
           if [ "${{ inputs.dryRun }}" == "true" ]; then
             args="$args --dry-run"
           fi
-          
+
           echo "args=$args" >> $GITHUB_OUTPUT
 
       - name: Upload Release Assets to R2

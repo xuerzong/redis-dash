@@ -48,6 +48,21 @@ The npm package now wraps a native Rust binary. The published package includes t
 
 The current npm package bundles native binaries for multiple platforms, so the install package size is significantly larger than early versions.
 
+### Custom Binary Mirror
+
+If you experience slow downloads or network issues during installation, you can use a custom binary mirror with the `RDS_BINARY_MIRROR` environment variable:
+
+```bash
+RDS_BINARY_MIRROR=https://download.xuco.me/redis-dash npm install -g redis-dash
+```
+
+Supported mirrors:
+
+- Official: `https://github.com/xuerzong/redis-dash/releases/download`
+- Accelerated (China): `https://download.xuco.me/redis-dash`
+
+The mirror URL should point to a directory containing release binaries in the format: `v<version>/<platform-binary>`.
+
 ### Start Server
 
 > [!NOTE]

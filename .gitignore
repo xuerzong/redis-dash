@@ -9,5 +9,6 @@ uploads
 *.pid
 *.zip
 .db
+.wrangler
 
 cli/README.md

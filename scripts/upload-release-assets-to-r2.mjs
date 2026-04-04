@@ -2,8 +2,10 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { Octokit } from '@octokit/rest'
 
-const FIXED_REPO = 'xuerzong/redis-dash'
+const GITHUB_REPO = 'xuerzong/redis-dash'
+const [GITHUB_OWNER, GITHUB_NAME] = GITHUB_REPO.split('/')
 const args = process.argv.slice(2)
 
 const getArgValue = (name) => {
@@ -31,7 +33,7 @@ const printUsage = () => {
   npm run upload:release:r2 -- --tag v0.1.1
 
 Description:
-  Download release assets from fixed repo ${FIXED_REPO}
+  Download release assets from fixed repo ${GITHUB_REPO}
   and upload them to R2 as: v<version>/<assetName>
 
 Required env:
@@ -74,28 +76,29 @@ const getAllArgValues = (name) => {
   return output
 }
 
-const fetchRelease = async (tag) => {
-  const url = `https://api.github.com/repos/${FIXED_REPO}/releases/tags/${encodeURIComponent(tag)}`
-  const response = await fetch(url, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      'User-Agent': 'redis-dash-r2-uploader',
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-  })
-
-  if (!response.ok) {
-    const body = await response.text()
-    throw new Error(
-      `Failed to fetch release by tag ${tag}: ${response.status} ${body}`
-    )
+const getOctokit = () => {
+  const githubToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+  if (githubToken) {
+    return new Octokit({ auth: githubToken })
   }
-
-  return response.json()
+  return new Octokit()
 }
 
-const downloadAsset = async ({ version, assetName, outFile }) => {
-  const url = `https://github.com/${FIXED_REPO}/releases/download/v${version}/${assetName}`
+const fetchRelease = async (octokit, tag) => {
+  try {
+    const { data } = await octokit.repos.getReleaseByTag({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_NAME,
+      tag,
+    })
+    return data
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`Failed to fetch release by tag ${tag}: ${message}`)
+  }
+}
+
+const downloadAsset = async ({ url, assetName, outFile }) => {
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'redis-dash-r2-uploader',
@@ -115,14 +118,7 @@ const downloadAsset = async ({ version, assetName, outFile }) => {
   return url
 }
 
-const uploadToR2 = ({
-  filePath,
-  bucket,
-  objectKey,
-  accountId,
-  token,
-  dryRun,
-}) => {
+const uploadToR2 = ({ filePath, bucket, objectKey, accountId, token }) => {
   const objectPath = `${bucket}/${objectKey}`
   const cmdArgs = [
     '-y',
@@ -133,11 +129,6 @@ const uploadToR2 = ({
     objectPath,
     `--file=${filePath}`,
   ]
-
-  if (dryRun) {
-    console.log(`[dry-run] npx ${cmdArgs.join(' ')}`)
-    return
-  }
 
   const result = spawnSync('npx', cmdArgs, {
     stdio: 'inherit',
@@ -175,24 +166,29 @@ const main = async () => {
   const accountId =
     process.env.CF_ACCOUNT_ID || process.env.CLOUDFLARE_ACCOUNT_ID
   const bucket = process.env.CF_R2_BUCKET
+  const octokit = getOctokit()
 
-  required(
-    token,
-    'CF_R2_API_TOKEN',
-    'Set CF_R2_API_TOKEN or CLOUDFLARE_API_TOKEN'
-  )
-  required(
-    accountId,
-    'CF_ACCOUNT_ID',
-    'Set CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID'
-  )
-  required(bucket, 'CF_R2_BUCKET', 'Set CF_R2_BUCKET')
+  if (!dryRun) {
+    required(
+      token,
+      'CF_R2_API_TOKEN',
+      'Set CF_R2_API_TOKEN or CLOUDFLARE_API_TOKEN'
+    )
+    required(
+      accountId,
+      'CF_ACCOUNT_ID',
+      'Set CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID'
+    )
+    required(bucket, 'CF_R2_BUCKET', 'Set CF_R2_BUCKET')
+  }
 
-  console.log(`[repo] ${FIXED_REPO}`)
+  const displayBucket = bucket || '<CF_R2_BUCKET>'
+
+  console.log(`[repo] ${GITHUB_REPO}`)
   console.log(`[tag] ${tag}`)
-  console.log(`[bucket] ${bucket}`)
+  console.log(`[bucket] ${displayBucket}`)
 
-  const release = await fetchRelease(tag)
+  const release = await fetchRelease(octokit, tag)
   const assets = Array.isArray(release.assets) ? release.assets : []
 
   if (assets.length === 0) {
@@ -209,19 +205,34 @@ const main = async () => {
     throw new Error('No matching assets found for provided --asset filters.')
   }
 
+  if (dryRun) {
+    for (const asset of targets) {
+      const objectKey = `v${version}/${asset.name}`
+      const mirrorUrl = `https://download.xuco.me/redis-dash/${objectKey}`
+      console.log(`[download] ${asset.browser_download_url}`)
+      console.log(`[upload] r2://${displayBucket}/${objectKey}`)
+      console.log(`[mirror] ${mirrorUrl}`)
+      console.log(
+        `[dry-run] npx -y wrangler@4 r2 object put ${displayBucket}/${objectKey} --file=<tmpfile>`
+      )
+    }
+    console.log('[done] Dry-run complete. No files were downloaded or uploaded.')
+    return
+  }
+
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'rds-release-'))
 
   try {
     for (const asset of targets) {
       const localPath = path.join(tempDir, asset.name)
       const sourceUrl = await downloadAsset({
-        version,
+        url: asset.browser_download_url,
         assetName: asset.name,
         outFile: localPath,
       })
 
       const objectKey = `v${version}/${asset.name}`
-      const mirrorUrl = `https://download.xuco.me/${objectKey}`
+      const mirrorUrl = `https://download.xuco.me/redis-dash/${objectKey}`
 
       console.log(`[download] ${sourceUrl}`)
       console.log(`[upload] r2://${bucket}/${objectKey}`)
@@ -233,7 +244,6 @@ const main = async () => {
         objectKey,
         accountId,
         token,
-        dryRun,
       })
     }
   } finally {
