@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDarkMode } from '@client/hooks/useDarkMode'
 import api from '@xuerzong/redis-dash-invoke/api'
 import type { Config, Lang, Theme } from '@/types'
@@ -50,6 +50,13 @@ const normalizeTheme = (theme: Theme): Theme => {
   return theme
 }
 
+const normalizeConfig = (next: Partial<Config>, fallback: Config): Config => {
+  return {
+    lang: (next.lang as Lang) ?? fallback.lang,
+    theme: normalizeTheme((next.theme as Theme) ?? fallback.theme),
+  }
+}
+
 export const ConfigContext = React.createContext<ConfigContextState | null>(
   null
 )
@@ -75,6 +82,7 @@ export const useDisplayTheme = () => {
 export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const syncChannelRef = useRef<BroadcastChannel | null>(null)
   const systemDarkMode = useDarkMode()
   const [config, setConfig] = useState<Config>({
     lang: (localStorage.getItem('rds-lang') as Lang) || 'en-US',
@@ -126,6 +134,41 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   }, [lang])
 
   useEffect(() => {
+    let channel: BroadcastChannel | null = null
+    if ('BroadcastChannel' in window) {
+      channel = new BroadcastChannel('rds-config-sync')
+      syncChannelRef.current = channel
+
+      channel.onmessage = (event: MessageEvent<Partial<Config>>) => {
+        if (!event.data) return
+        setConfig((pre) => normalizeConfig(event.data, pre))
+      }
+    }
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== 'rds-theme' && event.key !== 'rds-lang') return
+
+      setConfig((pre) =>
+        normalizeConfig(
+          {
+            theme: (localStorage.getItem('rds-theme') as Theme) ?? pre.theme,
+            lang: (localStorage.getItem('rds-lang') as Lang) ?? pre.lang,
+          },
+          pre
+        )
+      )
+    }
+
+    window.addEventListener('storage', onStorage)
+
+    return () => {
+      window.removeEventListener('storage', onStorage)
+      channel?.close()
+      syncChannelRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
     if (isTauri()) {
       document.documentElement.setAttribute('data-tauri', type())
     }
@@ -134,22 +177,15 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   const fetchConfig = useCallback(async () => {
     const nextConfig = await api.getSystemConfig()
     if (nextConfig) {
-      setConfig((pre) => ({
-        ...pre,
-        ...nextConfig,
-        theme: normalizeTheme((nextConfig.theme as Theme) ?? pre.theme),
-      }))
+      setConfig((pre) => normalizeConfig(nextConfig, pre))
     }
   }, [])
 
   const updateConfig = useCallback(
     async (newConfig: Partial<Config>) => {
-      const nextConfig = {
-        ...config,
-        ...newConfig,
-        theme: normalizeTheme((newConfig.theme as Theme) ?? config.theme),
-      }
+      const nextConfig = normalizeConfig(newConfig, config)
       setConfig(nextConfig)
+      syncChannelRef.current?.postMessage(nextConfig)
       await api.setSystemConfig(nextConfig)
       fetchConfig()
     },
