@@ -4,11 +4,9 @@ set -eu
 
 PROJECT_NAME="redis-dash"
 BIN_NAME="rds"
-REPO_OWNER="xuerzong"
-REPO_NAME="redis-dash"
-DEFAULT_BASE_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases"
+DEFAULT_BASE_URL="https://download.xuco.me/redis-dash"
 
-BASE_URL="${RDS_INSTALL_BASE_URL:-$DEFAULT_BASE_URL}"
+BASE_URL="$DEFAULT_BASE_URL"
 VERSION="${RDS_VERSION:-latest}"
 INSTALL_ROOT="${RDS_INSTALL_ROOT:-}"
 BIN_DIR="${RDS_BIN_DIR:-}"
@@ -62,9 +60,9 @@ resolve_download_url() {
   base="${BASE_URL%/}"
 
   if [ "$VERSION" = "latest" ]; then
-    DOWNLOAD_URL="${base}/latest/download/${ASSET_NAME}"
+    DOWNLOAD_URL="${base}/latest/${ASSET_NAME}"
   else
-    DOWNLOAD_URL="${base}/download/v${VERSION}/${ASSET_NAME}"
+    DOWNLOAD_URL="${base}/v${VERSION}/${ASSET_NAME}"
   fi
 }
 

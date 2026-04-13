@@ -13,12 +13,16 @@ const locales = {
     description: '🚀 轻量级、跨平台的 Redis GUI（图形用户界面）',
     download: '下载应用',
     caption: '适用于 Mac、Windows 和 Linux',
+    installCommand:
+      'curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh',
   },
   en: {
     title: 'Redis Dash',
     description: '🚀 A lightweight, cross-platform Redis GUI Client.',
     download: 'Download',
     caption: 'Available for Mac, Windows, and Linux',
+    installCommand:
+      'curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh',
   },
 }
 const locale = locales[lang as 'zh' | 'en']
@@ -75,13 +79,10 @@ const locale = locales[lang as 'zh' | 'en']
 
   <section class="py-4">
     <div
-      id="npm-bash-code-block"
+      id="install-script-code-block"
       class="max-w-lg mx-auto relative font-mono border rounded-md text-sm py-2 px-4 bg-gray-900 text-gray-50"
     >
-      <span class="text-green-500">npm</span>
-      <span class="text-yellow-500">install </span>
-      <span>redis-dash</span>
-      <span>-g</span>
+      <span>{locale.installCommand}</span>
 
       <CopyIcon
         id="copy-button"
@@ -101,11 +102,13 @@ const locale = locales[lang as 'zh' | 'en']
   import copy from 'copy-to-clipboard'
   const copyButton = document.getElementById('copy-button')
   const copySuccessButton = document.getElementById('copy-success-button')
-  const npmBashCodeBlock = document.getElementById('npm-bash-code-block')
+  const installScriptCodeBlock = document.getElementById(
+    'install-script-code-block'
+  )
 
   if (copyButton && copySuccessButton) {
     const onCopy = () => {
-      const copyContent = npmBashCodeBlock?.textContent
+      const copyContent = installScriptCodeBlock?.textContent
       if (copyContent) {
         copy(copyContent)
         copyButton.style.display = 'none'

@@ -4,26 +4,17 @@ import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 
 const rootDir = process.cwd()
-const cliDistDir = path.resolve(rootDir, 'cli', 'dist')
+const distDir = path.resolve(rootDir, 'dist')
 const platformId =
   process.env.RDS_PLATFORM_ID || `${process.platform}-${process.arch}`
 const binaryName =
   process.env.RDS_BINARY_NAME ||
   (process.platform === 'win32' ? 'rds.exe' : 'rds')
 
-const sourceBinaryPath = path.resolve(
-  cliDistDir,
-  'native',
-  platformId,
-  binaryName
-)
-const sourceAppPath = path.resolve(cliDistDir, 'app')
-const releaseDir = path.resolve(cliDistDir, 'binary', platformId)
-const archivePath = path.resolve(
-  cliDistDir,
-  'binary',
-  `rds-${platformId}.tar.gz`
-)
+const sourceBinaryPath = path.resolve(distDir, 'native', platformId, binaryName)
+const sourceAppPath = path.resolve(distDir, 'app')
+const releaseDir = path.resolve(distDir, 'binary', platformId)
+const archivePath = path.resolve(distDir, 'binary', `rds-${platformId}.tar.gz`)
 
 const main = async () => {
   if (!existsSync(sourceBinaryPath)) {
