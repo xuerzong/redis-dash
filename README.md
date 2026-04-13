@@ -48,6 +48,14 @@ The npm package now wraps a native Rust binary. The published package includes t
 
 The current npm package bundles native binaries for multiple platforms, so the install package size is significantly larger than early versions.
 
+You can also install the standalone native bundle directly:
+
+```bash
+curl -fsSL https://example.com/install.sh | sh
+```
+
+The install script downloads the current platform bundle, installs it under `/usr/local/lib/redis-dash` or `~/.local/share/redis-dash`, and links `rds` into `/usr/local/bin` or `~/.local/bin`.
+
 ### Custom Binary Mirror
 
 If you experience slow downloads or network issues during installation, you can use a custom binary mirror with the `RDS_BINARY_MIRROR` environment variable:
@@ -131,6 +139,7 @@ After the command finishes:
 - The npm package payload is in `cli/dist`
 - The platform native binary is in `cli/dist/native/<platform>/rds`
 - The standalone binary bundle is in `cli/dist/binary/<platform>`
+- The standalone install archive is in `cli/dist/binary/rds-<platform>.tar.gz`
 
 Publish the npm package with:
 

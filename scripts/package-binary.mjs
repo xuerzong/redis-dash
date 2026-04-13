@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
+import { spawnSync } from 'node:child_process'
 
 const rootDir = process.cwd()
 const cliDistDir = path.resolve(rootDir, 'cli', 'dist')
@@ -18,6 +19,11 @@ const sourceBinaryPath = path.resolve(
 )
 const sourceAppPath = path.resolve(cliDistDir, 'app')
 const releaseDir = path.resolve(cliDistDir, 'binary', platformId)
+const archivePath = path.resolve(
+  cliDistDir,
+  'binary',
+  `rds-${platformId}.tar.gz`
+)
 
 const main = async () => {
   if (!existsSync(sourceBinaryPath)) {
@@ -35,6 +41,21 @@ const main = async () => {
   await fs.cp(sourceAppPath, path.resolve(releaseDir, 'app'), {
     recursive: true,
   })
+
+  await fs.rm(archivePath, { force: true })
+
+  const result = spawnSync(
+    'tar',
+    ['-czf', archivePath, '-C', releaseDir, '.'],
+    {
+      cwd: rootDir,
+      stdio: 'inherit',
+    }
+  )
+
+  if (result.status !== 0) {
+    throw new Error(`Failed to create archive: ${archivePath}`)
+  }
 }
 
 main().catch((error) => {
