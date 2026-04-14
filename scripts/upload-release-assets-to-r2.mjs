@@ -7,6 +7,7 @@ import { Octokit } from '@octokit/rest'
 
 const GITHUB_REPO = 'xuerzong/redis-dash'
 const [GITHUB_OWNER, GITHUB_NAME] = GITHUB_REPO.split('/')
+const R2_PREFIX = 'redis-dash'
 const args = process.argv.slice(2)
 
 const getArgValue = (name) => {
@@ -151,6 +152,7 @@ const uploadToR2 = ({ filePath, bucket, objectKey, accountId, token }) => {
     'put',
     objectPath,
     `--file=${filePath}`,
+    '--remote',
   ]
 
   const result = spawnSync('npx', cmdArgs, {
@@ -218,7 +220,7 @@ const main = async () => {
       throw new Error(`Missing install script: ${installScriptPath}`)
     }
 
-    const installObjectKey = 'redis-dash/install.sh'
+    const installObjectKey = `${R2_PREFIX}/install.sh`
     const installMirrorUrl = 'https://download.xuco.me/redis-dash/install.sh'
 
     if (dryRun) {
@@ -260,8 +262,8 @@ const main = async () => {
 
   if (dryRun) {
     for (const asset of targets) {
-      const objectKey = `v${version}/${asset.name}`
-      const mirrorUrl = `https://download.xuco.me/redis-dash/${objectKey}`
+      const objectKey = `${R2_PREFIX}/v${version}/${asset.name}`
+      const mirrorUrl = `https://download.xuco.me/${objectKey}`
       console.log(`[download] ${asset.browser_download_url}`)
       console.log(`[upload] r2://${displayBucket}/${objectKey}`)
       console.log(`[mirror] ${mirrorUrl}`)
@@ -271,7 +273,7 @@ const main = async () => {
     }
     if (latestJsonAsset) {
       console.log(`[download] ${latestJsonAsset.browser_download_url}`)
-      console.log(`[upload] r2://${displayBucket}/latest.json`)
+      console.log(`[upload] r2://${displayBucket}/${R2_PREFIX}/latest.json`)
       console.log(`[mirror] https://download.xuco.me/redis-dash/latest.json`)
     }
     console.log(
@@ -291,8 +293,8 @@ const main = async () => {
         outFile: localPath,
       })
 
-      const objectKey = `v${version}/${asset.name}`
-      const mirrorUrl = `https://download.xuco.me/redis-dash/${objectKey}`
+      const objectKey = `${R2_PREFIX}/v${version}/${asset.name}`
+      const mirrorUrl = `https://download.xuco.me/${objectKey}`
 
       console.log(`[download] ${sourceUrl}`)
       console.log(`[upload] r2://${bucket}/${objectKey}`)
@@ -318,7 +320,7 @@ const main = async () => {
       uploadToR2({
         filePath: localPath,
         bucket,
-        objectKey: 'latest.json',
+        objectKey: `${R2_PREFIX}/latest.json`,
         accountId,
         token,
       })
