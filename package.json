@@ -24,6 +24,8 @@
     "desktop:dev": "npm run tauri dev --workspace=desktop",
     "desktop:build": "npm run tauri build --workspace=desktop",
     "replace-version": "node scripts/replace-version.mjs",
+    "tauri:generate-updater-keys": "node ./scripts/generate-tauri-updater-keys.mjs",
+    "release:updater-json": "node ./scripts/generate-tauri-updater-json.mjs",
     "upload:release:r2": "node ./scripts/upload-release-assets-to-r2.mjs"
   },
   "workspaces": [

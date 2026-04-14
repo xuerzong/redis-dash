@@ -200,6 +200,7 @@ const main = async () => {
     selectedAssets.size > 0
       ? assets.filter((asset) => selectedAssets.has(asset.name))
       : assets
+  const latestJsonAsset = assets.find((asset) => asset.name === 'latest.json')
 
   if (targets.length === 0) {
     throw new Error('No matching assets found for provided --asset filters.')
@@ -216,7 +217,14 @@ const main = async () => {
         `[dry-run] npx -y wrangler@4 r2 object put ${displayBucket}/${objectKey} --file=<tmpfile>`
       )
     }
-    console.log('[done] Dry-run complete. No files were downloaded or uploaded.')
+    if (latestJsonAsset) {
+      console.log(`[download] ${latestJsonAsset.browser_download_url}`)
+      console.log(`[upload] r2://${displayBucket}/latest.json`)
+      console.log(`[mirror] https://download.xuco.me/redis-dash/latest.json`)
+    }
+    console.log(
+      '[done] Dry-run complete. No files were downloaded or uploaded.'
+    )
     return
   }
 
@@ -242,6 +250,23 @@ const main = async () => {
         filePath: localPath,
         bucket,
         objectKey,
+        accountId,
+        token,
+      })
+    }
+
+    if (latestJsonAsset) {
+      const localPath = path.join(tempDir, latestJsonAsset.name)
+      await downloadAsset({
+        url: latestJsonAsset.browser_download_url,
+        assetName: latestJsonAsset.name,
+        outFile: localPath,
+      })
+
+      uploadToR2({
+        filePath: localPath,
+        bucket,
+        objectKey: 'latest.json',
         accountId,
         token,
       })

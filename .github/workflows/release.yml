@@ -91,6 +91,9 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           RDS_TARGET_ARCH: ${{ matrix.arch }}
+          RDS_TAURI_UPDATER_PUBKEY: ${{ secrets.TAURI_SIGNING_PUBLIC_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           ENABLE_CODE_SIGNING: ${{ secrets.APPLE_CERTIFICATE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -226,6 +229,36 @@ jobs:
           draft: true
           prerelease: true
           files: release-assets/*
+          overwrite_files: true
+
+  publish-updater-manifest:
+    permissions:
+      contents: write
+    needs: build-cli-artifacts
+    name: Publish Updater Manifest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Generate static updater manifest
+        run: npm run release:updater-json -- --version ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload updater manifest to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+          files: release-artifacts/latest.json
           overwrite_files: true
 
   publish-npm:
