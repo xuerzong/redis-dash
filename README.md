@@ -108,3 +108,10 @@ After the command finishes:
 - The platform native binary is in `dist/native/<platform>/rds`
 - The standalone binary bundle is in `dist/binary/<platform>`
 - The standalone install archive is in `dist/binary/rds-<platform>.tar.gz`
+
+GitHub Actions release flow:
+
+- Push a `v*` tag to build binaries and create or update the draft GitHub Release.
+- Review the draft release manually.
+- When the release is ready for users, run the `Publish Updater Manifest` workflow with that version so `latest.json` is attached to the release.
+- Then run the `Upload Release to R2` workflow to mirror the release assets and `latest.json` to `https://download.xuco.me/redis-dash`.

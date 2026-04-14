@@ -238,36 +238,3 @@ jobs:
           prerelease: true
           files: release-assets/*
           overwrite_files: true
-
-  publish-updater-manifest:
-    permissions:
-      contents: write
-    needs: build-binary-artifacts
-    name: Publish Updater Manifest
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Generate static updater manifest
-        run: npm run release:updater-json -- --version ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload updater manifest to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          draft: true
-          prerelease: true
-          files: release-artifacts/latest.json
-          overwrite_files: true

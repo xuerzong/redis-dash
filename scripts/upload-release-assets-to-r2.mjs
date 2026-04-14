@@ -86,6 +86,16 @@ const getOctokit = () => {
   return new Octokit()
 }
 
+const findReleaseInList = async (octokit, tag) => {
+  const releases = await octokit.paginate(octokit.repos.listReleases, {
+    owner: GITHUB_OWNER,
+    repo: GITHUB_NAME,
+    per_page: 100,
+  })
+
+  return releases.find((release) => release.tag_name === tag)
+}
+
 const fetchRelease = async (octokit, tag) => {
   try {
     const { data } = await octokit.repos.getReleaseByTag({
@@ -95,9 +105,20 @@ const fetchRelease = async (octokit, tag) => {
     })
     return data
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    throw new Error(`Failed to fetch release by tag ${tag}: ${message}`)
+    if (error?.status !== 404) {
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`Failed to fetch release by tag ${tag}: ${message}`)
+    }
   }
+
+  const release = await findReleaseInList(octokit, tag)
+  if (release) {
+    return release
+  }
+
+  throw new Error(
+    `Failed to fetch release ${tag}: release was not found via getReleaseByTag or listReleases.`
+  )
 }
 
 const downloadAsset = async ({ url, assetName, outFile }) => {

@@ -81,6 +81,40 @@ const inferPlatformKey = (assetName) => {
   return null
 }
 
+const findReleaseInList = async (octokit, tag) => {
+  const releases = await octokit.paginate(octokit.repos.listReleases, {
+    owner,
+    repo,
+    per_page: 100,
+  })
+
+  return releases.find((release) => release.tag_name === tag)
+}
+
+const fetchRelease = async (octokit, tag) => {
+  try {
+    const { data } = await octokit.repos.getReleaseByTag({
+      owner,
+      repo,
+      tag,
+    })
+    return data
+  } catch (error) {
+    if (error?.status !== 404) {
+      throw error
+    }
+  }
+
+  const release = await findReleaseInList(octokit, tag)
+  if (release) {
+    return release
+  }
+
+  throw new Error(
+    `Release ${tag} was not found. GitHub may hide draft releases from getReleaseByTag, so the release must exist in listReleases as well.`
+  )
+}
+
 const main = async () => {
   if (hasFlag('help')) {
     printUsage()
@@ -102,11 +136,7 @@ const main = async () => {
     auth: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
   })
 
-  const { data: release } = await octokit.repos.getReleaseByTag({
-    owner,
-    repo,
-    tag,
-  })
+  const release = await fetchRelease(octokit, tag)
 
   const signatureUrls = new Map(
     release.assets

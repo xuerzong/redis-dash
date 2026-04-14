@@ -1,0 +1,52 @@
+name: Publish Updater Manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 0.2.0 or v0.2.0)'
+        required: true
+        type: string
+
+jobs:
+  publish-updater-manifest:
+    permissions:
+      contents: write
+    name: Publish Updater Manifest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Normalize version
+        id: version
+        shell: bash
+        run: |
+          raw='${{ inputs.version }}'
+          normalized="${raw#v}"
+          echo "normalized=$normalized" >> "$GITHUB_OUTPUT"
+          echo "tag=v$normalized" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate static updater manifest
+        run: npm run release:updater-json -- --version ${{ steps.version.outputs.normalized }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload updater manifest to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          draft: true
+          prerelease: true
+          files: release-artifacts/latest.json
+          overwrite_files: true

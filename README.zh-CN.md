@@ -114,3 +114,10 @@ npm run release
 - 平台原生二进制位于 `dist/native/<platform>/rds`
 - 独立二进制分发目录位于 `dist/binary/<platform>`
 - 独立安装归档位于 `dist/binary/rds-<platform>.tar.gz`
+
+GitHub Actions 发布流程：
+
+- 推送 `v*` tag 后，自动构建二进制并创建或更新 draft GitHub Release。
+- 手动检查 draft release。
+- 确认该版本可以正式发布后，再手动运行 `Publish Updater Manifest` workflow，为该 release 附加 `latest.json`。
+- 最后运行 `Upload Release to R2` workflow，把 release 资产和 `latest.json` 同步到 `https://download.xuco.me/redis-dash`。
