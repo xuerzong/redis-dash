@@ -110,12 +110,12 @@ jobs:
           prerelease: true
           args: '${{ matrix.args }}'
 
-  build-cli-artifacts:
+  build-binary-artifacts:
     permissions:
       contents: write
     needs: build-desktop
 
-    name: Build CLI Artifacts
+    name: Build Binary Artifacts
     strategy:
       fail-fast: false
       matrix:
@@ -199,27 +199,34 @@ jobs:
       - name: Build app assets
         run: npm run build:app
 
-      - name: Copy app assets into CLI package
+      - name: Copy app assets into distribution directory
         run: npm run copy:app
 
-      - name: Build native CLI for target
-        run: npm run build --workspace=cli
+      - name: Build native binary for target
+        run: npm run build:binary
         env:
           CARGO_BUILD_TARGET: ${{ matrix.rust_target }}
           RDS_PLATFORM_ID: ${{ matrix.platform_id }}
           RDS_BINARY_NAME: ${{ matrix.binary_name }}
 
-      - name: Prepare CLI release asset
+      - name: Prepare standalone install bundle
+        run: npm run package:binary
+        env:
+          RDS_PLATFORM_ID: ${{ matrix.platform_id }}
+          RDS_BINARY_NAME: ${{ matrix.binary_name }}
+
+      - name: Prepare binary release asset
         shell: bash
         run: |
           mkdir -p release-assets
           if [ "${{ matrix.os }}" = "windows" ]; then
-            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}.exe"
+            cp "dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}.exe"
           else
-            cp "cli/dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}"
+            cp "dist/native/${{ matrix.platform_id }}/${{ matrix.binary_name }}" "release-assets/rds-${{ matrix.platform_id }}"
           fi
+          cp "dist/binary/rds-${{ matrix.platform_id }}.tar.gz" "release-assets/rds-${{ matrix.platform_id }}.tar.gz"
 
-      - name: Upload CLI binary to GitHub Release
+      - name: Upload binary assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
@@ -227,49 +234,3 @@ jobs:
           prerelease: true
           files: release-assets/*
           overwrite_files: true
-
-  publish-npm:
-    name: Publish to NPM
-    needs: build-cli-artifacts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Install Dependencies
-        run: npm ci
-        env:
-          RDS_SKIP_POSTINSTALL: '1'
-
-      - name: Set version
-        run: npm run replace-version
-        env:
-          RDS_VERSION: ${{ github.ref_name }}
-
-      - name: Build app assets
-        run: npm run build:app
-
-      - name: Copy app assets
-        run: npm run copy:app
-
-      - name: Build CLI entry only
-        run: npm run build --workspace=cli
-        env:
-          RDS_SKIP_NATIVE_BUILD: '1'
-
-      - name: Ensure npm package does not bundle native binaries
-        run: rm -rf cli/dist/native
-
-      - name: Copy README into CLI package
-        run: npm run copy:readme
-
-      - name: Publish NPM package
-        run: npm publish --workspace=cli
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

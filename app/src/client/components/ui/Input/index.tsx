@@ -14,6 +14,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         spellCheck={false}
         autoCorrect="off"
+        autoCapitalize="none"
       />
     )
   }
@@ -30,7 +31,14 @@ export const InputWithPrefix = React.forwardRef<
   return (
     <Box className="InputRoot InputWithPrefixRoot">
       <Box className="InputPrefix">{prefixNode}</Box>
-      <input className="Input" {...restProps} ref={ref} />
+      <input
+        className="Input"
+        {...restProps}
+        ref={ref}
+        spellCheck={false}
+        autoCorrect="off"
+        autoCapitalize="none"
+      />
     </Box>
   )
 })

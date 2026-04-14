@@ -19,6 +19,9 @@ export const RedisKeyNameSearchInput = () => {
           }}
           className={s.RedisKeySearchInput}
           placeholder={formatMessage('placeholder.filterByKeyNameAndPattern')}
+          spellCheck={false}
+          autoCorrect="off"
+          autoCapitalize="none"
         />
       </div>
     </div>

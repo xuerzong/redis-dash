@@ -46,6 +46,38 @@
   --color-warning-bg: var(--color-yellow-100);
   --color-danger: var(--color-red-600);
   --color-danger-bg: var(--color-red-100);
+
+  --redis-type-hash-fg: var(--color-amber-700);
+  --redis-type-hash-bg: var(--color-amber-100);
+  --redis-type-hash-border: var(--color-amber-300);
+
+  --redis-type-set-fg: var(--color-blue-700);
+  --redis-type-set-bg: var(--color-blue-100);
+  --redis-type-set-border: var(--color-blue-300);
+
+  --redis-type-zset-fg: var(--color-violet-700);
+  --redis-type-zset-bg: var(--color-violet-100);
+  --redis-type-zset-border: var(--color-violet-300);
+
+  --redis-type-list-fg: var(--color-pink-700);
+  --redis-type-list-bg: var(--color-pink-100);
+  --redis-type-list-border: var(--color-pink-300);
+
+  --redis-type-string-fg: var(--color-green-700);
+  --redis-type-string-bg: var(--color-green-100);
+  --redis-type-string-border: var(--color-green-300);
+
+  --redis-type-stream-fg: var(--color-red-700);
+  --redis-type-stream-bg: var(--color-red-100);
+  --redis-type-stream-border: var(--color-red-300);
+
+  --redis-type-none-fg: var(--color-emerald-700);
+  --redis-type-none-bg: var(--color-emerald-100);
+  --redis-type-none-border: var(--color-emerald-300);
+
+  --redis-type-default-fg: var(--color-lime-700);
+  --redis-type-default-bg: var(--color-lime-100);
+  --redis-type-default-border: var(--color-lime-300);
 }
 
 :root.dark {
@@ -65,6 +97,202 @@
   --color-warning-bg: var(--color-yellow-950);
   --color-danger: var(--color-red-600);
   --color-danger-bg: var(--color-red-950);
+}
+
+:root[data-theme-style='github-light'] {
+  --color-primary: 90 49 190;
+  --color-primary-foreground: 255 255 255;
+  --color-accent: 242 244 247;
+  --color-background: 255 255 255;
+  --color-muted: 246 248 250;
+  --color-foreground: 33 38 45;
+  --color-border: 208 215 222;
+
+  --color-success: 26 127 55;
+  --color-success-bg: 218 251 225;
+  --color-warning: 154 103 0;
+  --color-warning-bg: 255 248 197;
+  --color-danger: 207 34 46;
+  --color-danger-bg: 255 235 233;
+
+  --redis-type-hash-fg: var(--color-amber-700);
+  --redis-type-hash-bg: var(--color-amber-100);
+  --redis-type-hash-border: var(--color-amber-300);
+
+  --redis-type-set-fg: var(--color-blue-700);
+  --redis-type-set-bg: var(--color-blue-100);
+  --redis-type-set-border: var(--color-blue-300);
+
+  --redis-type-zset-fg: var(--color-violet-700);
+  --redis-type-zset-bg: var(--color-violet-100);
+  --redis-type-zset-border: var(--color-violet-300);
+
+  --redis-type-list-fg: var(--color-pink-700);
+  --redis-type-list-bg: var(--color-pink-100);
+  --redis-type-list-border: var(--color-pink-300);
+
+  --redis-type-string-fg: var(--color-green-700);
+  --redis-type-string-bg: var(--color-green-100);
+  --redis-type-string-border: var(--color-green-300);
+
+  --redis-type-stream-fg: var(--color-red-700);
+  --redis-type-stream-bg: var(--color-red-100);
+  --redis-type-stream-border: var(--color-red-300);
+
+  --redis-type-none-fg: var(--color-emerald-700);
+  --redis-type-none-bg: var(--color-emerald-100);
+  --redis-type-none-border: var(--color-emerald-300);
+
+  --redis-type-default-fg: var(--color-lime-700);
+  --redis-type-default-bg: var(--color-lime-100);
+  --redis-type-default-border: var(--color-lime-300);
+}
+
+:root[data-theme-style='github-dark'] {
+  --color-primary: 163 113 247;
+  --color-primary-foreground: 13 17 23;
+  --color-accent: 33 38 45;
+  --color-background: 13 17 23;
+  --color-muted: 22 27 34;
+  --color-foreground: 201 209 217;
+  --color-border: 48 54 61;
+
+  --color-success: 63 185 80;
+  --color-success-bg: 15 30 21;
+  --color-warning: 210 153 34;
+  --color-warning-bg: 43 33 12;
+  --color-danger: 248 81 73;
+  --color-danger-bg: 53 18 22;
+
+  --redis-type-hash-fg: var(--color-amber-300);
+  --redis-type-hash-bg: var(--color-amber-950);
+  --redis-type-hash-border: var(--color-amber-700);
+
+  --redis-type-set-fg: var(--color-sky-300);
+  --redis-type-set-bg: var(--color-sky-950);
+  --redis-type-set-border: var(--color-sky-700);
+
+  --redis-type-zset-fg: var(--color-violet-300);
+  --redis-type-zset-bg: var(--color-violet-950);
+  --redis-type-zset-border: var(--color-violet-700);
+
+  --redis-type-list-fg: var(--color-fuchsia-300);
+  --redis-type-list-bg: var(--color-fuchsia-950);
+  --redis-type-list-border: var(--color-fuchsia-700);
+
+  --redis-type-string-fg: var(--color-green-300);
+  --redis-type-string-bg: var(--color-green-950);
+  --redis-type-string-border: var(--color-green-700);
+
+  --redis-type-stream-fg: var(--color-red-300);
+  --redis-type-stream-bg: var(--color-red-950);
+  --redis-type-stream-border: var(--color-red-700);
+
+  --redis-type-none-fg: var(--color-emerald-300);
+  --redis-type-none-bg: var(--color-emerald-950);
+  --redis-type-none-border: var(--color-emerald-700);
+
+  --redis-type-default-fg: var(--color-lime-300);
+  --redis-type-default-bg: var(--color-lime-950);
+  --redis-type-default-border: var(--color-lime-700);
+}
+
+:root[data-theme-style='catppuccin-mocha'] {
+  --color-primary: 203 166 247;
+  --color-primary-foreground: 17 17 27;
+  --color-accent: 49 50 68;
+  --color-background: 30 30 46;
+  --color-muted: 49 50 68;
+  --color-foreground: 205 214 244;
+  --color-border: 69 71 90;
+
+  --color-success: 166 227 161;
+  --color-success-bg: 24 37 28;
+  --color-warning: 250 179 135;
+  --color-warning-bg: 51 36 28;
+  --color-danger: 243 139 168;
+  --color-danger-bg: 54 27 37;
+
+  --redis-type-hash-fg: var(--color-amber-200);
+  --redis-type-hash-bg: var(--color-amber-900);
+  --redis-type-hash-border: var(--color-amber-600);
+
+  --redis-type-set-fg: var(--color-sky-200);
+  --redis-type-set-bg: var(--color-sky-900);
+  --redis-type-set-border: var(--color-sky-600);
+
+  --redis-type-zset-fg: var(--color-violet-200);
+  --redis-type-zset-bg: var(--color-violet-900);
+  --redis-type-zset-border: var(--color-violet-600);
+
+  --redis-type-list-fg: var(--color-pink-200);
+  --redis-type-list-bg: var(--color-pink-900);
+  --redis-type-list-border: var(--color-pink-600);
+
+  --redis-type-string-fg: var(--color-green-200);
+  --redis-type-string-bg: var(--color-green-900);
+  --redis-type-string-border: var(--color-green-600);
+
+  --redis-type-stream-fg: var(--color-red-200);
+  --redis-type-stream-bg: var(--color-red-900);
+  --redis-type-stream-border: var(--color-red-600);
+
+  --redis-type-none-fg: var(--color-emerald-200);
+  --redis-type-none-bg: var(--color-emerald-900);
+  --redis-type-none-border: var(--color-emerald-600);
+
+  --redis-type-default-fg: var(--color-lime-200);
+  --redis-type-default-bg: var(--color-lime-900);
+  --redis-type-default-border: var(--color-lime-600);
+}
+
+:root[data-theme-style='dracula'] {
+  --color-primary: 189 147 249;
+  --color-primary-foreground: 40 42 54;
+  --color-accent: 68 71 90;
+  --color-background: 40 42 54;
+  --color-muted: 68 71 90;
+  --color-foreground: 248 248 242;
+  --color-border: 98 114 164;
+
+  --color-success: 80 250 123;
+  --color-success-bg: 22 45 30;
+  --color-warning: 255 184 108;
+  --color-warning-bg: 57 41 20;
+  --color-danger: 255 85 85;
+  --color-danger-bg: 63 24 28;
+
+  --redis-type-hash-fg: var(--color-amber-200);
+  --redis-type-hash-bg: var(--color-amber-900);
+  --redis-type-hash-border: var(--color-amber-600);
+
+  --redis-type-set-fg: var(--color-cyan-200);
+  --redis-type-set-bg: var(--color-cyan-900);
+  --redis-type-set-border: var(--color-cyan-600);
+
+  --redis-type-zset-fg: var(--color-purple-200);
+  --redis-type-zset-bg: var(--color-purple-900);
+  --redis-type-zset-border: var(--color-purple-600);
+
+  --redis-type-list-fg: var(--color-pink-200);
+  --redis-type-list-bg: var(--color-pink-900);
+  --redis-type-list-border: var(--color-pink-600);
+
+  --redis-type-string-fg: var(--color-green-200);
+  --redis-type-string-bg: var(--color-green-900);
+  --redis-type-string-border: var(--color-green-600);
+
+  --redis-type-stream-fg: var(--color-red-200);
+  --redis-type-stream-bg: var(--color-red-900);
+  --redis-type-stream-border: var(--color-red-600);
+
+  --redis-type-none-fg: var(--color-emerald-200);
+  --redis-type-none-bg: var(--color-emerald-900);
+  --redis-type-none-border: var(--color-emerald-600);
+
+  --redis-type-default-fg: var(--color-lime-200);
+  --redis-type-default-bg: var(--color-lime-900);
+  --redis-type-default-border: var(--color-lime-600);
 }
 
 [data-sonner-toast] {

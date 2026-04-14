@@ -4,7 +4,7 @@ import path from 'node:path'
 
 const rootDir = process.cwd()
 const sourceDir = path.resolve(rootDir, 'app', 'dist')
-const targetRootDir = path.resolve(rootDir, 'cli', 'dist')
+const targetRootDir = path.resolve(rootDir, 'dist')
 const targetDir = path.resolve(targetRootDir, 'app')
 
 const main = async () => {

@@ -3,14 +3,6 @@
 </div>
 
 <div align='center'>
-  <a href="https://www.npmjs.com/package/redis-dash">
-    <img  src="https://img.shields.io/npm/v/redis-dash?style=for-the-badge" alt="npm version"/>
-  </a>
-
-  <a href="https://www.npmjs.com/package/redis-dash">
-    <img src="https://img.shields.io/npm/dw/redis-dash?style=for-the-badge" alt="npm downloads"/>
-  </a>
-  
   <a href="https://github.com/xuerzong/redis-dash/blob/main/LICENSE">
     <img  src="https://img.shields.io/github/license/xuerzong/redis-dash?style=for-the-badge&color=52e892" alt="github">
   </a>
@@ -36,32 +28,17 @@
 ### Install
 
 > [!IMPORTANT]
-> Before installation, you need to install [Node.js 18+](https://https://nodejs.org/).
+> npm installation is no longer supported. Please use the latest install script.
 
-You can install the Redis Dash command-line tool globally via npm (Node Package Manager).
-
-```bash
-npm install -g redis-dash
-```
-
-The npm package now wraps a native Rust binary. The published package includes the platform binary generated during release.
-
-The current npm package bundles native binaries for multiple platforms, so the install package size is significantly larger than early versions.
-
-### Custom Binary Mirror
-
-If you experience slow downloads or network issues during installation, you can use a custom binary mirror with the `RDS_BINARY_MIRROR` environment variable:
+Install Redis Dash with the standalone installer:
 
 ```bash
-RDS_BINARY_MIRROR=https://download.xuco.me/redis-dash npm install -g redis-dash
+curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh
 ```
 
-Supported mirrors:
+The install script downloads the current platform bundle, installs it under `/usr/local/lib/redis-dash` or `~/.local/share/redis-dash`, and links `rds` into `/usr/local/bin` or `~/.local/bin`.
 
-- Official: `https://github.com/xuerzong/redis-dash/releases/download`
-- Accelerated (China): `https://download.xuco.me/redis-dash`
-
-The mirror URL should point to a directory containing release binaries in the format: `v<version>/<platform-binary>`.
+The installer uses `https://download.xuco.me/redis-dash` as the default distribution source.
 
 ### Start Server
 
@@ -120,7 +97,7 @@ npm run start
 
 ## 📦 Release
 
-Build the web assets, compile the Rust CLI/server, and prepare both npm and standalone binary artifacts:
+Build the web assets, compile the Rust server binary, and prepare standalone binary artifacts:
 
 ```bash
 npm run release
@@ -128,12 +105,6 @@ npm run release
 
 After the command finishes:
 
-- The npm package payload is in `cli/dist`
-- The platform native binary is in `cli/dist/native/<platform>/rds`
-- The standalone binary bundle is in `cli/dist/binary/<platform>`
-
-Publish the npm package with:
-
-```bash
-npm run publish:cli
-```
+- The platform native binary is in `dist/native/<platform>/rds`
+- The standalone binary bundle is in `dist/binary/<platform>`
+- The standalone install archive is in `dist/binary/rds-<platform>.tar.gz`

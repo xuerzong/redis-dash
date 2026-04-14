@@ -3,14 +3,6 @@
 </div>
 
 <div align='center'>
-  <a href="https://www.npmjs.com/package/redis-dash">
-    <img  src="https://img.shields.io/npm/v/redis-dash?style=for-the-badge" alt="npm version"/>
-  </a>
-
-  <a href="https://www.npmjs.com/package/redis-dash">
-    <img src="https://img.shields.io/npm/dw/redis-dash?style=for-the-badge" alt="npm downloads"/>
-  </a>
-  
   <a href="https://github.com/xuerzong/redis-dash/blob/main/LICENSE">
     <img  src="https://img.shields.io/github/license/xuerzong/redis-dash?style=for-the-badge&color=52e892" alt="github">
   </a>
@@ -34,32 +26,17 @@
 ### 安装
 
 > [!IMPORTANT]
-> 在安装之前, 你需要安装 [Node.js 18+](https://https://nodejs.org/).
+> 已不再支持通过 npm 安装，请使用最新安装脚本。
 
-您可以通过 npm (Node Package Manager) 在全局安装 Redis Dash 命令行工具。
-
-```bash
-npm install -g redis-dash
-```
-
-现在 npm 包内部会包装一个 Rust 原生二进制。执行发布流程时，会把对应平台的原生可执行文件一起打包进去。
-
-当前 npm 包会内置多个平台的原生二进制，因此安装包体积会比早期版本明显增大。
-
-### 自定义二进制镜像
-
-如果在安装过程中遇到下载缓慢或网络问题，可以使用 `RDS_BINARY_MIRROR` 环境变量指定自定义的二进制镜像源：
+使用独立安装脚本安装 Redis Dash：
 
 ```bash
-RDS_BINARY_MIRROR=https://download.xuco.me/redis-dash npm install -g redis-dash
+curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh
 ```
 
-支持的镜像源：
+安装脚本会下载当前平台的 bundle，将其安装到 `/usr/local/lib/redis-dash` 或 `~/.local/share/redis-dash`，并把 `rds` 链接到 `/usr/local/bin` 或 `~/.local/bin`。
 
-- 官方: `https://github.com/xuerzong/redis-dash/releases/download`
-- 加速（国内）: `https://download.xuco.me/redis-dash`
-
-镜像源地址应指向包含发布版本二进制的目录，格式为：`v<version>/<platform-binary>`。
+安装脚本默认使用 `https://download.xuco.me/redis-dash` 作为分发源。
 
 ### 启动服务
 
@@ -126,7 +103,7 @@ npm run start
 
 ## 📦 发布
 
-构建前端资源、编译 Rust CLI/服务端，并生成 npm 与独立二进制所需产物：
+构建前端资源、编译 Rust 服务端二进制，并生成独立二进制分发产物：
 
 ```bash
 npm run release
@@ -134,12 +111,6 @@ npm run release
 
 命令执行完成后：
 
-- npm 包内容位于 `cli/dist`
-- 平台原生二进制位于 `cli/dist/native/<platform>/rds`
-- 独立二进制分发目录位于 `cli/dist/binary/<platform>`
-
-发布 npm 包：
-
-```bash
-npm run publish:cli
-```
+- 平台原生二进制位于 `dist/native/<platform>/rds`
+- 独立二进制分发目录位于 `dist/binary/<platform>`
+- 独立安装归档位于 `dist/binary/rds-<platform>.tar.gz`
