@@ -61,7 +61,7 @@ const readVersionFromGitTag = () => {
 }
 
 const inferPlatformKey = (assetName) => {
-  if (assetName.endsWith('.AppImage.tar.gz')) {
+  if (assetName.endsWith('.AppImage')) {
     if (assetName.includes('_aarch64')) return 'linux-aarch64'
     if (assetName.includes('_x64')) return 'linux-x86_64'
     if (assetName.includes('_amd64')) return 'linux-x86_64'
