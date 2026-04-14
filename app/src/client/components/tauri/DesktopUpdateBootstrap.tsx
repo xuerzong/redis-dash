@@ -88,7 +88,6 @@ export const DesktopUpdateBootstrap = () => {
 
     const timer = window.setTimeout(async () => {
       try {
-        askToInstallUpdate('1.0.0', formatMessage) // Warm up the update check to avoid delay when real update check happens
         const update = await checkForDesktopUpdates()
         if (!update) {
           return
