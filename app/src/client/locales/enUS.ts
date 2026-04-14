@@ -28,4 +28,11 @@ export const enUS: Record<string, string> = {
   channel: 'Channel',
   subscribe: 'Subscribe',
   unsubscribe: 'Unsubscribe',
+  'update.available': 'is available.',
+  'update.install': 'Install',
+  'update.skip': 'Skip',
+  'update.downloading': 'Downloading update...',
+  'update.installed':
+    'Update installed. Restart Redis Dash to use the new version.',
+  'update.failed': 'Update failed',
 }

@@ -5,7 +5,7 @@ use commands::redis::*;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-  tauri::Builder::default()
+  let mut builder = tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_os::init())
     .plugin(tauri_plugin_dialog::init())
@@ -25,7 +25,13 @@ pub fn run() {
         )?;
       }
       Ok(())
-    })
+    });
+
+  if let Some(pubkey) = option_env!("RDS_TAURI_UPDATER_PUBKEY") {
+    builder = builder.plugin(tauri_plugin_updater::Builder::new().pubkey(pubkey).build());
+  }
+
+  builder
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

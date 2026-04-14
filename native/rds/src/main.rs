@@ -4,6 +4,7 @@ mod models;
 mod paths;
 mod process;
 mod server;
+mod update;
 
 use clap::{CommandFactory, Parser};
 
@@ -34,6 +35,7 @@ async fn async_main() -> Result<(), String> {
             commands::print_status().await;
             Ok(())
         }
+        Some(Commands::SelfUpdate(options)) => update::run_self_update(options).await,
         Some(Commands::Serve(options)) => run_server(options).await,
         None => {
             let mut command = Cli::command();

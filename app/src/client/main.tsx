@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { Toaster } from 'sonner'
 import { RouterProvider } from 'react-router'
+import { DesktopUpdateBootstrap } from './components/tauri/DesktopUpdateBootstrap'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { router } from './router'
 import { IntlProvider } from './providers/IntlProvider'
@@ -21,6 +22,7 @@ root.render(
       <IntlProvider>
         <RouterProvider router={router} />
         <Toaster richColors position="top-center" />
+        <DesktopUpdateBootstrap />
       </IntlProvider>
     </ConfigProvider>
   </ErrorBoundary>

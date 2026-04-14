@@ -30,8 +30,19 @@ pub(crate) enum Commands {
     Restart(ServerOptions),
     /// check rds status
     Status,
+    /// update the current rds binary
+    SelfUpdate(SelfUpdateOptions),
     #[command(hide = true)]
     Serve(ServerOptions),
+}
+
+#[derive(Args, Debug, Clone)]
+pub(crate) struct SelfUpdateOptions {
+    #[arg(long)]
+    pub(crate) check: bool,
+
+    #[arg(long)]
+    pub(crate) version: Option<String>,
 }
 
 #[derive(Args, Debug, Clone)]

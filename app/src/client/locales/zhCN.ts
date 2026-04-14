@@ -28,4 +28,10 @@ export const zhCN: Record<string, string> = {
   channel: '通道',
   subscribe: '订阅',
   unsubscribe: '取消订阅',
+  'update.available': '可用。',
+  'update.install': '安装',
+  'update.skip': '跳过',
+  'update.downloading': '正在下载更新...',
+  'update.installed': '更新已安装。请重启 Redis Dash 以使用新版本。',
+  'update.failed': '更新失败',
 }
