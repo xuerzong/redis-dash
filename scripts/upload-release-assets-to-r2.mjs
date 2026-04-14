@@ -59,6 +59,9 @@ const required = (value, name, hint) => {
 
 const normalizeVersion = (value) => value.replace(/^v/, '')
 
+const shouldUploadLatestAlias = (assetName) =>
+  /^rds-(darwin|linux|win32)-(arm64|x64)\.tar\.gz$/.test(assetName)
+
 const getAllArgValues = (name) => {
   const exact = `--${name}`
   const prefix = `--${name}=`
@@ -169,6 +172,27 @@ const uploadToR2 = ({ filePath, bucket, objectKey, accountId, token }) => {
   }
 }
 
+const uploadAssetToR2 = ({
+  filePath,
+  bucket,
+  objectKey,
+  accountId,
+  token,
+}) => {
+  const mirrorUrl = `https://download.xuco.me/${objectKey}`
+
+  console.log(`[upload] r2://${bucket}/${objectKey}`)
+  console.log(`[mirror] ${mirrorUrl}`)
+
+  uploadToR2({
+    filePath,
+    bucket,
+    objectKey,
+    accountId,
+    token,
+  })
+}
+
 const main = async () => {
   if (hasFlag('help') || hasFlag('h')) {
     printUsage()
@@ -270,6 +294,16 @@ const main = async () => {
       console.log(
         `[dry-run] npx -y wrangler@4 r2 object put ${displayBucket}/${objectKey} --file=<tmpfile>`
       )
+
+      if (shouldUploadLatestAlias(asset.name)) {
+        const latestObjectKey = `${R2_PREFIX}/latest/${asset.name}`
+        const latestMirrorUrl = `https://download.xuco.me/${latestObjectKey}`
+        console.log(`[upload] r2://${displayBucket}/${latestObjectKey}`)
+        console.log(`[mirror] ${latestMirrorUrl}`)
+        console.log(
+          `[dry-run] npx -y wrangler@4 r2 object put ${displayBucket}/${latestObjectKey} --file=<tmpfile>`
+        )
+      }
     }
     if (latestJsonAsset) {
       console.log(`[download] ${latestJsonAsset.browser_download_url}`)
@@ -294,19 +328,25 @@ const main = async () => {
       })
 
       const objectKey = `${R2_PREFIX}/v${version}/${asset.name}`
-      const mirrorUrl = `https://download.xuco.me/${objectKey}`
 
       console.log(`[download] ${sourceUrl}`)
-      console.log(`[upload] r2://${bucket}/${objectKey}`)
-      console.log(`[mirror] ${mirrorUrl}`)
-
-      uploadToR2({
+      uploadAssetToR2({
         filePath: localPath,
         bucket,
         objectKey,
         accountId,
         token,
       })
+
+      if (shouldUploadLatestAlias(asset.name)) {
+        uploadAssetToR2({
+          filePath: localPath,
+          bucket,
+          objectKey: `${R2_PREFIX}/latest/${asset.name}`,
+          accountId,
+          token,
+        })
+      }
     }
 
     if (latestJsonAsset) {
@@ -317,7 +357,7 @@ const main = async () => {
         outFile: localPath,
       })
 
-      uploadToR2({
+      uploadAssetToR2({
         filePath: localPath,
         bucket,
         objectKey: `${R2_PREFIX}/latest.json`,

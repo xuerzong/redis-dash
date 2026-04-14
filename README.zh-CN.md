@@ -34,6 +34,12 @@
 curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh
 ```
 
+安装指定版本：
+
+```bash
+curl -fsSL https://download.xuco.me/redis-dash/install.sh | RDS_VERSION=0.2.0 sh
+```
+
 安装脚本会下载当前平台的 bundle，将其安装到 `/usr/local/lib/redis-dash` 或 `~/.local/share/redis-dash`，并把 `rds` 链接到 `/usr/local/bin` 或 `~/.local/bin`。
 
 安装脚本默认使用 `https://download.xuco.me/redis-dash` 作为分发源。

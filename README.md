@@ -36,6 +36,12 @@ Install Redis Dash with the standalone installer:
 curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh
 ```
 
+Install a specific version:
+
+```bash
+curl -fsSL https://download.xuco.me/redis-dash/install.sh | RDS_VERSION=0.2.0 sh
+```
+
 The install script downloads the current platform bundle, installs it under `/usr/local/lib/redis-dash` or `~/.local/share/redis-dash`, and links `rds` into `/usr/local/bin` or `~/.local/bin`.
 
 The installer uses `https://download.xuco.me/redis-dash` as the default distribution source.
