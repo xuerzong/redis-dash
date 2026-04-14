@@ -34,6 +34,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Build upload script arguments
         id: build_args
