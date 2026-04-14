@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
+import { existsSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { Octokit } from '@octokit/rest'
 
@@ -43,6 +44,7 @@ Required env:
 
 Optional:
   --asset <name>   Upload only one asset (repeatable)
+  --upload-install-script  Upload scripts/install.sh to redis-dash/install.sh
   --dry-run        Print actions without uploading
 `)
 }
@@ -160,6 +162,7 @@ const main = async () => {
   )
   const tag = `v${version}`
   const selectedAssets = new Set(getAllArgValues('asset'))
+  const uploadInstallScript = hasFlag('upload-install-script')
   const dryRun = hasFlag('dry-run')
 
   const token = process.env.CF_R2_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN
@@ -183,10 +186,38 @@ const main = async () => {
   }
 
   const displayBucket = bucket || '<CF_R2_BUCKET>'
+  const installScriptPath = path.resolve(process.cwd(), 'scripts', 'install.sh')
 
   console.log(`[repo] ${GITHUB_REPO}`)
   console.log(`[tag] ${tag}`)
   console.log(`[bucket] ${displayBucket}`)
+
+  if (uploadInstallScript) {
+    if (!existsSync(installScriptPath)) {
+      throw new Error(`Missing install script: ${installScriptPath}`)
+    }
+
+    const installObjectKey = 'redis-dash/install.sh'
+    const installMirrorUrl = 'https://download.xuco.me/redis-dash/install.sh'
+
+    if (dryRun) {
+      console.log(`[upload] r2://${displayBucket}/${installObjectKey}`)
+      console.log(`[mirror] ${installMirrorUrl}`)
+      console.log(
+        `[dry-run] npx -y wrangler@4 r2 object put ${displayBucket}/${installObjectKey} --file=${installScriptPath}`
+      )
+    } else {
+      console.log(`[upload] r2://${bucket}/${installObjectKey}`)
+      console.log(`[mirror] ${installMirrorUrl}`)
+      uploadToR2({
+        filePath: installScriptPath,
+        bucket,
+        objectKey: installObjectKey,
+        accountId,
+        token,
+      })
+    }
+  }
 
   const release = await fetchRelease(octokit, tag)
   const assets = Array.isArray(release.assets) ? release.assets : []
@@ -275,7 +306,7 @@ const main = async () => {
     await fs.rm(tempDir, { recursive: true, force: true })
   }
 
-  console.log('[done] All release assets uploaded to R2.')
+  console.log('[done] All requested files uploaded to R2.')
 }
 
 main().catch((error) => {

@@ -1,4 +1,5 @@
 import { createHashRouter } from 'react-router'
+import { isTauri } from '@tauri-apps/api/core'
 import { AppLayout } from './layouts/AppLayout'
 import { RootLayout } from './layouts/RootLayout'
 import { RedisLayout } from './layouts/RedisLayout'
@@ -11,6 +12,8 @@ import RedisSettingsPage from './views/RedisSettings'
 import RedisTerminalPage from './views/RedisTerminal'
 import SettingsPage from './views/Settings'
 import PubSubPage from './views/RedisPubSub'
+
+const inTauri = isTauri()
 
 export const router = createHashRouter([
   {
@@ -53,18 +56,36 @@ export const router = createHashRouter([
           },
         ],
       },
-      {
-        path: 'settings',
-        element: <SettingsLayout />,
-        children: [
-          {
-            path: '',
-            element: <SettingsPage />,
-          },
-        ],
-      },
+      ...(inTauri
+        ? []
+        : [
+            {
+              path: 'settings',
+              element: <SettingsLayout />,
+              children: [
+                {
+                  path: '',
+                  element: <SettingsPage />,
+                },
+              ],
+            },
+          ]),
     ],
   },
+  ...(inTauri
+    ? [
+        {
+          path: '/settings',
+          element: <SettingsLayout />,
+          children: [
+            {
+              path: '',
+              element: <SettingsPage />,
+            },
+          ],
+        },
+      ]
+    : []),
   {
     path: '*',
     element: <LoadingPage />,

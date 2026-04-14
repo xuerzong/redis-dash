@@ -1,5 +1,5 @@
 import { useConfigContext } from '@client/providers/ConfigProvider'
-import { Radio } from '@client/components/ui/Radio'
+import { Select } from '@client/components/ui/Select'
 import { useIntlContext } from '@client/providers/IntlProvider'
 import type { Theme } from '@/types'
 
@@ -13,19 +13,27 @@ export const ThemeSwitcher = () => {
       value: 'system',
     },
     {
-      label: formatMessage('theme.dark'),
-      value: 'dark',
+      label: formatMessage('theme.githubLight'),
+      value: 'github-light',
     },
     {
-      label: formatMessage('theme.light'),
-      value: 'light',
+      label: formatMessage('theme.githubDark'),
+      value: 'github-dark',
+    },
+    {
+      label: formatMessage('theme.catppuccinMocha'),
+      value: 'catppuccin-mocha',
+    },
+    {
+      label: formatMessage('theme.dracula'),
+      value: 'dracula',
     },
   ]
   return (
-    <Radio
+    <Select
       value={config.theme}
-      onValueChange={(e) => {
-        updateConfig({ theme: e as Theme })
+      onChange={(value) => {
+        updateConfig({ theme: value as Theme })
       }}
       options={themeOptions}
     />

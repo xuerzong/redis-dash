@@ -123,6 +123,9 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         <input
           className={cn('NumberInputInput', className)}
           ref={inputRef}
+          spellCheck={false}
+          autoCorrect="off"
+          autoCapitalize="none"
           onFocus={() => {
             setHasFocused(!disabled && true)
           }}

@@ -11,6 +11,11 @@ on:
         description: 'Specific assets to upload (optional, comma-separated names). Leave empty for all.'
         required: false
         type: string
+      uploadInstallScript:
+        description: 'Upload scripts/install.sh to redis-dash/install.sh'
+        required: false
+        type: boolean
+        default: true
       dryRun:
         description: 'Dry run (no actual upload)'
         required: false
@@ -39,6 +44,10 @@ jobs:
             for asset in $(echo "${{ inputs.assets }}" | tr ',' ' '); do
               args="$args --asset $asset"
             done
+          fi
+
+          if [ "${{ inputs.uploadInstallScript }}" == "true" ]; then
+            args="$args --upload-install-script"
           fi
 
           if [ "${{ inputs.dryRun }}" == "true" ]; then

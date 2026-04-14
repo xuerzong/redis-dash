@@ -1,11 +1,9 @@
-import { build } from 'esbuild'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 
 const rootDir = process.cwd()
-const workspaceRoot = path.resolve(rootDir, '..')
 
 const binaryName =
   process.env.RDS_BINARY_NAME ||
@@ -13,10 +11,9 @@ const binaryName =
 const platformId =
   process.env.RDS_PLATFORM_ID || `${process.platform}-${process.arch}`
 const cargoTarget = process.env.CARGO_BUILD_TARGET
-const skipNativeBuild = process.env.RDS_SKIP_NATIVE_BUILD === '1'
 
 const sourceBinaryPath = path.resolve(
-  workspaceRoot,
+  rootDir,
   'native',
   'target',
   ...(cargoTarget ? [cargoTarget] : []),
@@ -31,14 +28,13 @@ const distBinaryPath = path.resolve(
   platformId,
   binaryName
 )
-const distCliPath = path.resolve(rootDir, 'dist', 'cli.js')
 
 const buildNativeBinary = () => {
   const args = [
     'build',
     '--release',
     '--manifest-path',
-    path.resolve(workspaceRoot, 'native', 'Cargo.toml'),
+    path.resolve(rootDir, 'native', 'Cargo.toml'),
     '-p',
     'rds-native',
   ]
@@ -48,7 +44,7 @@ const buildNativeBinary = () => {
   }
 
   const result = spawnSync('cargo', args, {
-    cwd: workspaceRoot,
+    cwd: rootDir,
     stdio: 'inherit',
   })
 
@@ -62,29 +58,11 @@ const buildNativeBinary = () => {
 }
 
 const main = async () => {
-  if (!skipNativeBuild) {
-    buildNativeBinary()
-  }
+  buildNativeBinary()
 
-  await build({
-    entryPoints: [path.resolve(rootDir, 'src', 'index.ts')],
-    bundle: true,
-    minify: true,
-    outfile: path.resolve(rootDir, 'dist', 'cli.js'),
-    format: 'cjs',
-    platform: 'node',
-    banner: {
-      js: '#!/usr/bin/env node',
-    },
-  })
-
+  await fs.mkdir(path.dirname(distBinaryPath), { recursive: true })
+  await fs.copyFile(sourceBinaryPath, distBinaryPath)
   if (process.platform !== 'win32') {
-    await fs.chmod(distCliPath, 0o755)
-  }
-
-  if (!skipNativeBuild) {
-    await fs.mkdir(path.dirname(distBinaryPath), { recursive: true })
-    await fs.copyFile(sourceBinaryPath, distBinaryPath)
     await fs.chmod(distBinaryPath, 0o755)
   }
 }
