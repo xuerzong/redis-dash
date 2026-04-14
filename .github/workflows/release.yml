@@ -76,8 +76,6 @@ jobs:
 
       - name: Install client dependencies
         run: npm ci
-        env:
-          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Build client
         run: npm run build
@@ -196,8 +194,6 @@ jobs:
 
       - name: Install client dependencies
         run: npm ci
-        env:
-          RDS_SKIP_POSTINSTALL: '1'
 
       - name: Set version
         run: npm run replace-version
@@ -258,6 +254,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Generate static updater manifest
         run: npm run release:updater-json -- --version ${{ github.ref_name }}
