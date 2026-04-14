@@ -26,6 +26,7 @@
   },
   "plugins": {
     "updater": {
+      "pubkey": "__RDS_TAURI_UPDATER_PUBKEY__",
       "endpoints": ["https://download.xuco.me/redis-dash/latest.json"],
       "windows": {
         "installMode": "passive"

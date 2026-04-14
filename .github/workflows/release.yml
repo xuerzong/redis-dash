@@ -87,6 +87,11 @@ jobs:
         env:
           RDS_VERSION: ${{ github.ref_name }}
 
+      - name: Inject updater pubkey
+        run: node -e "const fs=require('fs'); const path='desktop/tauri.conf.json'; const pubkey=process.env.RDS_TAURI_UPDATER_PUBKEY; if (!pubkey) throw new Error('Missing RDS_TAURI_UPDATER_PUBKEY'); const content=fs.readFileSync(path,'utf8'); fs.writeFileSync(path, content.replace('__RDS_TAURI_UPDATER_PUBKEY__', pubkey));"
+        env:
+          RDS_TAURI_UPDATER_PUBKEY: ${{ secrets.TAURI_SIGNING_PUBLIC_KEY }}
+
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
