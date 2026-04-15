@@ -83,11 +83,6 @@
   color-scheme: light;
 }
 
-[data-sonner-toast] {
-  --border-radius: 0px;
-  border-radius: var(--border-radius);
-}
-
 * {
   font-family:
     var(--font-sans),
