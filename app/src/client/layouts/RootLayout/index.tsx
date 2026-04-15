@@ -15,6 +15,7 @@ import { TitlebarHeightSetter } from '@client/components/tauri/TitlebarHeightSet
 import { isTauri } from '@tauri-apps/api/core'
 import {
   WebviewWindow,
+  getCurrentWebviewWindow,
   getAllWebviewWindows,
 } from '@tauri-apps/api/webviewWindow'
 import s from './index.module.scss'
@@ -26,17 +27,26 @@ export const RootLayout = () => {
   const { formatMessage } = useIntlContext()
 
   const openSettingsWindow = useCallback(async () => {
+    if (!isTauri()) {
+      navigate('/settings')
+      return
+    }
+
     try {
-      if (!isTauri()) {
-        navigate('/settings')
+      const currentWindow = getCurrentWebviewWindow()
+      if (currentWindow.label === 'settings') {
+        await currentWindow.setFocus()
         return
       }
 
       const windows = await getAllWebviewWindows()
       const existing = windows.find((w) => w.label === 'settings')
       if (existing) {
-        await existing.show()
-        await existing.setFocus()
+        try {
+          await existing.setFocus()
+        } catch (error) {
+          console.error('Failed to focus settings window', error)
+        }
         return
       }
 
@@ -55,11 +65,9 @@ export const RootLayout = () => {
 
       settingsWindow.once('tauri://error', (e) => {
         console.error('Failed to open settings window', e)
-        navigate('/settings')
       })
     } catch (error) {
       console.error('Failed to open settings window', error)
-      navigate('/settings')
     }
   }, [navigate])
 
