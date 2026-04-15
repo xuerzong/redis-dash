@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { router } from './router'
 import { IntlProvider } from './providers/IntlProvider'
 import { ConfigProvider } from './providers/ConfigProvider'
+import { ThemeProvider } from './providers/ThemeProvider'
 import { disableContextMenu } from './utils/contextmenu'
 import '@xuerzong/redis-dash-invoke/init'
 
@@ -19,11 +20,13 @@ disableContextMenu()
 root.render(
   <ErrorBoundary>
     <ConfigProvider>
-      <IntlProvider>
-        <RouterProvider router={router} />
-        <Toaster richColors position="top-center" />
-        <DesktopUpdateBootstrap />
-      </IntlProvider>
+      <ThemeProvider>
+        <IntlProvider>
+          <RouterProvider router={router} />
+          <Toaster richColors position="top-center" />
+          <DesktopUpdateBootstrap />
+        </IntlProvider>
+      </ThemeProvider>
     </ConfigProvider>
   </ErrorBoundary>
 )

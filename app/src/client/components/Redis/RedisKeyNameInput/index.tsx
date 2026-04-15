@@ -9,11 +9,10 @@ import { renameKey } from '@client/commands/redis/key'
 import { IconButton } from '@client/components/ui/Button'
 import { changeRedisKeys, useRedisStore } from '@client/stores/redisStore'
 import { useRedisContext } from '@client/providers/RedisContext'
-import { getRedisTypeVarKey } from '@client/constants/redisColors'
+import { RedisTypeTag } from '../RedisTypeTag'
 
 export const RedisKeyNameInput = () => {
   const { redisId, redisKeyState } = useRedisKeyStateContext()
-  const colorKey = getRedisTypeVarKey(redisKeyState.type)
   const [keyName, setKeyName] = useSyncState(redisKeyState.keyName)
   const [checkLoading, setCheckLoaing] = useState(false)
   const redisKeys = useRedisStore((state) => state.redisKeysMap[redisId])
@@ -60,18 +59,7 @@ export const RedisKeyNameInput = () => {
         onChange={(e) => {
           setKeyName(e.target.value)
         }}
-        prefixNode={
-          <Box
-            textTransform="capitalize"
-            color={`rgba(var(--redis-type-${colorKey}-fg) / 1)`}
-            backgroundColor={`rgba(var(--redis-type-${colorKey}-bg) / 0.3)`}
-            border={`1px solid rgba(var(--redis-type-${colorKey}-border) / 0.55)`}
-            borderRadius="0.25rem"
-            padding="0.125rem 0.375rem"
-          >
-            {redisKeyState.type}
-          </Box>
-        }
+        prefixNode={<RedisTypeTag type={redisKeyState.type} />}
       />
       <IconButton
         variant="outline"

@@ -34,9 +34,9 @@ export const IntlProvider: React.FC<React.PropsWithChildren> = ({
       },
       messages,
       formatMessage: (id: string) => {
-        return messages[id] || locales['en-US'][config.lang]
+        return messages[id] || locales['en-US'][id] || id
       },
     }
   }, [config.lang, messages, updateConfig])
-  return <IntlContext value={value}>{children}</IntlContext>
+  return <IntlContext.Provider value={value}>{children}</IntlContext.Provider>
 }
