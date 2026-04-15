@@ -1,3 +1,15 @@
+export type EditorTokenPalette = {
+  propertyName: string
+  string: string
+  number: string
+  literal: string
+  keyword: string
+  escape: string
+  bracket: string
+  punctuation: string
+  invalid: string
+}
+
 export type Theme = {
   id: string
   name: string
@@ -20,6 +32,7 @@ export type Theme = {
     secondary: string
     muted: string
     accent: string
+    border: string
 
     success: string
     successForeground: string
@@ -30,4 +43,5 @@ export type Theme = {
     danger: string
     dangerForeground: string
   }
+  editorColors?: EditorTokenPalette
 }

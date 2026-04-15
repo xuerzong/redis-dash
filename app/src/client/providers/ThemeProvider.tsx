@@ -61,7 +61,7 @@ const setRootThemeVars = (theme: Theme) => {
   root.style.setProperty('--color-background', theme.baseColors.background)
   root.style.setProperty('--color-muted', theme.baseColors.muted)
   root.style.setProperty('--color-foreground', theme.baseColors.foreground)
-  root.style.setProperty('--color-border', theme.baseColors.secondary)
+  root.style.setProperty('--color-border', theme.baseColors.border)
 
   root.style.setProperty('--color-success', theme.baseColors.success)
   root.style.setProperty(
