@@ -2,6 +2,7 @@ import { Terminal as XtermTerminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { CanvasAddon } from '@xterm/addon-canvas'
 import { useConfigContext } from '@client/providers/ConfigProvider'
+import { useThemeContext } from '@client/providers/ThemeProvider'
 import { isTauri } from '@tauri-apps/api/core'
 import {
   forwardRef,
@@ -21,6 +22,7 @@ import {
   RESET_LINE,
   START_SYMBOL,
 } from './constants'
+import { toAlphaRgbColor, toRgbColor } from '@client/utils/color'
 import { WebLinksAddon } from './addons/WebLinksAddon/WebLinksAddon'
 import '@xterm/xterm/css/xterm.css'
 import type { ILinkProviderOptions } from './addons/WebLinksAddon/WebLinkProvider'
@@ -34,6 +36,7 @@ export interface TerminalRef {
 interface TerminalProps {
   onMount?: () => void
   onEnter?: (value: string) => Promise<void> | void
+  visible?: boolean
 
   addonOptions?: Partial<{
     webLinks: Partial<{
@@ -44,8 +47,9 @@ interface TerminalProps {
 }
 
 export const Terminal = forwardRef<TerminalRef, TerminalProps>(
-  ({ onEnter, addonOptions }, ref) => {
+  ({ onEnter, addonOptions, visible = true }, ref) => {
     const { config } = useConfigContext()
+    const { theme } = useThemeContext()
     const terminalRef = useRef<HTMLDivElement>(null)
     const termRef = useRef<XtermTerminal | null>(null)
     const currentInputRef = useRef('')
@@ -141,17 +145,12 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
 
     useEffect(() => {
       if (!terminalRef.current) return
-      const fontFamily =
-        isTauri() && config.monoFontFamily
-          ? `"${config.monoFontFamily}", "Geist Mono", monospace`
-          : 'Geist Mono'
-
       const term = new XtermTerminal({
         windowsMode: true,
         cursorBlink: true,
         fontSize: 16,
         fontWeight: 400,
-        fontFamily,
+        fontFamily: 'Geist Mono',
         lineHeight: 1,
       })
       const fitAddon = new FitAddon()
@@ -160,6 +159,13 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
       term.loadAddon(canvasAddon)
       term.loadAddon(webLinksAddon)
       term.open(terminalRef.current)
+      term.focus()
+      const focusTimer = window.setTimeout(() => {
+        term.focus()
+      }, 0)
+      const focusRafId = window.requestAnimationFrame(() => {
+        term.focus()
+      })
       term.write(START_SYMBOL)
       termRef.current = term
 
@@ -170,18 +176,72 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
 
       window.addEventListener('resize', resize)
       return () => {
+        window.clearTimeout(focusTimer)
+        window.cancelAnimationFrame(focusRafId)
         term.dispose()
         window.removeEventListener('resize', resize)
       }
-    }, [config.monoFontFamily, webLinksAddon])
+    }, [webLinksAddon])
+
+    useEffect(() => {
+      const term = termRef.current
+      if (!term || !visible) return
+
+      const rafId = window.requestAnimationFrame(() => {
+        term.focus()
+      })
+      return () => {
+        window.cancelAnimationFrame(rafId)
+      }
+    }, [visible])
+
+    useEffect(() => {
+      const term = termRef.current
+      if (!term) return
+
+      const fontFamily =
+        isTauri() && config.monoFontFamily
+          ? `"${config.monoFontFamily}", "Geist Mono", monospace`
+          : 'Geist Mono'
+
+      term.options.fontFamily = fontFamily
+    }, [config.monoFontFamily])
+
+    useEffect(() => {
+      const term = termRef.current
+      if (!term) return
+
+      term.options.theme = {
+        background: toRgbColor(theme.baseColors.background),
+        foreground: toRgbColor(theme.baseColors.foreground),
+        cursor: toRgbColor(theme.baseColors.primary),
+        cursorAccent: toRgbColor(theme.baseColors.background),
+        selectionBackground: toAlphaRgbColor(theme.baseColors.primary, 0.28),
+        selectionInactiveBackground: toAlphaRgbColor(
+          theme.baseColors.secondary,
+          0.2
+        ),
+      }
+    }, [theme])
 
     useEffect(() => {
       const term = termRef.current
       if (!term) {
         return
       }
-      term.onData(onData)
+      const disposable = term.onData(onData)
+      return () => {
+        disposable.dispose()
+      }
     }, [onData])
-    return <div className={s.Terminal} ref={terminalRef} />
+    return (
+      <div
+        className={s.Terminal}
+        ref={terminalRef}
+        onClick={() => {
+          termRef.current?.focus()
+        }}
+      />
+    )
   }
 )
