@@ -10,6 +10,16 @@ interface ConfigContextState {
   updateConfig: (config: Partial<Config>) => void
 }
 
+const DEFAULT_FONT_SIZE = 14
+const MIN_FONT_SIZE = 10
+const MAX_FONT_SIZE = 32
+
+const normalizeFontSize = (value: unknown, fallback: number): number => {
+  const parsed = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(parsed)))
+}
+
 const normalizeConfig = (next: Partial<Config>, fallback: Config): Config => {
   return {
     lang: (next.lang as Lang) ?? fallback.lang,
@@ -17,6 +27,13 @@ const normalizeConfig = (next: Partial<Config>, fallback: Config): Config => {
       next.monoFontFamily === undefined
         ? (fallback.monoFontFamily ?? null)
         : next.monoFontFamily,
+    fontSize:
+      next.fontSize === undefined
+        ? fallback.fontSize
+        : normalizeFontSize(
+            next.fontSize,
+            fallback.fontSize ?? DEFAULT_FONT_SIZE
+          ),
   }
 }
 
@@ -40,6 +57,10 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   const [config, setConfig] = useState<Config>({
     lang: (localStorage.getItem('rds-lang') as Lang) || 'en-US',
     monoFontFamily: null,
+    fontSize: normalizeFontSize(
+      localStorage.getItem('rds-font-size'),
+      DEFAULT_FONT_SIZE
+    ),
   })
   const [monoFonts, setMonoFonts] = useState<string[]>([])
 
@@ -62,6 +83,12 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   }, [lang])
 
   useEffect(() => {
+    const fontSize = normalizeFontSize(config.fontSize, DEFAULT_FONT_SIZE)
+    document.documentElement.style.fontSize = `${fontSize}px`
+    localStorage.setItem('rds-font-size', String(fontSize))
+  }, [config.fontSize])
+
+  useEffect(() => {
     let channel: BroadcastChannel | null = null
     if ('BroadcastChannel' in window) {
       channel = new BroadcastChannel('rds-config-sync')
@@ -74,12 +101,16 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     }
 
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== 'rds-lang') return
+      if (event.key !== 'rds-lang' && event.key !== 'rds-font-size') return
 
       setConfig((pre) =>
         normalizeConfig(
           {
             lang: (localStorage.getItem('rds-lang') as Lang) ?? pre.lang,
+            fontSize: normalizeFontSize(
+              localStorage.getItem('rds-font-size'),
+              pre.fontSize ?? DEFAULT_FONT_SIZE
+            ),
           },
           pre
         )

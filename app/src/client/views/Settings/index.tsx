@@ -1,3 +1,4 @@
+import { FontSizeSelector } from '@client/components/FontSizeSelector'
 import { LangSelector } from '@client/components/LangSelector'
 import { MonoFontSelector } from '@client/components/MonoFontSelector'
 import { ThemeSwitcher } from '@client/components/ThemeSwitcher'
@@ -17,6 +18,10 @@ const Page = () => {
 
         <FormField name="theme" label={formatMessage('theme')}>
           <ThemeSwitcher />
+        </FormField>
+
+        <FormField name="fontSize" label={formatMessage('fontSize')}>
+          <FontSizeSelector />
         </FormField>
 
         {isTauri() ? (
