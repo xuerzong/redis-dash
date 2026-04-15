@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use super::redis::{run_redis_psubscribe, run_redis_punsubscribe};
+use crate::utils::fonts::list_mono_fonts;
 use rds_core::{
   create_json_record, delete_json_record, execute_redis_command, find_json_record, get_json_config,
   global_redis_map, list_json_records, set_json_config, update_json_record, RedisConfig,
@@ -87,6 +88,7 @@ pub async fn send_request(
 
   match (method.as_str(), segments.as_slice()) {
     ("GET", ["api", "connections"]) => list_connections().await,
+    ("GET", ["api", "fonts", "mono"]) => list_mono_fonts(),
     ("GET", ["api", "connections", "status"]) => {
       let id = url
         .query_pairs()

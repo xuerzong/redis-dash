@@ -12,4 +12,5 @@ export interface API {
 
   getSystemConfig: () => Promise<any>
   setSystemConfig: (config: any) => Promise<any>
+  getMonoFonts: () => Promise<string[]>
 }

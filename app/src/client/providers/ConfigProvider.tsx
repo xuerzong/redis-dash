@@ -6,12 +6,17 @@ import { type } from '@tauri-apps/plugin-os'
 
 interface ConfigContextState {
   config: Config
+  monoFonts: string[]
   updateConfig: (config: Partial<Config>) => void
 }
 
 const normalizeConfig = (next: Partial<Config>, fallback: Config): Config => {
   return {
     lang: (next.lang as Lang) ?? fallback.lang,
+    monoFontFamily:
+      next.monoFontFamily === undefined
+        ? (fallback.monoFontFamily ?? null)
+        : next.monoFontFamily,
   }
 }
 
@@ -34,11 +39,22 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   const syncChannelRef = useRef<BroadcastChannel | null>(null)
   const [config, setConfig] = useState<Config>({
     lang: (localStorage.getItem('rds-lang') as Lang) || 'en-US',
+    monoFontFamily: null,
   })
+  const [monoFonts, setMonoFonts] = useState<string[]>([])
 
   const lang = useMemo(() => {
     return config.lang
   }, [config])
+
+  useEffect(() => {
+    const fontFamily =
+      isTauri() && config.monoFontFamily
+        ? `"${config.monoFontFamily}", "Geist Mono", monospace`
+        : '"Geist Mono", monospace'
+
+    document.documentElement.style.setProperty('--font-mono', fontFamily)
+  }, [config.monoFontFamily])
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -92,6 +108,20 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     }
   }, [])
 
+  const fetchMonoFonts = useCallback(async () => {
+    if (!isTauri()) {
+      setMonoFonts([])
+      return
+    }
+
+    const nextFonts = await api.getMonoFonts()
+    setMonoFonts(
+      nextFonts
+        .filter((font): font is string => typeof font === 'string')
+        .map((font) => font.trim())
+    )
+  }, [])
+
   const updateConfig = useCallback(
     async (newConfig: Partial<Config>) => {
       const nextConfig = normalizeConfig(newConfig, config)
@@ -105,14 +135,16 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     fetchConfig()
-  }, [])
+    fetchMonoFonts()
+  }, [fetchConfig, fetchMonoFonts])
 
   const value: ConfigContextState = useMemo(() => {
     return {
       config,
+      monoFonts,
       updateConfig,
     }
-  }, [config, updateConfig])
+  }, [config, monoFonts, updateConfig])
 
   return (
     <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>

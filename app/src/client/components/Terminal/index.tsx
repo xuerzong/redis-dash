@@ -1,6 +1,8 @@
 import { Terminal as XtermTerminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { CanvasAddon } from '@xterm/addon-canvas'
+import { useConfigContext } from '@client/providers/ConfigProvider'
+import { isTauri } from '@tauri-apps/api/core'
 import {
   forwardRef,
   useCallback,
@@ -43,6 +45,7 @@ interface TerminalProps {
 
 export const Terminal = forwardRef<TerminalRef, TerminalProps>(
   ({ onEnter, addonOptions }, ref) => {
+    const { config } = useConfigContext()
     const terminalRef = useRef<HTMLDivElement>(null)
     const termRef = useRef<XtermTerminal | null>(null)
     const currentInputRef = useRef('')
@@ -138,12 +141,17 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
 
     useEffect(() => {
       if (!terminalRef.current) return
+      const fontFamily =
+        isTauri() && config.monoFontFamily
+          ? `"${config.monoFontFamily}", "Geist Mono", monospace`
+          : 'Geist Mono'
+
       const term = new XtermTerminal({
         windowsMode: true,
         cursorBlink: true,
         fontSize: 16,
         fontWeight: 400,
-        fontFamily: 'Geist Mono',
+        fontFamily,
         lineHeight: 1,
       })
       const fitAddon = new FitAddon()
@@ -165,7 +173,7 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
         term.dispose()
         window.removeEventListener('resize', resize)
       }
-    }, [webLinksAddon])
+    }, [config.monoFontFamily, webLinksAddon])
 
     useEffect(() => {
       const term = termRef.current

@@ -4,6 +4,7 @@ export type ThemeMode = 'system' | 'light' | 'dark'
 
 export type Config = {
   lang: Lang
+  monoFontFamily?: string | null
 }
 
 export type RedisRole = 'publisher' | 'subscriber'

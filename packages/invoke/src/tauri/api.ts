@@ -24,3 +24,4 @@ export const getConnectionStatus = api.getConnectionStatus
 export const postDisconnectConnection = api.postDisconnectConnection
 export const getSystemConfig = api.getSystemConfig
 export const setSystemConfig = api.setSystemConfig
+export const getMonoFonts = api.getMonoFonts

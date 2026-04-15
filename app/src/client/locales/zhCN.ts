@@ -16,6 +16,7 @@ export const zhCN: Record<string, string> = {
   'placeholder.filterByKeyNameAndPattern': '输入键名或正则表达式筛选',
   'placeholder.enterChannelName': '输入通道名称',
   language: '语言',
+  monoFont: '字体',
   theme: '主题',
   'theme.system': '系统',
   'theme.light': '浅色',

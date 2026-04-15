@@ -16,6 +16,7 @@ export const enUS: Record<string, string> = {
   'placeholder.filterByKeyNameAndPattern': 'Filter by Key Name and Pattern',
   'placeholder.enterChannelName': 'Enter channel name',
   language: 'Language',
+  monoFont: 'Monospace Font',
   theme: 'Theme',
   'theme.system': 'System',
   'theme.light': 'Light',
