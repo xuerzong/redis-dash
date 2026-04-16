@@ -39,6 +39,8 @@
   --spacing-md: 0.5rem;
   --spacing-lg: 1rem;
 
+  --control-height: 2.25rem;
+
   --color: var(--foreground-color);
   --bg-color: transparent;
 

@@ -1,5 +1,4 @@
 .InputRoot {
-  --size: 2.5rem;
   --font-size: 0.875rem;
 }
 
@@ -21,7 +20,7 @@
   display: flex;
   align-items: center;
   font-size: var(--font-size);
-  height: var(--size);
+  height: var(--control-height);
   background-color: var(--muted-color);
   padding: 0 1rem;
   color: var(--foreground-color);
@@ -33,16 +32,15 @@
 }
 
 .Input {
-  --size: 2.5rem;
   --font-size: 0.875rem;
   font-size: var(--font-size);
-  height: var(--size);
   background-color: var(--background-color);
   color: var(--foreground-color);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(var(--color-primary) / 0.75);
   border-radius: var(--border-radius);
   outline: none;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
+  height: var(--control-height);
   transition: all var(--transition-duration) ease-in;
   width: 100%;
 

@@ -52,7 +52,7 @@ export const RedisLayoutComponent: React.FC = () => {
           display="flex"
           alignItems="center"
           borderBottom="1px solid var(--border-color)"
-          height="2.5rem"
+          height="var(--control-height)"
           boxSizing="content-box"
           flexShrink={0}
         >
@@ -145,7 +145,7 @@ export const RedisLayoutComponent: React.FC = () => {
             </DropdownMenu>
           </Box>
         </Box>
-        <Box flex={1} height="calc(100% - 2.5rem)">
+        <Box flex={1} height="calc(100% - var(--control-height))">
           <Outlet />
         </Box>
       </Box>

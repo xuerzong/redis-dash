@@ -1,5 +1,4 @@
 .Select {
-  --size: 2.5rem;
   --font-size: 0.875rem;
   --svg-size: 0.875rem;
   position: relative;
@@ -16,7 +15,7 @@
 
 .SelectRoot {
   font-size: var(--font-size);
-  height: var(--size);
+  height: var(--control-height);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   outline: none;
