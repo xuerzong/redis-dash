@@ -1,11 +1,12 @@
 import { createRoot } from 'react-dom/client'
-import { Toaster } from 'sonner'
 import { RouterProvider } from 'react-router'
 import { DesktopUpdateBootstrap } from './components/tauri/DesktopUpdateBootstrap'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { Toaster } from './components/ui/Toaster'
 import { router } from './router'
 import { IntlProvider } from './providers/IntlProvider'
 import { ConfigProvider } from './providers/ConfigProvider'
+import { ThemeProvider } from './providers/ThemeProvider'
 import { disableContextMenu } from './utils/contextmenu'
 import '@xuerzong/redis-dash-invoke/init'
 
@@ -19,11 +20,13 @@ disableContextMenu()
 root.render(
   <ErrorBoundary>
     <ConfigProvider>
-      <IntlProvider>
-        <RouterProvider router={router} />
-        <Toaster richColors position="top-center" />
-        <DesktopUpdateBootstrap />
-      </IntlProvider>
+      <ThemeProvider>
+        <IntlProvider>
+          <RouterProvider router={router} />
+          <Toaster />
+          <DesktopUpdateBootstrap />
+        </IntlProvider>
+      </ThemeProvider>
     </ConfigProvider>
   </ErrorBoundary>
 )

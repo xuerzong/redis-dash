@@ -1,59 +1,39 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDarkMode } from '@client/hooks/useDarkMode'
 import api from '@xuerzong/redis-dash-invoke/api'
-import type { Config, Lang, Theme } from '@/types'
+import type { Config, Lang } from '@/types'
 import { isTauri } from '@tauri-apps/api/core'
 import { type } from '@tauri-apps/plugin-os'
 
 interface ConfigContextState {
   config: Config
+  monoFonts: string[]
   updateConfig: (config: Partial<Config>) => void
 }
 
-type DisplayTheme = 'dark' | 'light'
+const DEFAULT_FONT_SIZE = 14
+const MIN_FONT_SIZE = 10
+const MAX_FONT_SIZE = 32
 
-const THEME_STYLE_MAP: Record<Exclude<Theme, 'system'>, string> = {
-  'github-light': 'github-light',
-  'github-dark': 'github-dark',
-  'catppuccin-mocha': 'catppuccin-mocha',
-  dracula: 'dracula',
-  // Backward compatibility for old persisted values.
-  light: 'github-light',
-  dark: 'github-dark',
-}
-
-const resolveDisplayTheme = (
-  theme: Theme,
-  systemDarkMode: boolean
-): DisplayTheme => {
-  if (theme === 'system') {
-    return systemDarkMode ? 'dark' : 'light'
-  }
-
-  if (theme === 'github-light' || theme === 'light') {
-    return 'light'
-  }
-
-  return 'dark'
-}
-
-const resolveThemeStyle = (theme: Theme, systemDarkMode: boolean) => {
-  if (theme === 'system') {
-    return systemDarkMode ? 'github-dark' : 'github-light'
-  }
-  return THEME_STYLE_MAP[theme]
-}
-
-const normalizeTheme = (theme: Theme): Theme => {
-  if (theme === 'dark') return 'github-dark'
-  if (theme === 'light') return 'github-light'
-  return theme
+const normalizeFontSize = (value: unknown, fallback: number): number => {
+  const parsed = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(parsed)))
 }
 
 const normalizeConfig = (next: Partial<Config>, fallback: Config): Config => {
   return {
     lang: (next.lang as Lang) ?? fallback.lang,
-    theme: normalizeTheme((next.theme as Theme) ?? fallback.theme),
+    monoFontFamily:
+      next.monoFontFamily === undefined
+        ? (fallback.monoFontFamily ?? null)
+        : next.monoFontFamily,
+    fontSize:
+      next.fontSize === undefined
+        ? fallback.fontSize
+        : normalizeFontSize(
+            next.fontSize,
+            fallback.fontSize ?? DEFAULT_FONT_SIZE
+          ),
   }
 }
 
@@ -70,68 +50,43 @@ export const useConfigContext = () => {
   return context
 }
 
-export const useDisplayTheme = () => {
-  const { config } = useConfigContext()
-  const systemDarkMode = useDarkMode()
-
-  return useMemo(() => {
-    return resolveDisplayTheme(config.theme, systemDarkMode)
-  }, [config, systemDarkMode])
-}
-
 export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const syncChannelRef = useRef<BroadcastChannel | null>(null)
-  const systemDarkMode = useDarkMode()
   const [config, setConfig] = useState<Config>({
     lang: (localStorage.getItem('rds-lang') as Lang) || 'en-US',
-    theme: normalizeTheme(
-      ((localStorage.getItem('rds-theme') as Theme) || 'system') as Theme
+    monoFontFamily: null,
+    fontSize: normalizeFontSize(
+      localStorage.getItem('rds-font-size'),
+      DEFAULT_FONT_SIZE
     ),
   })
-  const theme = useMemo(() => {
-    return resolveDisplayTheme(config.theme, systemDarkMode)
-  }, [config, systemDarkMode])
-
-  const themeStyle = useMemo(() => {
-    return resolveThemeStyle(config.theme, systemDarkMode)
-  }, [config, systemDarkMode])
+  const [monoFonts, setMonoFonts] = useState<string[]>([])
 
   const lang = useMemo(() => {
     return config.lang
   }, [config])
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--transition-duration', '0s')
+    const fontFamily =
+      isTauri() && config.monoFontFamily
+        ? `"${config.monoFontFamily}", "Geist Mono", monospace`
+        : '"Geist Mono", monospace'
 
-    if (theme === 'dark') {
-      document.documentElement.classList.remove('light')
-      document.documentElement.classList.add('dark')
-      document.documentElement.style.colorScheme = 'dark'
-    }
-
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.classList.add('light')
-      document.documentElement.style.colorScheme = 'light'
-    }
-
-    document.documentElement.setAttribute('data-theme-style', themeStyle)
-
-    setTimeout(() => {
-      document.documentElement.style.setProperty(
-        '--transition-duration',
-        '0.1s'
-      )
-    })
-    localStorage.setItem('rds-theme', config.theme)
-  }, [config.theme, theme, themeStyle])
+    document.documentElement.style.setProperty('--font-mono', fontFamily)
+  }, [config.monoFontFamily])
 
   useEffect(() => {
     document.documentElement.lang = lang
     localStorage.setItem('rds-lang', lang)
   }, [lang])
+
+  useEffect(() => {
+    const fontSize = normalizeFontSize(config.fontSize, DEFAULT_FONT_SIZE)
+    document.documentElement.style.fontSize = `${fontSize}px`
+    localStorage.setItem('rds-font-size', String(fontSize))
+  }, [config.fontSize])
 
   useEffect(() => {
     let channel: BroadcastChannel | null = null
@@ -146,13 +101,16 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     }
 
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== 'rds-theme' && event.key !== 'rds-lang') return
+      if (event.key !== 'rds-lang' && event.key !== 'rds-font-size') return
 
       setConfig((pre) =>
         normalizeConfig(
           {
-            theme: (localStorage.getItem('rds-theme') as Theme) ?? pre.theme,
             lang: (localStorage.getItem('rds-lang') as Lang) ?? pre.lang,
+            fontSize: normalizeFontSize(
+              localStorage.getItem('rds-font-size'),
+              pre.fontSize ?? DEFAULT_FONT_SIZE
+            ),
           },
           pre
         )
@@ -181,6 +139,20 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
     }
   }, [])
 
+  const fetchMonoFonts = useCallback(async () => {
+    if (!isTauri()) {
+      setMonoFonts([])
+      return
+    }
+
+    const nextFonts = await api.getMonoFonts()
+    setMonoFonts(
+      nextFonts
+        .filter((font): font is string => typeof font === 'string')
+        .map((font) => font.trim())
+    )
+  }, [])
+
   const updateConfig = useCallback(
     async (newConfig: Partial<Config>) => {
       const nextConfig = normalizeConfig(newConfig, config)
@@ -194,14 +166,18 @@ export const ConfigProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     fetchConfig()
-  }, [])
+    fetchMonoFonts()
+  }, [fetchConfig, fetchMonoFonts])
 
   const value: ConfigContextState = useMemo(() => {
     return {
       config,
+      monoFonts,
       updateConfig,
     }
-  }, [config, updateConfig])
+  }, [config, monoFonts, updateConfig])
 
-  return <ConfigContext value={value}>{children}</ConfigContext>
+  return (
+    <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>
+  )
 }

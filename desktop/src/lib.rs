@@ -1,4 +1,5 @@
 pub mod commands;
+pub mod utils;
 
 use commands::api::*;
 use commands::redis::*;

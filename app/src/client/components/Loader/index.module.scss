@@ -1,3 +1,6 @@
 .Loader {
-  animation: global(spin) 0.3s ease-in infinite;
+  font-size: 0;
+  animation: global(spin) 0.5s linear infinite;
+  width: 1.5rem;
+  height: 1.5rem;
 }

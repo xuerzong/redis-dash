@@ -68,6 +68,13 @@ export const createApi = (sendRequest: SendRequest) => {
     })
   }
 
+  const getMonoFonts = async () => {
+    return sendRequest<string[]>({
+      method: 'GET',
+      url: '/api/fonts/mono',
+    })
+  }
+
   return {
     getConnections,
     createConnection,
@@ -77,5 +84,6 @@ export const createApi = (sendRequest: SendRequest) => {
     postDisconnectConnection,
     getSystemConfig,
     setSystemConfig,
+    getMonoFonts,
   }
 }

@@ -1,0 +1,85 @@
+.Toaster {
+  --toast-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+.Toast {
+  border-radius: 0;
+  box-shadow: var(--toast-shadow);
+}
+
+.Content {
+  gap: 0.25rem;
+}
+
+.Title {
+  color: inherit;
+}
+
+.Description {
+  color: rgb(var(--color-foreground) / 0.72);
+}
+
+.Default {
+  background: rgb(var(--color-background));
+  border-color: rgb(var(--color-border));
+  color: rgb(var(--color-foreground));
+}
+
+.Success {
+  background: rgb(var(--color-success-bg));
+  border-color: rgb(var(--color-success));
+  color: rgb(var(--color-success));
+}
+
+.Warning {
+  background: rgb(var(--color-warning-bg));
+  border-color: rgb(var(--color-warning));
+  color: rgb(var(--color-warning));
+}
+
+.Error {
+  background: rgb(var(--color-danger-bg));
+  border-color: rgb(var(--color-danger));
+  color: rgb(var(--color-danger));
+}
+
+.Info {
+  background: rgb(var(--color-background));
+  border-color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary));
+}
+
+.Loading {
+  background: rgb(var(--color-background));
+  border-color: rgb(var(--color-border));
+  color: rgb(var(--color-foreground));
+}
+
+.CloseButton {
+  color: rgb(var(--color-foreground));
+  background: rgb(var(--color-background));
+  border-color: rgb(var(--color-border));
+}
+
+.CloseButton:hover {
+  background: rgb(var(--color-muted));
+  border-color: rgb(var(--color-border));
+}
+
+.ActionButton {
+  color: rgb(var(--color-primary-foreground));
+  background: rgb(var(--color-primary));
+}
+
+.CancelButton {
+  color: rgb(var(--color-foreground));
+  background: rgb(var(--color-muted));
+}
+
+.ThemeDark {
+  --toast-shadow: 0 12px 28px rgb(0 0 0 / 0.3);
+}
+
+.ThemeDark .Description {
+  color: rgb(var(--color-foreground) / 0.8);
+}

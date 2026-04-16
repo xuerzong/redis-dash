@@ -4,7 +4,7 @@
   --color: var(--primary-foreground-color);
   --bg-color: var(--primary-color);
   --border-color: var(--bg-color);
-  --hover-bg-color: var(--accent-color);
+  --hover-bg-color: rgba(var(--color-primary) / 0.9);
   --svg-size: 1rem;
   display: flex;
   align-items: center;

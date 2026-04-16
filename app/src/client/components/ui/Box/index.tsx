@@ -3,7 +3,7 @@ import { omit, pick } from '@client/utils/object'
 import { mergeProps } from '@client/utils/props'
 import React, { useMemo } from 'react'
 import { Slot } from '@radix-ui/react-slot'
-import { useDisplayTheme } from '@client/providers/ConfigProvider'
+import { useDisplayTheme } from '@client/providers/ThemeProvider'
 
 const stylePropertyKeys = [
   'position',
