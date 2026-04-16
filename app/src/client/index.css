@@ -10,11 +10,11 @@
   --theme-muted: 220 220 220;
   --theme-accent: 35 35 35;
   --theme-success: 22 163 74;
-  --theme-success-foreground: 220 252 231;
+  --theme-success-background: 220 252 231;
   --theme-warning: 202 138 4;
-  --theme-warning-foreground: 254 249 195;
+  --theme-warning-background: 254 249 195;
   --theme-danger: 220 38 38;
-  --theme-danger-foreground: 254 226 226;
+  --theme-danger-background: 254 226 226;
   --theme-tag-string: 21 128 61;
   --theme-tag-list: 190 24 93;
   --theme-tag-set: 29 78 216;
@@ -64,11 +64,11 @@
   --color-border: var(--theme-secondary);
 
   --color-success: var(--theme-success);
-  --color-success-bg: var(--theme-success-foreground);
+  --color-success-bg: var(--theme-success-background);
   --color-warning: var(--theme-warning);
-  --color-warning-bg: var(--theme-warning-foreground);
+  --color-warning-bg: var(--theme-warning-background);
   --color-danger: var(--theme-danger);
-  --color-danger-bg: var(--theme-danger-foreground);
+  --color-danger-bg: var(--theme-danger-background);
 
   --redis-type-hash: var(--theme-tag-hash);
   --redis-type-set: var(--theme-tag-set);

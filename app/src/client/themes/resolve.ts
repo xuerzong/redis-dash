@@ -238,11 +238,11 @@ export function resolveThemeFromTm(
       accent: rgb(accent, isDark ? '62 68 81' : '209 213 219'),
       border: borderRgb,
       success: rgb(hex.string, '22 163 74'),
-      successForeground: rgb(bg, '255 255 255'),
+      successBackground: rgb(bg, isDark ? '30 30 30' : '220 252 231'),
       warning: rgb(hex.number, '202 138 4'),
-      warningForeground: rgb(bg, isDark ? '23 23 23' : '254 252 232'),
+      warningBackground: rgb(bg, isDark ? '30 30 30' : '254 249 195'),
       danger: rgb(danger, '220 38 38'),
-      dangerForeground: isDark ? '255 255 255' : '254 242 242',
+      dangerBackground: rgb(bg, isDark ? '30 30 30' : '254 242 242'),
     },
   }
 }

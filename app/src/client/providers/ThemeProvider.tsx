@@ -66,15 +66,15 @@ const setRootThemeVars = (theme: Theme) => {
   root.style.setProperty('--color-success', theme.baseColors.success)
   root.style.setProperty(
     '--color-success-bg',
-    theme.baseColors.successForeground
+    theme.baseColors.successBackground
   )
   root.style.setProperty('--color-warning', theme.baseColors.warning)
   root.style.setProperty(
     '--color-warning-bg',
-    theme.baseColors.warningForeground
+    theme.baseColors.warningBackground
   )
   root.style.setProperty('--color-danger', theme.baseColors.danger)
-  root.style.setProperty('--color-danger-bg', theme.baseColors.dangerForeground)
+  root.style.setProperty('--color-danger-bg', theme.baseColors.dangerBackground)
 
   root.style.setProperty('--redis-type-string', theme.tagColors.string)
   root.style.setProperty('--redis-type-list', theme.tagColors.list)

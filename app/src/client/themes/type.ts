@@ -35,13 +35,13 @@ export type Theme = {
     border: string
 
     success: string
-    successForeground: string
+    successBackground: string
 
     warning: string
-    warningForeground: string
+    warningBackground: string
 
     danger: string
-    dangerForeground: string
+    dangerBackground: string
   }
   editorColors?: EditorTokenPalette
 }
