@@ -3,6 +3,7 @@
     .SelectRoot {
       border-width: 0px;
       border-right-width: 1px;
+      border-color: var(--border-color);
       &:focus-visible {
         box-shadow: none;
       }

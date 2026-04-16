@@ -16,7 +16,7 @@
 .SelectRoot {
   font-size: var(--font-size);
   height: var(--control-height);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(var(--color-primary) / 0.75);
   border-radius: var(--border-radius);
   outline: none;
   appearance: none;
