@@ -30,8 +30,6 @@ export const DropdownMenu: React.FC<
               {d.label}
             </RadixDropdownMenu.Item>
           ))}
-
-          <RadixDropdownMenu.Arrow />
         </RadixDropdownMenu.Content>
       </RadixDropdownMenu.Portal>
     </RadixDropdownMenu.Root>

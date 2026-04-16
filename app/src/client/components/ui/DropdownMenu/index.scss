@@ -1,9 +1,9 @@
 .DropdownMenuContent {
   background-color: var(--background-color);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--primary-color);
   border-radius: var(--border-radius);
-  padding: var(--spacing-md);
   min-width: 12rem;
+  overflow: hidden;
   z-index: 999;
 }
 
