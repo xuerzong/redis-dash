@@ -1,0 +1,28 @@
+.Sidebar {
+  width: 12rem;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.SidebarItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-md);
+  font-size: 0.875rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-duration) ease;
+
+  &:hover {
+    background-color: var(--muted-color);
+  }
+
+  &[data-active='true'] {
+    background-color: var(--muted-color);
+  }
+}

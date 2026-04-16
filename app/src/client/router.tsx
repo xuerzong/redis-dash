@@ -11,9 +11,31 @@ import HomePage from './views/Home'
 import RedisSettingsPage from './views/RedisSettings'
 import RedisTerminalPage from './views/RedisTerminal'
 import SettingsPage from './views/Settings'
+import SettingsThemePage from './views/Settings/Theme'
+import SettingsInterfacePage from './views/Settings/Interface'
+import SettingsAboutPage from './views/Settings/About'
 import PubSubPage from './views/RedisPubSub'
 
 const inTauri = isTauri()
+
+const settingsChildren = [
+  {
+    path: '',
+    element: <SettingsPage />,
+  },
+  {
+    path: 'theme',
+    element: <SettingsThemePage />,
+  },
+  {
+    path: 'interface',
+    element: <SettingsInterfacePage />,
+  },
+  {
+    path: 'about',
+    element: <SettingsAboutPage />,
+  },
+]
 
 export const router = createHashRouter([
   {
@@ -62,12 +84,7 @@ export const router = createHashRouter([
             {
               path: 'settings',
               element: <SettingsLayout />,
-              children: [
-                {
-                  path: '',
-                  element: <SettingsPage />,
-                },
-              ],
+              children: settingsChildren,
             },
           ]),
     ],
@@ -77,12 +94,7 @@ export const router = createHashRouter([
         {
           path: '/settings',
           element: <SettingsLayout />,
-          children: [
-            {
-              path: '',
-              element: <SettingsPage />,
-            },
-          ],
+          children: settingsChildren,
         },
       ]
     : []),

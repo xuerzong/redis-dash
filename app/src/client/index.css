@@ -37,6 +37,7 @@
   --font-sans: var(--font-mono);
 
   --spacing-md: 0.5rem;
+  --spacing-lg: 1rem;
 
   --color: var(--foreground-color);
   --bg-color: transparent;
