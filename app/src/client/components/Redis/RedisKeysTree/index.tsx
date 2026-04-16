@@ -92,10 +92,10 @@ export const RedisKeysTreeNode: React.FC<KeysTreeNodeProps> = ({
             data-selected={hasSelected}
             paddingLeft={`${deep * 1 + 1}rem`}
           >
-            <Box width="5rem">
+            <Box flexShrink={0} width="5rem">
               <RedisTypeTag type={type} />
             </Box>
-            {node.key}
+            <Box flex={1}>{node.key}</Box>
           </Box>
 
           <RedisKeyDeleteModal
