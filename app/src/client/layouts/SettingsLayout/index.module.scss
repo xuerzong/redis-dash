@@ -5,6 +5,7 @@
   flex-direction: column;
   padding: var(--spacing-md);
   flex-shrink: 0;
+  background-color: var(--muted-color);
 }
 
 .SidebarItem {
@@ -19,10 +20,10 @@
   transition: background-color var(--transition-duration) ease;
 
   &:hover {
-    background-color: var(--muted-color);
+    background-color: rgba(var(--color-primary) / 0.25);
   }
 
   &[data-active='true'] {
-    background-color: var(--muted-color);
+    background-color: rgba(var(--color-primary) / 0.5);
   }
 }
