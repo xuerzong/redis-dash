@@ -13,7 +13,6 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Input } from '@client/components/ui/Input'
-import { Drawer } from '@client/components/ui/Drawer'
 import { FormField } from '@client/components/ui/Form'
 import { Editor } from '@client/components/Editor'
 import { Modal } from '@client/components/ui/Modal'
@@ -232,14 +231,32 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
         </Box>
       )}
 
-      <Drawer
+      <Modal
         title={formMode === 0 ? `Add Row` : 'Edit Row'}
         open={addOpen}
         onOpenChange={setAddOpen}
+        minWidth="60vw"
+        minHeight="80vh"
+        className={s.RedisEditModal}
       >
-        <Box display="flex" flexDirection="column" gap="var(--spacing-md)">
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="var(--spacing-md)"
+          height="100%"
+          minHeight={0}
+          flex={1}
+        >
           {fields?.map((field) => (
-            <FormField key={field.name} name={field.name} label={field.label}>
+            <FormField
+              key={field.name}
+              name={field.name}
+              label={field.label}
+              display="flex"
+              flexDirection="column"
+              flex={field.type === 'editor' ? '1' : undefined}
+              minHeight={field.type === 'editor' ? 0 : undefined}
+            >
               {field.type === 'input' && (
                 <Input
                   value={formValues[field.name] || ''}
@@ -305,7 +322,7 @@ export const RedisBaseTable: React.FC<RedisBaseTableProps> = ({
             </Button>
           </Box>
         </Box>
-      </Drawer>
+      </Modal>
 
       <Modal
         title="Delete Row"

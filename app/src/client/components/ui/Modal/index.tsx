@@ -10,6 +10,9 @@ interface ModalProps {
   onOpenChange?: (open: boolean) => void
   trigger?: React.ReactNode
   footer?: React.ReactNode
+  minWidth?: string
+  minHeight?: string
+  className?: string
 }
 
 export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
@@ -20,13 +23,24 @@ export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
   trigger,
   children,
   footer,
+  minWidth,
+  minHeight,
+  className,
 }) => {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       {trigger && <Dialog.Trigger>{trigger}</Dialog.Trigger>}
-      <Dialog.Portal>
+      <Dialog.Portal className={className}>
         <Dialog.Backdrop className="ModalBackdrop" />
-        <Dialog.Popup className="ModalContent">
+        <Dialog.Popup
+          className="ModalContent"
+          style={{
+            minWidth: minWidth
+              ? `min(${minWidth}, calc(100vw - 2rem))`
+              : undefined,
+            minHeight: minHeight ? `min(${minHeight}, 85vh)` : undefined,
+          }}
+        >
           <div className="ModalHeader">
             <Dialog.Title className="ModalTitle">{title}</Dialog.Title>
             <Dialog.Description className="ModalDescription">

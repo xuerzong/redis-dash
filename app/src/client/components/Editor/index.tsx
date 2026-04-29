@@ -299,9 +299,9 @@ export const Editor: React.FC<EditorProps> = ({
       border="1px solid var(--border-color)"
       borderRadius="var(--border-radius)"
       {...restProps}
-      className={s.EditorRoot}
+      className={cn('EditorRoot', s.EditorRoot)}
     >
-      <Box className={s.EditorToolbar}>
+      <Box className={cn('EditorToolbar', s.EditorToolbar)}>
         <Box width="10rem">
           <Select
             value={language}
@@ -309,13 +309,19 @@ export const Editor: React.FC<EditorProps> = ({
             onChange={onChangeLanguage}
           />
         </Box>
-        <Tooltip className={s.EditorToolbarTooltip} content="Copy value">
+        <Tooltip
+          className={cn('EditorToolbarTooltip', s.EditorToolbarTooltip)}
+          content="Copy value"
+        >
           <IconButton variant="ghost" onClick={onCopy}>
             <FilesIcon />
           </IconButton>
         </Tooltip>
 
-        <Tooltip className={s.EditorToolbarTooltip} content="Refresh value">
+        <Tooltip
+          className={cn('EditorToolbarTooltip', s.EditorToolbarTooltip)}
+          content="Refresh value"
+        >
           <IconButton
             variant="ghost"
             onClick={() => {

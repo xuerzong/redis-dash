@@ -1,12 +1,19 @@
 .EditorRoot {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   height: 100%;
   overflow: hidden;
 }
 
 .Editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   font-size: 0.875rem;
   font-family: var(--font-mono);
   width: 100%;
+  min-height: 0;
   overflow: hidden;
 
   * {
@@ -15,7 +22,7 @@
 
   :global {
     .cm-editor {
-      height: 100%;
+      flex: 1;
       min-height: 5rem;
       .cm-selectionBackground {
         background-color: rgba(var(--color-primary) / 0.5) !important;

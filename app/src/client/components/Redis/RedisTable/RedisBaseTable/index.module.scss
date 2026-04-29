@@ -17,3 +17,14 @@
   width: 1rem;
   height: 1rem;
 }
+
+.RedisEditModal {
+  :global {
+    .ModalWrapper {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+  }
+}
