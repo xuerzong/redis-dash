@@ -22,10 +22,10 @@ import {
   RESET_LINE,
   START_SYMBOL,
 } from './constants'
-import { toAlphaRgbColor, toRgbColor } from '@client/utils/color'
 import { WebLinksAddon } from './addons/WebLinksAddon/WebLinksAddon'
 import '@xterm/xterm/css/xterm.css'
 import type { ILinkProviderOptions } from './addons/WebLinksAddon/WebLinkProvider'
+import { getTerminalTheme } from './utils'
 import s from './index.module.scss'
 
 export interface TerminalRef {
@@ -211,17 +211,7 @@ export const Terminal = forwardRef<TerminalRef, TerminalProps>(
       const term = termRef.current
       if (!term) return
 
-      term.options.theme = {
-        background: toRgbColor(theme.baseColors.background),
-        foreground: toRgbColor(theme.baseColors.foreground),
-        cursor: toRgbColor(theme.baseColors.primary),
-        cursorAccent: toRgbColor(theme.baseColors.background),
-        selectionBackground: toAlphaRgbColor(theme.baseColors.primary, 0.28),
-        selectionInactiveBackground: toAlphaRgbColor(
-          theme.baseColors.secondary,
-          0.2
-        ),
-      }
+      term.options.theme = getTerminalTheme(theme)
     }, [theme])
 
     useEffect(() => {

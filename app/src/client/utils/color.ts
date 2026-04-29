@@ -53,6 +53,33 @@ export function toAlphaRgbColor(
   return `rgb(${rgb} / ${alpha})`
 }
 
+export function rgbToHex(rgb: string): string {
+  const [r, g, b] = rgb.split(/\s+/).map((value) => Number.parseInt(value, 10))
+  return `#${[r, g, b]
+    .map((value) =>
+      Math.max(0, Math.min(255, value)).toString(16).padStart(2, '0')
+    )
+    .join('')}`
+}
+
+export function mixRgb(source: string, target: string, ratio: number): string {
+  const sourceParts = source
+    .split(/\s+/)
+    .map((value) => Number.parseInt(value, 10))
+  const targetParts = target
+    .split(/\s+/)
+    .map((value) => Number.parseInt(value, 10))
+
+  return sourceParts
+    .map((value, index) => {
+      const nextValue = Math.round(
+        value * (1 - ratio) + (targetParts[index] ?? value) * ratio
+      )
+      return Math.max(0, Math.min(255, nextValue))
+    })
+    .join(' ')
+}
+
 export function isOpaqueHex(hex: string): boolean {
   const h = hex.replace(/^#/, '')
   if (h.length === 8) {
