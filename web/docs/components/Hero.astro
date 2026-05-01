@@ -1,0 +1,227 @@
+---
+import { CheckIcon, CopyIcon, DownloadIcon } from '@lucide/astro'
+import GithubIcon from './icons/GithubIcon.astro'
+import LinuxIcon from './icons/LinuxIcon.astro'
+import AppleIcon from './icons/AppleIcon.astro'
+import WindowsIcon from './icons/WindowsIcon.astro'
+
+interface Props {
+  title: string
+  description: string
+  download: string
+  caption: string
+  installCommand: string
+}
+
+const { title, description, download, caption, installCommand } = Astro.props
+---
+
+<main class="redis-dash-hero">
+  <section>
+    <div class="redis-dash-hero__header">
+      <div class="redis-dash-hero__logo-wrap">
+        <img class="redis-dash-hero__logo" src="/favicon.png" alt={title} />
+      </div>
+      <h1 class="redis-dash-hero__title">{title}</h1>
+      <p class="redis-dash-hero__description">{description}</p>
+    </div>
+    <div class="redis-dash-hero__actions">
+      <a
+        class="redis-dash-btn redis-dash-btn-brand"
+        href="https://github.com/xuerzong/redis-dash/releases"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <DownloadIcon class="w-4 h-4" />
+        <span>{download}</span>
+      </a>
+      <a
+        class="redis-dash-btn redis-dash-btn-dark"
+        href="/download"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <GithubIcon class="w-4 h-4" />
+        <span>Github</span>
+      </a>
+    </div>
+    <p class="redis-dash-hero__caption">
+      <span class="redis-dash-hero__platforms">
+        <AppleIcon class="w-3 h-3" />
+        <WindowsIcon class="w-3 h-3" />
+        <LinuxIcon class="w-3 h-3" />
+      </span>
+      <span>{caption}</span>
+    </p>
+  </section>
+
+  <section class="redis-dash-hero__install-section">
+    <div id="install-script-code-block" class="redis-dash-install">
+      <span>{installCommand}</span>
+      <CopyIcon id="copy-button" class="redis-dash-install-icon" />
+      <CheckIcon
+        id="copy-success-button"
+        style="display: none"
+        class="redis-dash-install-icon"
+      />
+    </div>
+  </section>
+</main>
+
+<style is:global>
+  .redis-dash-hero {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .redis-dash-hero__header {
+    text-align: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .redis-dash-hero__logo-wrap {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .redis-dash-hero__logo {
+    width: 4rem;
+    height: 4rem;
+    display: inline-block;
+  }
+  .redis-dash-hero__title {
+    font-size: 3.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .redis-dash-hero__description {
+    font-size: 1rem;
+  }
+  .redis-dash-hero__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .redis-dash-hero__actions > * + * {
+    margin-left: 1rem;
+  }
+  .redis-dash-hero__caption {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    text-align: center;
+    opacity: 0.75;
+  }
+  .redis-dash-hero__platforms {
+    display: inline-flex;
+    align-items: center;
+  }
+  .redis-dash-hero__platforms > * + * {
+    margin-left: 0.25rem;
+  }
+  .redis-dash-hero__install-section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .redis-dash-hero .w-3 {
+    width: 0.75rem;
+  }
+  .redis-dash-hero .h-3 {
+    height: 0.75rem;
+  }
+  .redis-dash-hero .w-4 {
+    width: 1rem;
+  }
+  .redis-dash-hero .h-4 {
+    height: 1rem;
+  }
+  .redis-dash-hero .w-16 {
+    width: 4rem;
+  }
+  .redis-dash-hero .h-16 {
+    height: 4rem;
+  }
+
+  .redis-dash-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 140ms ease;
+  }
+  .redis-dash-btn:hover {
+    transform: translateY(-1px);
+  }
+  .redis-dash-btn-brand {
+    background-color: #f87171;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
+  }
+  .redis-dash-btn-dark {
+    background-color: #000;
+    color: #fff;
+  }
+
+  .redis-dash-install {
+    position: relative;
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.875rem;
+    background-color: #111827;
+    color: #f9fafb;
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+  .redis-dash-install-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  import copy from 'copy-to-clipboard'
+
+  const setup = () => {
+    const copyButton = document.getElementById('copy-button')
+    const copySuccessButton = document.getElementById('copy-success-button')
+    const installScriptCodeBlock = document.getElementById(
+      'install-script-code-block'
+    )
+
+    if (!copyButton || !copySuccessButton || !installScriptCodeBlock) return
+
+    const onCopy = () => {
+      const copyContent = installScriptCodeBlock.textContent?.trim()
+      if (!copyContent) return
+      copy(copyContent)
+      copyButton.style.display = 'none'
+      copySuccessButton.style.display = 'block'
+      setTimeout(() => {
+        copyButton.style.display = 'block'
+        copySuccessButton.style.display = 'none'
+      }, 3000)
+    }
+
+    copyButton.addEventListener('click', onCopy)
+  }
+
+  setup()
+  document.addEventListener('astro:page-load', setup)
+</script>

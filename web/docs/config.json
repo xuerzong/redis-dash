@@ -1,0 +1,57 @@
+{
+  "$schema": "../node_modules/stropress/schema.json",
+  "site": {
+    "url": "https://redis-dash.xuco.me",
+    "title": "Redis Dash",
+    "description": "🚀 A lightweight, cross-platform Redis GUI Client. Redis Dash is designed to provide a simple and efficient way to manage and monitor your Redis instances. Available for Mac, Windows, and Linux.",
+    "favicon": "/favicon.png"
+  },
+  "nav": [
+    {
+      "label": "Download",
+      "link": "/download"
+    }
+  ],
+  "socialLinks": [
+    {
+      "icon": "Github",
+      "label": "GitHub",
+      "link": "https://github.com/xuerzong/redis-dash"
+    }
+  ],
+  "footer": {
+    "message": "Released under the MIT License.",
+    "copyright": "Copyright © 2026 Xu Cong"
+  },
+  "locales": {
+    "/": {
+      "label": "English",
+      "lang": "en-US"
+    },
+    "/zh/": {
+      "label": "简体中文",
+      "lang": "zh-CN",
+      "site": {
+        "title": "Redis Dash",
+        "description": "🚀 轻量级、跨平台的 Redis GUI（图形用户界面）。Redis Dash 旨在提供一种简单高效的方式来管理和监控您的 Redis 实例。适用于 Mac、Windows 和 Linux。"
+      },
+      "socialLinks": [
+        {
+          "icon": "Github",
+          "label": "GitHub",
+          "link": "https://github.com/xuerzong/redis-dash"
+        }
+      ],
+      "footer": {
+        "message": "基于 MIT License 发布。",
+        "copyright": "Copyright © 2026 Xu Cong"
+      },
+      "nav": [
+        {
+          "label": "下载",
+          "link": "/zh/download"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+---
+import Hero from '../components/Hero.astro'
+
+export const sidebar = false
+export const title = 'Redis Dash'
+export const description =
+  '🚀 轻量级、跨平台的 Redis GUI（图形用户界面）。适用于 Mac、Windows 和 Linux。'
+export const contentClass = 'redis-dash-page'
+---
+
+<Hero
+  title="Redis Dash"
+  description="🚀 轻量级、跨平台的 Redis GUI（图形用户界面）"
+  download="下载应用"
+  caption="适用于 Mac、Windows 和 Linux"
+  installCommand="curl -fsSL https://download.xuco.me/redis-dash/install.sh | sh"
+/>
+
+<script
+  is:inline
+  defer
+  src="https://cloud.umami.is/script.js"
+  data-website-id="e82b62bd-062e-4172-92db-73a4fb9b6927"></script>
