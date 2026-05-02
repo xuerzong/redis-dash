@@ -18,6 +18,7 @@
 
 - 🔗 **多连接支持:** 轻松管理和切换多个 Redis 实例。
 - 🔎 **直观的 Key 浏览器:** 浏览、搜索、编辑和删除各种数据类型（String、List、Hash、Set、ZSet）。
+- 🎨 **Shiki 主题选择:** 支持从 Shiki 主题列表中选择界面主题。参见 https://shiki.style/themes。
 - 💻 **命令行控制台:** 内置一个强大的 Redis 命令行界面 (CLI)，允许您直接执行原生 Redis 命令。
 - 🌍 **跨平台:** 支持 Windows、macOS 和 Linux。
 
