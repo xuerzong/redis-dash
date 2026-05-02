@@ -14,7 +14,7 @@ const cargoTarget = process.env.CARGO_BUILD_TARGET
 
 const sourceBinaryPath = path.resolve(
   rootDir,
-  'native',
+  'crates',
   'target',
   ...(cargoTarget ? [cargoTarget] : []),
   'release',
@@ -34,7 +34,7 @@ const buildNativeBinary = () => {
     'build',
     '--release',
     '--manifest-path',
-    path.resolve(rootDir, 'native', 'Cargo.toml'),
+    path.resolve(rootDir, 'crates', 'Cargo.toml'),
     '-p',
     'rds-native',
   ]

@@ -13,7 +13,7 @@ if (port === backendPort) {
   throw new Error('PORT and RDS_BACKEND_PORT must be different in dev mode.')
 }
 
-const cargoManifestPath = path.resolve(rootPath, '../native/Cargo.toml')
+const cargoManifestPath = path.resolve(rootPath, '../crates/Cargo.toml')
 const backendUrl = `http://127.0.0.1:${backendPort}`
 
 const waitForBackendReady = (backend: ChildProcess) =>

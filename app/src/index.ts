@@ -10,8 +10,8 @@ const resolveNativeBinary = () => {
     envBinary,
     path.resolve(__dirname, '../bin/rds'),
     path.resolve(__dirname, '../bin/rds.exe'),
-    path.resolve(__dirname, '../../native/target/release/rds'),
-    path.resolve(__dirname, '../../native/target/release/rds.exe'),
+    path.resolve(__dirname, '../../crates/target/release/rds'),
+    path.resolve(__dirname, '../../crates/target/release/rds.exe'),
   ].filter(Boolean) as string[]
 
   for (const candidate of candidates) {

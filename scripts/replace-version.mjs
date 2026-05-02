@@ -35,7 +35,7 @@ console.log('Writing version ' + version + ' to ' + tauriConfigPath)
 fs.writeFileSync(tauriConfigPath, JSON.stringify(tauriConfig, null, 2))
 
 rewriteCargoPackageVersion(path.join(__dirname, '../desktop/Cargo.toml'))
-rewriteCargoPackageVersion(path.join(__dirname, '../native/rds/Cargo.toml'))
+rewriteCargoPackageVersion(path.join(__dirname, '../crates/rds/Cargo.toml'))
 rewriteCargoPackageVersion(
-  path.join(__dirname, '../native/rds-core/Cargo.toml')
+  path.join(__dirname, '../crates/rds-core/Cargo.toml')
 )
